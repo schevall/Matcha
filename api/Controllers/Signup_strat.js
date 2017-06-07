@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-import Mongo from '../configMongo/MongoConnection';
+import Mongo from '../config/MongoConnection';
 import Verif from './Verif_User_Input_Tools';
-import User from './Classes/User_class';
-import config from '../configMongo/config';
+import User from '../Models/User_Model';
+import config from '../config/config';
 
 const signup = async (req, res) => {
   // verification on the User input
@@ -42,9 +42,5 @@ const signin = async (req, res) => {
   return res.json({ success: true, token, loggedUser: user.login }).end();
 };
 
-const showusers = async (req, res) => {
-  const all = await Mongo.db.collection('users').find().toArray();
-  return res.json({ all }).end();
-};
 
-export { signup, signin, showusers };
+export default signup;

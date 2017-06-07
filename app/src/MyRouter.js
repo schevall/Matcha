@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import PrivateRoute from './PrivateRoute';
+
 import List from './Components/List';
 import SignUpForm from './Components/SignUp';
 import SignInForm from './Components/SignIn';
