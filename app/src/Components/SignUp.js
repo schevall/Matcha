@@ -18,11 +18,7 @@ class SignUpForm extends Component {
       password1: password1.value.trim(),
     })
     .then(({ data }) => {
-      if (data.success === true) {
-        this.setState({ message: data.message });
-      } else {
-        this.setState({ message: data.message });
-      }
+      this.setState({ message: data.message });
     });
   }
 
@@ -30,9 +26,11 @@ class SignUpForm extends Component {
     const { message } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
-        Subcription<br />
+        <h2>Welcome to Matcha</h2><br />
+        <a href="/login">To login</a>
+        <h3>Subcription</h3><br />
         <input type="login" ref={(login) => { this.login = login; }} placeholder="Login*" required="true" /><br />
-        <input defaultValue="Patata11" type="password" ref={(password) => { this.password = password; }} placeholder="passwd*" required="true" />Patate11<br />
+        <input defaultValue="Patata11" type="password" ref={(password) => { this.password = password; }} placeholder="passwd*" required="true" />Patata11<br />
         <input defaultValue="Patata11" type="password" ref={(password1) => { this.password1 = password1; }} placeholder="Confirm your passwd*" required="true" /><br />
         <input defaultValue="michel@trouville.com" type="email" ref={(email) => { this.email = email; }} placeholder="email adress*" required="true" /><br />
         <input type="submit" value="Signup" className="btn btn-primary" /><br />

@@ -1,41 +1,44 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { Redirect, Link } from 'react-router-dom';
+
+import loginBound from '../Actions/loginBound';
 
 class SignInForm extends Component {
-
-  state = {
-    message: '',
-  }
 
   handleSubmit = (event) => {
     event.preventDefault();
     const { login, password } = this;
-    const url = '/api/signin';
-    axios.post(url, {
-      login: login.value,
-      password: password.value,
-    })
-    .then(({ data }) => {
-      if (data.success === true) {
-        this.setState({ message: data.message });
-      } else {
-        this.setState({ message: data.message });
-      }
-    });
-  }
+    const input = { login: login.value, password: password.value };
+    this.props.dispatch(loginBound(input));
+    console.log('after first dispatch in signinform, state = ', this.props);
+  };
 
   render() {
-    const { message } = this.state;
+    const { isLogged } = this.props;
+    if (isLogged) return (<Redirect to="/lobby" />);
     return (
       <form onSubmit={this.handleSubmit}>
-          Connection<br />
+        <h3>Connection</h3><br />
+        <h4><a href="/">Back to Signup</a></h4>
         <input type="login" ref={(login) => { this.login = login; }} placeholder="Login*" required="true" /><br />
         <input type="password" ref={(password) => { this.password = password; }} placeholder="password*" required="true" /><br />
-        <input type="submit" value="Signin" className="btn btn-primary" /> <br />
-        <p>{ message }</p>
+        <input type="submit" value="Signin" /> <br />
+        {this.props.response && <p>{ this.props.response }</p>}
       </form>
     );
   }
 }
 
-export default SignInForm;
+const mapStateToProps = (state) => {
+  const { loginreducer } = state;
+  const { isLogged, response } = loginreducer;
+
+  return {
+    isLogged,
+    response,
+  };
+};
+
+
+export default connect(mapStateToProps)(SignInForm);
