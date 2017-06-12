@@ -28,6 +28,7 @@ class List extends React.Component {
     const listItem = list.map(item =>
       <li key={item.toString()}>{item}</li>,
     );
+    console.log('here');
     return (
       <form onSubmit={this.handleSubmit}>
           User list<br />

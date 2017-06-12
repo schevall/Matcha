@@ -1,5 +1,6 @@
 import MongoClient from 'mongodb';
 import assert from 'assert';
+
 import config from './config';
 
 class MongoConnection {
@@ -7,6 +8,7 @@ class MongoConnection {
     MongoClient.connect(config.database, (err, db) => {
       assert.equal(null, err);
       MongoConnection.db = db;
+
     });
   }
 }

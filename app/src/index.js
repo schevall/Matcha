@@ -1,13 +1,27 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import rootReducer from './Reducers/loginReducer';
+import { createLogger } from 'redux-logger';
+import loginReducer from './Reducers/loginReducer';
+import messageReducer from './Reducers/messageReducer';
 import MyRouter from './MyRouter';
 
-const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+const rootReducer = combineReducers({
+  loginReducer,
+  messageReducer,
+});
 
+const loggerMiddleware = createLogger();
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(
+    thunkMiddleware,
+    loggerMiddleware,
+  ));
+  
 render(
   <Provider store={store}>
     <MyRouter />

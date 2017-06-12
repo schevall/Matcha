@@ -5,46 +5,63 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
 
+import NavBar from './Components/NavBar';
 import List from './Components/List';
 import SignUpForm from './Components/SignUp';
 import SignInForm from './Components/SignIn';
+import authtest from './Components/authtest';
 import Lobby from './Components/Lobby';
+import Suggestions from './Components/Suggestions';
+import MessageBar from './Components/MessageBar';
 
 
 const MyRouter = (props) => {
   console.log('in router props = ', props);
-  const { isLogged, loggedUser } = props;
+  const { loggedUser, isLogged } = props;
+  const { message, format } = props;
   return (
     <Router>
       <div>
+        <MessageBar message={message} format={format} />
+        <NavBar isLogged={isLogged} />
         <Switch>
-          <Route path="/lobby" isLogged={isLogged} loggedUser={loggedUser} component={Lobby} />
-          <Route exact path="/" component={SignUpForm} />
-          <Route exact path="/login" component={SignInForm} />
+          <Route path="/authtest" loggedUser={loggedUser} component={authtest} />
+          <Route exact path="/signup" component={SignUpForm} />
+          <Route exact path="/signin" component={SignInForm} />
           <Route exact path="/api/users" component={List} />
+          <PrivateRoute exact path="/" props={props} component={Lobby} />
+          <PrivateRoute exact path="/suggestions" props={props} component={Suggestions} />
         </Switch>
       </div>
     </Router>
   );
 };
 
-MyRouter.propTypes = {
-  isLogged: PropTypes.bool,
+MyRouter.PropTypes = {
   loggedUser: PropTypes.string,
+  isLogged: PropTypes.bool,
+  message: PropTypes.string,
+  format: PropTypes.string,
 };
 
 MyRouter.defaultProps = {
-  isLogged: false,
   loggedUser: '',
+  isLogged: false,
+  message: '',
+  format: '',
 };
 
 const mapStateToProps = (state) => {
-  const { loginreducer } = state;
-  const { isLogged, loggedUser } = loginreducer;
+  // console.log('in router, State = ', state);
+  const { loginReducer, messageReducer } = state;
+  const { loggedUser, isLogged } = loginReducer;
+  const { message, format } = messageReducer;
 
   return {
-    isLogged,
     loggedUser,
+    isLogged,
+    message,
+    format,
   };
 };
 

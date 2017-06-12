@@ -8,11 +8,10 @@ class Lobby extends Component {
 
 
   render() {
-    const { loggedUser } = this.props;
     // console.log('in lobby, isLogged = ', isLogged);
     return (
       <div>
-        <h2>Salut {loggedUser}</h2>
+        <h2>Suggestions</h2>
       </div>
     );
   }

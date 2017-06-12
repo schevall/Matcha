@@ -1,18 +1,16 @@
 import express from 'express';
 import http from 'http';
-import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import session from 'express-session';
 // import path from 'path';
 
 import Mongo from './config/MongoConnection';
-// import config from './configMongo/config';
-
 import routes from './routes';
 
 const app = express();
-const port = (process.env.PORT || 8000);
+const port = (8000);
 const server = http.createServer(app);
 
 Mongo.connect();

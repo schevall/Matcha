@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { errorSendingBound, messageSendingBound } from '../Actions/messageBound';
 
 class SignUpForm extends Component {
 
@@ -10,15 +13,18 @@ class SignUpForm extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { login, password, password1, email } = this;
-    const url = '/api/signup';
-    axios.post(url, {
+    axios.post('/api/signup', {
       email: email.value.trim(),
       login: login.value.trim(),
       password: password.value.trim(),
       password1: password1.value.trim(),
     })
     .then(({ data }) => {
-      this.setState({ message: data.message });
+      if (data.error) {
+        this.props.dispatch(errorSendingBound(data.error));
+      } else {
+        this.props.dispatch(messageSendingBound('Your account has been created, please activate your email'));
+      }
     });
   }
 
@@ -27,7 +33,7 @@ class SignUpForm extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <h2>Welcome to Matcha</h2><br />
-        <a href="/login">To login</a>
+        <a href="/signin">To login</a>
         <h3>Subcription</h3><br />
         <input type="login" ref={(login) => { this.login = login; }} placeholder="Login*" required="true" /><br />
         <input defaultValue="Patata11" type="password" ref={(password) => { this.password = password; }} placeholder="passwd*" required="true" />Patata11<br />
@@ -40,4 +46,24 @@ class SignUpForm extends Component {
   }
 }
 
-export default SignUpForm;
+SignUpForm.PropTypes = {
+  message: PropTypes.string,
+  format: PropTypes.string,
+};
+
+SignUpForm.defaultProps = {
+  message: '',
+  format: '',
+};
+
+const mapStateToProps = (state) => {
+  const { messageReducer } = state;
+  const { message, format } = messageReducer;
+
+  return {
+    message,
+    format,
+  };
+};
+
+export default connect(mapStateToProps)(SignUpForm);

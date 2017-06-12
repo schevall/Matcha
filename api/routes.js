@@ -1,6 +1,7 @@
 import signin from './Controllers/Signin_strat';
 import signup from './Controllers/Signup_strat';
 import showusers from './Getter/User_list.js'
+import authControltest from './Controllers/authControltest';
 import authControl from './Controllers/authControl';
 
 
@@ -12,9 +13,7 @@ const routes = (app) => {
   app.post('/api/signin', signin);
 
   app.use('/api', authControl);
-  app.get('/api/lobby', (req, res) => {
-    res.send(200, 'this is the secret u can only have if u passed the test');
-  })
+  app.post('/api/lobby/test', authControltest);
 };
 
 export default routes;
