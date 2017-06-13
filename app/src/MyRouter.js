@@ -13,6 +13,7 @@ import authtest from './Components/authtest';
 import Lobby from './Components/Lobby';
 import Suggestions from './Components/Suggestions';
 import MessageBar from './Components/MessageBar';
+import Profile from './Components/Profile';
 
 
 const MyRouter = (props) => {
@@ -22,8 +23,8 @@ const MyRouter = (props) => {
   return (
     <Router>
       <div>
-        <MessageBar message={message} format={format} />
         <NavBar isLogged={isLogged} />
+        <MessageBar message={message} format={format} />
         <Switch>
           <Route path="/authtest" loggedUser={loggedUser} component={authtest} />
           <Route exact path="/signup" component={SignUpForm} />
@@ -31,6 +32,7 @@ const MyRouter = (props) => {
           <Route exact path="/api/users" component={List} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
           <PrivateRoute exact path="/suggestions" props={props} component={Suggestions} />
+          <PrivateRoute exact path="/profile" props={props} component={Profile} />
         </Switch>
       </div>
     </Router>
@@ -51,19 +53,15 @@ MyRouter.defaultProps = {
   format: '',
 };
 
-const mapStateToProps = (state) => {
-  // console.log('in router, State = ', state);
-  const { loginReducer, messageReducer } = state;
-  const { loggedUser, isLogged } = loginReducer;
-  const { message, format } = messageReducer;
-
-  return {
-    loggedUser,
-    isLogged,
-    message,
-    format,
-  };
-};
+const mapStateToProps = ({
+  loginReducer: { isLogged, loggedUser },
+  messageReducer: { message, format },
+}) => ({
+  isLogged,
+  loggedUser,
+  message,
+  format,
+});
 
 
 export default connect(mapStateToProps)(MyRouter);

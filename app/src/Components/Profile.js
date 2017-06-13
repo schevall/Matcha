@@ -2,15 +2,20 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-class Lobby extends Component {
+// import GetPhoto from './GetPhoto';
+import UploadPicture from './UploadPicture'
+
+class Profile extends Component {
 
 
   render() {
-    const { loggedUser } = this.props;
     // console.log('in lobby, isLogged = ', isLogged);
+    const { loggedUser } = this.props;
     return (
       <div>
-        <h2>Salut {loggedUser}</h2>
+        <h3>Profile page of {loggedUser}</h3>
+        <h4>fu</h4>
+        <UploadPicture />
       </div>
     );
   }
@@ -25,5 +30,4 @@ const mapStateToProps = ({
   message,
   format,
 });
-
-export default connect(mapStateToProps)(Lobby);
+export default connect(mapStateToProps)(Profile);

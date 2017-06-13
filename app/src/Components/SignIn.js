@@ -31,14 +31,15 @@ class SignInForm extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { loginReducer } = state;
-  const { isLogged } = loginReducer;
-
-  return {
-    isLogged,
-  };
-};
+const mapStateToProps = ({
+  loginReducer: { isLogged, loggedUser },
+  messageReducer: { message, format },
+}) => ({
+  isLogged,
+  loggedUser,
+  message,
+  format,
+});
 
 
 export default connect(mapStateToProps)(SignInForm);

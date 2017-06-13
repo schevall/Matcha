@@ -4,8 +4,7 @@ import { logoutBound } from '../Actions/loginBound';
 
 class Logout extends Component {
 
-  handleLogout = (event) => {
-    event.preventDefault();
+  onLogout = () => {
     // console.log('in lougout event this props = ', this.props);
     this.props.dispatch(logoutBound('You have been successfully disconnected'));
   };
@@ -13,19 +12,16 @@ class Logout extends Component {
   render() {
     // console.log('in lougout this props = ', this.props);
     return (
-      <button onClick={this.handleLogout}>Logout</button>
+      <radio onClick={this.onLogout} >Logout</radio>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  const { messageReducer } = state;
-  const { message, format } = messageReducer;
-
-  return {
-    message,
-    format,
-  };
-};
+const mapStateToProps = ({
+  messageReducer: { message, format },
+}) => ({
+  message,
+  format,
+});
 
 export default connect(mapStateToProps)(Logout);

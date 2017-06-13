@@ -21,7 +21,7 @@ const store = createStore(
     thunkMiddleware,
     loggerMiddleware,
   ));
-  
+
 render(
   <Provider store={store}>
     <MyRouter />

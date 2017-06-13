@@ -12,7 +12,7 @@ class MessageBar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('in MessageBar, will receive, nextProps = ', nextProps);
+    console.log('in MessageBar, will receive, nextProps = ', nextProps);
     this.setState({
       format: nextProps.format,
       message: nextProps.message,

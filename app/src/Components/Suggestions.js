@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Logout from './Logout';
-
-class Lobby extends Component {
+class Suggestions extends Component {
 
 
   render() {
-    // console.log('in lobby, isLogged = ', isLogged);
     return (
       <div>
         <h2>Suggestions</h2>
@@ -30,4 +26,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Lobby);
+export default connect(mapStateToProps)(Suggestions);

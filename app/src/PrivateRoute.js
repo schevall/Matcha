@@ -9,7 +9,7 @@ const CheckExpToken = (isLogged, rest) => {
   // console.log('in private route rest = ', rest);
   // console.log('in private route isLogged = ', isLogged);
   if (!isLogged) {
-    rest.dispatch(errorSendingBound('Please login before trying to access lobby'))
+    rest.dispatch(errorSendingBound('Please login before trying to access lobby'));
     return false;
   }
   const token = localStorage.getItem('token');
@@ -22,7 +22,7 @@ const CheckExpToken = (isLogged, rest) => {
   // console.log('in CheckExpToken, token = ', decode);
   // console.log('in CheckExpToken, date now = ', Date.now() / 1000);
   if (Date.now() / 1000 > decode.exp) {
-    rest.dispatch(logoutBound('Please connect again, your session as expired'));
+    rest.dispatch(logoutBound('Please connect again, your session has expired'));
     return false;
   }
   return true;
@@ -43,16 +43,14 @@ const PrivateRoute = ({ component: Component, isLogged, ...rest }) => (
   />
 );
 
-const mapStateToProps = (state) => {
-  const { loginReducer, messageReducer } = state;
-  const { isLogged, loggedUser } = loginReducer;
-  const { message, format } = messageReducer;
-  return {
-    isLogged,
-    loggedUser,
-    message,
-    format,
-  };
-};
+const mapStateToProps = ({
+  loginReducer: { isLogged, loggedUser },
+  messageReducer: { message, format },
+}) => ({
+  isLogged,
+  loggedUser,
+  message,
+  format,
+});
 
 export default connect(mapStateToProps)(PrivateRoute);

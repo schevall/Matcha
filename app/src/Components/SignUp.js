@@ -56,14 +56,11 @@ SignUpForm.defaultProps = {
   format: '',
 };
 
-const mapStateToProps = (state) => {
-  const { messageReducer } = state;
-  const { message, format } = messageReducer;
-
-  return {
-    message,
-    format,
-  };
-};
+const mapStateToProps = ({
+  messageReducer: { message, format },
+}) => ({
+  message,
+  format,
+});
 
 export default connect(mapStateToProps)(SignUpForm);
