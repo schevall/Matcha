@@ -7,13 +7,18 @@ import config from '../config/config';
 
 const signin = async (req, res) => {
   const { login, password } = req.body;
-  const usersCollection = Mongo.db.collection('users');
-  const user = await usersCollection.findOne({ login });
+  if (!login) {
+    return res.json({ field: 'errorLogin', error: 'Please fill the login field' }).end();
+  }
+  if (!password) {
+    return res.json({ field: 'errorPassword', error: 'Please fill the password field' }).end();
+  }
+  const user = await Mongo.db.collection('users').findOne({ login });
   if (!user) {
-    return res.json({ error: `This login (${login}) does not exist.` }).end();
+    return res.json({ field: 'errorLogin', error: `This login (${login}) does not exist.` }).end();
   }
   if (!User.compare_password(password, user.password)) {
-    return res.json({ error: 'The given password is incorrect.' }).end();
+    return res.json({ field:'errorPassword', error: 'The given password is incorrect.' }).end();
   }
   const token = jwt.sign({
     tokenUser: user.id}, config.secret, { expiresIn: '1h' });

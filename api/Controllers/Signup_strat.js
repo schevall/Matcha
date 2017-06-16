@@ -14,7 +14,7 @@ const signup = async (req, res) => {
 
   // extraction of info from request and verification that no user allready exist with that login
   const { login, email, password } = req.body;
-  const usersCollection = Mongo.db.collection('users');
+  const usersCollection = await Mongo.db.collection('users');
   const user = await usersCollection.findOne({ login });
 
   if (user) {

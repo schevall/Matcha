@@ -7,7 +7,6 @@ import UploadPicture from './UploadPicture'
 
 class Profile extends Component {
 
-
   render() {
     // console.log('in lobby, isLogged = ', isLogged);
     const { loggedUser } = this.props;

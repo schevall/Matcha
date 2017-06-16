@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { errorSendingBound, messageSendingBound } from '../Actions/messageBound';
+import { errorGeneralSendingBound, messageGeneralSendingBound } from '../Actions/MessageGeneral/messageGeneralBound';
 
 class SignUpForm extends Component {
 
@@ -21,9 +21,9 @@ class SignUpForm extends Component {
     })
     .then(({ data }) => {
       if (data.error) {
-        this.props.dispatch(errorSendingBound(data.error));
+        this.props.dispatch(errorGeneralSendingBound(data.error));
       } else {
-        this.props.dispatch(messageSendingBound('Your account has been created, please activate your email'));
+        this.props.dispatch(messageGeneralSendingBound('Your account has been created, please activate your email'));
       }
     });
   }
@@ -32,7 +32,7 @@ class SignUpForm extends Component {
     const { message } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
-        <h2>Welcome to Matcha</h2><br />
+        <h3>Welcome to Matcha</h3><br />
         <a href="/signin">To login</a>
         <h3>Subcription</h3><br />
         <input type="login" ref={(login) => { this.login = login; }} placeholder="Login*" required="true" /><br />

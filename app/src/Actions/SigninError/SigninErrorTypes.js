@@ -1,0 +1,2 @@
+export const SIGNIN_ERROR = 'SIGNIN_ERROR';
+export const ERASE_SIGNIN_ERROR = 'ERASE_SIGNIN_ERROR';

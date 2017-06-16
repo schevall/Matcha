@@ -2,19 +2,19 @@ import React from 'react';
 import jwtDecode from 'jwt-decode';
 import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { logoutBound } from './Actions/loginBound';
-import { errorSendingBound } from './Actions/messageBound';
+import { logoutBound } from './Actions/Login/loginBound.js';
+import { errorGeneralSendingBound } from './Actions/MessageGeneral/messageGeneralBound.js';
 
 const CheckExpToken = (isLogged, rest) => {
   // console.log('in private route rest = ', rest);
   // console.log('in private route isLogged = ', isLogged);
   if (!isLogged) {
-    rest.dispatch(errorSendingBound('Please login before trying to access lobby'));
+    rest.dispatch(errorGeneralSendingBound('Please login before trying to access lobby'));
     return false;
   }
   const token = localStorage.getItem('token');
   if (!token || token === 'undefined') {
-    rest.dispatch(errorSendingBound('No token provided to connect, please sign in'));
+    rest.dispatch(errorGeneralSendingBound('No token provided to connect, please sign in'));
     return false;
   }
   // console.log('token in private route', token);

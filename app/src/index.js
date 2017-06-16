@@ -1,17 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import loginReducer from './Reducers/loginReducer';
-import messageReducer from './Reducers/messageReducer';
-import MyRouter from './MyRouter';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-const rootReducer = combineReducers({
-  loginReducer,
-  messageReducer,
-});
+import rootReducer from './Reducers/indexReducer.js';
+import MyRouter from './MyRouter';
 
 const loggerMiddleware = createLogger();
 
@@ -23,8 +19,10 @@ const store = createStore(
   ));
 
 render(
-  <Provider store={store}>
-    <MyRouter />
-  </Provider>,
+  <MuiThemeProvider>
+    <Provider store={store}>
+      <MyRouter />
+    </Provider>
+  </MuiThemeProvider>,
 document.getElementById('root'),
 );
