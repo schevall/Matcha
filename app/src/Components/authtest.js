@@ -24,14 +24,14 @@ class authtest extends Component {
 
 
   render() {
-    const { loggedUser } = this.props;
-    const tokenUser = localStorage.getItem('loggedUser');
+    const { username } = this.props;
+    const tokenUser = localStorage.getItem('username');
     return (
       <div>
         <a href="/signin">back</a>
         <h2>Connected</h2>
-        <h3>Hello store loggedUser: {loggedUser}</h3>
-        <h3>Hello token loggedUser: {tokenUser}</h3>
+        <h3>Hello store username: {username}</h3>
+        <h3>Hello token username: {tokenUser}</h3>
         <button onClick={this.handleClick} type="submit">show me magic</button> <br />
         <Logout />
         {this.state && <p>{this.state.message}</p>}
@@ -43,10 +43,10 @@ class authtest extends Component {
 const mapStateToProps = (state) => {
   console.log('in authtest, state = ', state);
   const { loginReducer } = state;
-  const { loggedUser } = loginReducer;
+  const { username } = loginReducer;
 
   return {
-    loggedUser,
+    username,
   };
 };
 

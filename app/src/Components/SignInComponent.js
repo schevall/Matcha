@@ -14,12 +14,12 @@ const SignInComponent = props =>
     <Link to="/signup">{"Don't have an account yet ?"}</Link><br />
     <TextField
       style={style}
-      name="login"
-      hintText="login"
-      floatingLabelText="login"
-      value={props.login}
+      name="username"
+      hintText="username"
+      floatingLabelText="username"
+      value={props.username}
       onChange={props.handleChange}
-      errorText={props.errorLogin}
+      errorText={props.errorusername}
       required
     /><br />
     <TextField

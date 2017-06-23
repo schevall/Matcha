@@ -2,8 +2,8 @@ import * as T from '../Actions/Login/loginTypes';
 
 const initial = {
   loading: false,
-  isLogged: !!localStorage.getItem('token'),
-  loggedUser: localStorage.getItem('loggedUser'),
+  isLogged: !!localStorage.getItem('access_token'),
+  username: localStorage.getItem('username'),
   token: localStorage.getItem('token'),
   data: null,
 };
@@ -17,7 +17,7 @@ function loginReducer(state = initial, action) {
         loading: true,
         isLogged: false,
         token: '',
-        loggedUser: '',
+        username: '',
         data: action.data,
       };
     case T.LOGIN_FAILURE:
@@ -25,7 +25,7 @@ function loginReducer(state = initial, action) {
         loading: false,
         isLogged: false,
         token: '',
-        loggedUser: '',
+        username: '',
         data: null,
       };
     case T.LOGIN_SUCCESS:
@@ -33,14 +33,14 @@ function loginReducer(state = initial, action) {
         loading: false,
         isLogged: true,
         token: action.token,
-        loggedUser: action.loggedUser,
+        username: action.username,
         data: null,
       };
     case T.LOGOUT_REQUEST:
       return { ...state,
         loading: true,
         isLogged: true,
-        loggedUser: action.loggedUser,
+        username: action.username,
         token: action.token,
         data: null,
       };
@@ -48,7 +48,7 @@ function loginReducer(state = initial, action) {
       return { ...state,
         loading: false,
         isLogged: false,
-        loggedUser: '',
+        username: '',
         token: '',
         data: null,
       };

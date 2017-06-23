@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from './PrivateRoute.js';
 
-import NavBar from './Components/NavBar';
-import SignUpForm from './Components/SignUp';
-import SignInContainer from './Containers/SignInContainer';
-import Lobby from './Components/Lobby';
-import Suggestions from './Components/Suggestions';
-import MessageBarContainer from './Containers/MessageBarContainer';
-import Profile from './Components/Profile';
+import NavBar from './Components/NavBar.js';
+import SignUpForm from './Components/SignUp.js';
+import SignInContainer from './Containers/SignInContainer.js';
+import Lobby from './Components/Lobby.js';
+import Suggestions from './Components/Suggestions.js';
+import MessageBarContainer from './Containers/MessageBarContainer.js';
+import ProfileContainer from './Containers/ProfileContainer.js';
 
 
 const MyRouter = (props) => {
   console.log('in router props = ', props);
-  const { loggedUser, isLogged } = props;
+  const { username, isLogged } = props;
   const { messageObject } = props;
   const { SigninErrorObject } = props;
   return (
@@ -29,7 +29,7 @@ const MyRouter = (props) => {
           <Route exact path="/welcome" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
           <PrivateRoute exact path="/suggestions" props={props} component={Suggestions} />
-          <PrivateRoute exact path="/profile" props={props} component={Profile} />
+          <PrivateRoute exact path="/profile" props={props} component={ProfileContainer} />
           <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
         </Switch>
       </div>
@@ -38,25 +38,25 @@ const MyRouter = (props) => {
 };
 
 MyRouter.PropTypes = {
-  loggedUser: PropTypes.string,
+  username: PropTypes.string,
   isLogged: PropTypes.bool,
   messageObject: PropTypes.Object,
   SigninErrorObject: PropTypes.Object,
 };
 
 MyRouter.defaultProps = {
-  loggedUser: '',
+  username: '',
   isLogged: false,
   messageObject: null,
 };
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, loggedUser },
+  loginReducer: { isLogged, username },
   messageReducer: { messageObject },
   signinErrorReducer: { SigninErrorObject },
 }) => ({
   isLogged,
-  loggedUser,
+  username,
   messageObject,
   SigninErrorObject,
 });

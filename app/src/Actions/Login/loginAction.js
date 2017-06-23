@@ -5,7 +5,7 @@ function loginRequest(data) {
     type: T.LOGIN_REQUEST,
     loading: true,
     isLogged: false,
-    loggedUser: '',
+    username: '',
     token: '',
     data,
   };
@@ -16,7 +16,7 @@ function loginSuccess(data) {
     type: T.LOGIN_SUCCESS,
     loading: false,
     isLogged: true,
-    loggedUser: data.loggedUser,
+    username: data.username,
     token: data.token,
     data: null,
   };
@@ -27,18 +27,18 @@ function loginFailure() {
     type: T.LOGIN_FAILURE,
     loading: false,
     isLogged: false,
-    loggedUser: '',
+    username: '',
     token: '',
     data: null,
   };
 }
 
-function logoutRequest(token, loggedUser) {
+function logoutRequest(token, username) {
   return {
     type: T.LOGOUT_REQUEST,
     loading: true,
     isLogged: true,
-    loggedUser,
+    username,
     token,
     data: null,
   };
@@ -49,7 +49,7 @@ function logoutSuccess() {
     type: T.LOGOUT_SUCCESS,
     loading: false,
     isLogged: false,
-    loggedUser: '',
+    username: '',
     token: '',
     data: null,
   };

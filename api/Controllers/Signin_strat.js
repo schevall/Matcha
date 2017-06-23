@@ -6,23 +6,25 @@ import config from '../config/config';
 
 
 const signin = async (req, res) => {
-  const { login, password } = req.body;
-  if (!login) {
-    return res.json({ field: 'errorLogin', error: 'Please fill the login field' }).end();
+  console.log('in signin strat, re.body', req.body);
+  const { username, password } = req.body;
+
+  if (!username) {
+    return res.send({ error: 'errorusername', message: 'Please fill the username error' });
   }
   if (!password) {
-    return res.json({ field: 'errorPassword', error: 'Please fill the password field' }).end();
+    return res.send({ error: 'errorPassword', message: 'Please fill the password field' });
   }
-  const user = await Mongo.db.collection('users').findOne({ login });
-  if (!user) {
-    return res.json({ field: 'errorLogin', error: `This login (${login}) does not exist.` }).end();
+  const userdb = await Mongo.db.collection('users').findOne({ username });
+  if (!userdb) {
+    return res.send({ error: 'errorusername', message: `This username (${username}) does not exist.` });
   }
-  if (!User.compare_password(password, user.password)) {
-    return res.json({ field:'errorPassword', error: 'The given password is incorrect.' }).end();
+  if (!User.compare_password(password, userdb.password)) {
+    return res.send({ error:'errorPassword', message: 'The given password is incorrect.' });
   }
   const token = jwt.sign({
-    tokenUser: user.id}, config.secret, { expiresIn: '1h' });
-  return res.json({ token, loggedUser: user.login }).end();
+    tokenUser: userdb.id}, config.secret, { expiresIn: '3h' });
+  return res.send({ token, username });
 };
 
 export default signin;

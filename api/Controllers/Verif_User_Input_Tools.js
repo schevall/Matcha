@@ -1,10 +1,10 @@
-function veriflogin(login) {
-  if (!(login.length >= 4 && login.length <= 12)) {
-    return 'Login should be between 4 and 12 characters long.';
+function verifusername(username) {
+  if (!(username.length >= 4 && username.length <= 12)) {
+    return 'username should be between 4 and 12 characters long.';
   }
   const reg = /^[a-zA-Z0-9]+$/;
-  if (!login.match(reg)) {
-    return 'Login should contain only alphanumeric characters.';
+  if (!username.match(reg)) {
+    return 'username should contain only alphanumeric characters.';
   }
   return false;
 }
@@ -34,7 +34,7 @@ const VerifUserSignin = (req) => {
     message: [],
   };
   const error = [];
-  error.push(veriflogin(req.login));
+  error.push(verifusername(req.username));
   error.push(verifpasswd(req.password, req.password1));
   error.push(verifemail(req.email));
   error.forEach((item) => {

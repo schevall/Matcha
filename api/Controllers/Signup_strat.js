@@ -12,16 +12,16 @@ const signup = async (req, res) => {
     return res.json({ error: verif.message }).end();
   }
 
-  // extraction of info from request and verification that no user allready exist with that login
-  const { login, email, password } = req.body;
+  // extraction of info from request and verification that no user allready exist with that username
+  const { username, email, password } = req.body;
   const usersCollection = await Mongo.db.collection('users');
-  const user = await usersCollection.findOne({ login });
+  const user = await usersCollection.findOne({ username });
 
   if (user) {
-    return res.json({ error: 'This login already exists.' }).end();
+    return res.json({ error: 'This username already exists.' }).end();
   }
 
-  const newUser = User.create(login, email, password);
+  const newUser = User.create(username, email, password);
   await usersCollection.insertOne(newUser);
   return res.json({}).end();
 };

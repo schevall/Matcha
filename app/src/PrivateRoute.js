@@ -6,13 +6,13 @@ import { logoutBound } from './Actions/Login/loginBound.js';
 import { errorGeneralSendingBound } from './Actions/MessageGeneral/messageGeneralBound.js';
 
 const CheckExpToken = (isLogged, rest) => {
-  // console.log('in private route rest = ', rest);
-  // console.log('in private route isLogged = ', isLogged);
+  console.log('in private route rest = ', rest);
+  console.log('in private route isLogged = ', isLogged);
   if (!isLogged) {
     rest.dispatch(errorGeneralSendingBound('Please login before trying to access lobby'));
     return false;
   }
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access_token');
   if (!token || token === 'undefined') {
     rest.dispatch(errorGeneralSendingBound('No token provided to connect, please sign in'));
     return false;
@@ -44,11 +44,11 @@ const PrivateRoute = ({ component: Component, isLogged, ...rest }) => (
 );
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, loggedUser },
+  loginReducer: { isLogged, username },
   messageReducer: { message, format },
 }) => ({
   isLogged,
-  loggedUser,
+  username,
   message,
   format,
 });

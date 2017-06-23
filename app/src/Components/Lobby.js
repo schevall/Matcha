@@ -6,22 +6,22 @@ class Lobby extends Component {
 
 
   render() {
-    const { loggedUser } = this.props;
+    const { username } = this.props;
     // console.log('in lobby, isLogged = ', isLogged);
     return (
       <div>
-        <h2>Salut {loggedUser}</h2>
+        <h2>Salut {username}</h2>
       </div>
     );
   }
 }
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, loggedUser },
+  loginReducer: { isLogged, username },
   messageReducer: { message, format },
 }) => ({
   isLogged,
-  loggedUser,
+  username,
   message,
   format,
 });

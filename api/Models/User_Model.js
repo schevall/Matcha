@@ -11,25 +11,26 @@ class User {
   }
 
   static make_activationkey(nb) {
-    const table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!";
+    const table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!';
     const length = table.length;
     let out = '';
     for (let i = 0; i < nb; i++) {
       out += table.charAt(Math.floor(Math.random() * length));
     }
-    return out
+    return out;
   }
 
-  static create(login, email, password) {
+  static create(username, email, password) {
     let newpassword = this.make_hash(password);
     let activationkey = this.make_activationkey(24);
     return ({
-      login: login,
+      username,
       password: newpassword,
-      email: email,
-      activationkey: activationkey,
-    })
+      email,
+      activationkey,
+      photoUrl: [],
+    });
   }
 }
 
-export default User
+export default User;

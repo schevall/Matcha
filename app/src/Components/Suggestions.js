@@ -15,12 +15,12 @@ class Suggestions extends Component {
 
 const mapStateToProps = (state) => {
   const { loginReducer, messageReducer } = state;
-  const { isLogged, loggedUser } = loginReducer;
+  const { isLogged, username } = loginReducer;
   const { message, format } = messageReducer;
 
   return {
     isLogged,
-    loggedUser,
+    username,
     message,
     format,
   };

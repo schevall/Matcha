@@ -13,9 +13,9 @@ injectTapEventPlugin();
 class SignInContainer extends Component {
 
   state = {
-    login: '',
+    username: '',
     password: '',
-    errorLogin: '',
+    errorusername: '',
     errorPassword: '',
   };
 
@@ -23,15 +23,15 @@ class SignInContainer extends Component {
     // console.log('in SIGNIN CONT, NEXT PROPS =', nextProps);
     if (nextProps.SigninErrorObject) {
       this.setState({
-        [nextProps.SigninErrorObject.field]: nextProps.SigninErrorObject.error,
+        [nextProps.SigninErrorObject.error]: nextProps.SigninErrorObject.message,
       });
     }
   }
 
   requestLogin = (e) => {
     e.preventDefault();
-    const { login, password } = this.state;
-    const input = { login, password };
+    const { username, password } = this.state;
+    const input = { username, password };
     this.props.dispatch(SigninErrorEraseBound());
     this.props.dispatch(loginBound(input));
   };
@@ -39,8 +39,8 @@ class SignInContainer extends Component {
   saveState = (e) => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
-    if (e.target.name === 'login' && this.state.errorLogin) {
-      this.setState({ errorLogin: '' });
+    if (e.target.name === 'username' && this.state.errorusername) {
+      this.setState({ errorusername: '' });
     }
     if (e.target.name === 'password' && this.state.errorPassword) {
       this.setState({ errorPassword: '' });
@@ -53,9 +53,9 @@ class SignInContainer extends Component {
       isLogged ?
         <Redirect to="/" /> :
         <SignInComponent
-          login={this.state.login}
+          username={this.state.username}
           password={this.state.password}
-          errorLogin={this.state.errorLogin}
+          errorusername={this.state.errorusername}
           errorPassword={this.state.errorPassword}
           handleChange={this.saveState}
           handleSubmit={this.requestLogin}
