@@ -9,7 +9,6 @@ import NavBar from './Components/NavBar.js';
 import SignUpForm from './Components/SignUp.js';
 import SignInContainer from './Containers/SignInContainer.js';
 import Lobby from './Components/Lobby.js';
-import Suggestions from './Components/Suggestions.js';
 import MessageBarContainer from './Containers/MessageBarContainer.js';
 import ProfileContainer from './Containers/ProfileContainer.js';
 
@@ -28,7 +27,6 @@ const MyRouter = (props) => {
           <Route exact path="/signup" component={SignUpForm} />
           <Route exact path="/welcome" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
-          <PrivateRoute exact path="/suggestions" props={props} component={Suggestions} />
           <PrivateRoute exact path="/profile" props={props} component={ProfileContainer} />
           <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
         </Switch>

@@ -18,14 +18,19 @@ const CheckExpToken = (isLogged, rest) => {
     return false;
   }
   // console.log('token in private route', token);
-  const decode = jwtDecode(token);
-  // console.log('in CheckExpToken, token = ', decode);
-  // console.log('in CheckExpToken, date now = ', Date.now() / 1000);
-  if (Date.now() / 1000 > decode.exp) {
+  try {
+    const decode = jwtDecode(token);
+    // console.log('in CheckExpToken, token = ', decode);
+    // console.log('in CheckExpToken, date now = ', Date.now() / 1000);
+    if (Date.now() / 1000 > decode.exp) {
+      rest.dispatch(logoutBound('Please connect again, your session has expired'));
+      return false;
+    }
+    return true;
+  } catch (e) {
     rest.dispatch(logoutBound('Please connect again, your session has expired'));
     return false;
   }
-  return true;
 };
 
 const PrivateRoute = ({ component: Component, isLogged, ...rest }) => (

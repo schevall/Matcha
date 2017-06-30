@@ -12,7 +12,7 @@ class UploadPictureContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: props.user,
+      username: props.username
     };
   }
 
@@ -23,7 +23,7 @@ class UploadPictureContainer extends Component {
 
 
   handleImageUpload = (file) => {
-    const url = `/profile/upload/${this.state.user}`;
+    const url = `/users/${this.state.username}/upload`;
     const formData = new FormData();
     console.log('in upload front, file =', file);
     formData.append('imageUploaded', file);
@@ -45,7 +45,7 @@ class UploadPictureContainer extends Component {
     return (
       <div>
         <div className="FileUpload">
-          <h4>photo of {this.state.user}</h4>
+          <h4>photo of {this.state.username}</h4>
           <Dropzone
             multiple={false}
             accept="image/*"

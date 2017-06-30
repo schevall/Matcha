@@ -6,7 +6,7 @@ function loginRequest(data) {
     loading: true,
     isLogged: false,
     username: '',
-    token: '',
+    access_token: '',
     data,
   };
 }
@@ -17,7 +17,7 @@ function loginSuccess(data) {
     loading: false,
     isLogged: true,
     username: data.username,
-    token: data.token,
+    access_token: data.token,
     data: null,
   };
 }
@@ -28,18 +28,18 @@ function loginFailure() {
     loading: false,
     isLogged: false,
     username: '',
-    token: '',
+    access_token: '',
     data: null,
   };
 }
 
-function logoutRequest(token, username) {
+function logoutRequest(accessToken, username) {
   return {
     type: T.LOGOUT_REQUEST,
     loading: true,
     isLogged: true,
     username,
-    token,
+    access_token: accessToken,
     data: null,
   };
 }
@@ -50,7 +50,7 @@ function logoutSuccess() {
     loading: false,
     isLogged: false,
     username: '',
-    token: '',
+    access_token: '',
     data: null,
   };
 }

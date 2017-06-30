@@ -11,9 +11,9 @@ class ProfileContainer extends Component {
     const { username } = this.props;
     return (
       <div>
-        <ProfileCardComponent user={username} />
-        <UploadPictureContainer user={username} />
-        <GalleryContainer user={username} />
+        <ProfileCardComponent username={username} />
+        <UploadPictureContainer username={username} />
+        <GalleryContainer username={username} />
       </div>
     );
   }

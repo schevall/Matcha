@@ -5,7 +5,7 @@ import React from 'react';
 const ProfileCardComponent = props => (
 
   <div>
-    <h3>{props.user}</h3>
+    <h3>{props.username}</h3>
   </div>
 );
 

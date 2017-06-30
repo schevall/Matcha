@@ -21,7 +21,7 @@ Mongo.connect();
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
-app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.json({ limit: '5mb' }));
 
 routes(app, upload);
 
