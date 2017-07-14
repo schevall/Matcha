@@ -1,48 +1,61 @@
 import React, { Component } from 'react';
-import GalleryComponent from '../Components/GalleryComponent.js';
-import PhotoComponent from '../Components/PhotoComponent.js';
-import secureAxios from '../secureAxios.js';
+import { connect } from 'react-redux';
+import UploadPictureComponent from '../Components/UploadPictureComponent.js';
+import GalleryDisplayComponent from '../Components/GalleryDisplayComponent.js';
 
 class GalleryContainer extends Component {
 
   constructor(props) {
-    console.log(props);
     super(props);
     this.state = {
-      username: { props },
-      numberOfPictures: 0,
-      pictures: [],
+      username: props.username,
+      picturesNb: 0,
+      picturesPath: [],
+      profilePicturePath: '',
+      errorUpload: '',
     };
   }
 
-  componentDidMount = () => {
-    const username = this.state;
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      username: nextProps.username,
+      picturesNb: nextProps.picturesNb,
+      picturesPath: nextProps.picturesPath,
+    });
+  }
 
-    console.log('component did mount galeery');
-    // secureAxios('/user/pictures/nb', 'GET')
-    //   .then(({ data }) => {
-    //     console.log('resp in galerry container nb', data);
-    //     this.setState({
-    //       numberOfPictures: { data },
-    //     });
-    //   });
-    secureAxios('/users/pictures/getall', 'GET')
-      .then(({ data }) => {
-        console.log('resp in galerry container data', data);
-        this.setState({
-          pictures: data,
-        });
-        // console.log('in gallery state = ', this.state.pictures);
-      });
+  handleonImageDrop = (files) => {
+    this.props.handleImageUpload(files[0]);
   }
 
   render() {
-    const username = this.state.username;
-    const pictures = this.state.pictures;
+    const { picturesPath, username, picturesNb } = this.state;
     return (
-      <PhotoComponent photo={pictures} />
+      <div className="gallery_container">
+        Gallery
+        <div className="gallery_display_container">
+          <GalleryDisplayComponent
+            picturesPath={picturesPath}
+            picturesNb={picturesNb}
+            username={username}
+            handleRemove={this.props.handleRemove}
+            handleFavorite={this.props.handleFavorite}
+          />
+          <UploadPictureComponent
+            picturesNb={picturesNb}
+            handleonImageDrop={this.handleonImageDrop}
+          />
+        </div>
+      </div>
     );
   }
 }
 
-export default GalleryContainer;
+const mapStateToProps = ({
+  messageReducer: { message, format },
+}) => ({
+  message,
+  format,
+});
+
+export default connect(mapStateToProps)(GalleryContainer);

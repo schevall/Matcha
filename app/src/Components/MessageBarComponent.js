@@ -1,10 +1,13 @@
 import React from 'react';
+import Alert from 'react-bootstrap/lib/Alert';
 
 const MessageBarComponent = props => (
 
     props.message ?
-      <p className={props.format}>{props.message}</p> :
-      null
+      <Alert className="MessageBar" bsStyle={props.format}>
+        <strong>{props.message}</strong>
+      </Alert>
+    : null
 
 );
 

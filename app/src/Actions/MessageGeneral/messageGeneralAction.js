@@ -3,7 +3,7 @@ import * as T from './messageGeneralTypes';
 function messageGeneralSending(message) {
   return {
     type: T.MESSAGE_GENERAL_SENT,
-    format: 'MessageBarSuccess',
+    format: 'info',
     message,
   };
 }
@@ -11,7 +11,7 @@ function messageGeneralSending(message) {
 function errorGeneralSending(message) {
   return {
     type: T.ERROR_GENERAL_SENT,
-    format: 'MessageBarError',
+    format: 'danger',
     message,
   };
 }

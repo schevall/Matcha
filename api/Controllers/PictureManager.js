@@ -3,85 +3,119 @@ import sharp from 'sharp';
 import path from 'path';
 import Mongo from '../config/MongoConnection';
 
+const initprofile = async (req, res) => {
+  console.log('in initprofile');
+  const { username } = req.headers;
+  const usercollection = await Mongo.db.collection('users');
+  const userdb = await usercollection.findOne({ username });
+
+  if (!userdb) {
+    return res.send({ error: 'initprofile', message: 'No user found' }).end();
+  }
+
+  const userbox = userdb;
+  userbox.password = '';
+  userbox.picturesNb = Object.keys(userdb.photoUrl).length ?
+  Object.keys(userdb.photoUrl).length : 0;
+
+  return res.send({ userbox });
+};
 
 const nbVerif = async (req, res, next) => {
-  console.log('in verif picture, headers', req.headers);
   const { username } = req.headers;
-  console.log('in verif picture, username', username);
-  const userdb = await Mongo.db.collection('users').findOne({ username });
+  const usercollection = await Mongo.db.collection('users');
+  const userdb = await usercollection.findOne({ username });
+
   if (!userdb) {
     return res.send({ error: 'pictureNbVerif', message: 'No user found' });
   }
-  console.log('in verif, user data', userdb);
+
   const numberOfPictures = Object.keys(userdb.photoUrl).length;
   if (numberOfPictures >= 6) {
     return res.send({ error: 'pictureNbVerif', message: 'You have reach the maximum of photos' });
   }
-  req.headers.numberOfPictures = numberOfPictures;
   return next();
 };
 
-const upload = async (req, res) => {
-  const { file } = req.file;
-  const { username, numberOfPictures } = req.headers;
-
+const remove = async (req, res) => {
+  const { username } = req.headers;
   const usercollection = await Mongo.db.collection('users');
   const userdb = await usercollection.findOne({ username });
+
+  if (!userdb) {
+    return res.send({ error: 'removePicture', message: 'No user found' }).end();
+  }
+  const { fileName } = req.body;
+  const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
+  const pathToErase = path.join(UserDirFullPath, fileName);
+  if (!fs.existsSync(pathToErase)) {
+    return res.send({ error: 'removePicture', message: 'Something went wrong while deleting a picture' });
+  }
+
+  fs.unlinkSync(pathToErase);
+  console.log('api, fileName = ', fileName);
+  await usercollection.update(
+    { username },
+    { $pull: { photoUrl: `${fileName}` } });
+  const picturesNb = userdb.photoUrl.length - 1;
+  if (path.basename(userdb.profilePicturePath) === fileName) {
+    await usercollection.update(
+      { username },
+      { $set: { profilePicturePath: '/static/icons/ic_face_black_36dp_2x.png' } });
+  }
+  return res.send({ error: '', fileName, picturesNb });
+};
+
+const favorite = async (req, res) => {
+  const { username } = req.headers;
+  const usercollection = await Mongo.db.collection('users');
+  const userdb = await usercollection.findOne({ username });
+
+  if (!userdb) {
+    return res.send({ error: 'favoritePicture', message: 'No user found' }).end();
+  }
+
+  const { fileName } = req.body;
+  const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
+  const pathToFavorite = path.join(UserDirFullPath, fileName);
+  if (!fs.existsSync(pathToFavorite)) {
+    return res.send({ error: 'favoritePicture', message: 'Something went wrong while faving this picture' });
+  }
+
+  const profilePicturePath = `/static/${username}/${fileName}`;
+  await usercollection.updateOne(
+    { username },
+    { $set: { profilePicturePath } });
+  return res.send({ error: '', profilePicturePath });
+};
+
+const upload = async (req, res) => {
+  const { file } = req;
+  const { username } = req.headers;
+  const usercollection = await Mongo.db.collection('users');
+  const userdb = await usercollection.findOne({ username });
+
   if (!userdb) {
     fs.unlinkSync(file);
     return res.send({ error: 'upload error', message: 'User not found in db' });
   }
 
-  const userdir = `./uploads/${username}`;
-  if (!fs.existsSync(userdir)) {
-    fs.mkdirSync(userdir);
+  const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
+  if (!fs.existsSync(UserDirFullPath)) {
+    fs.mkdirSync(UserDirFullPath);
   }
   const time = new Date().getTime() / 1000;
-  const newname = `${time}_${username}`;
-  const newpath = `${userdir}/${newname}.jpeg`;
+  const newname = `${time}_${username}.jpeg`;
+  const oldpath = path.join(path.normalize(`${__dirname}/..`), `${file.destination}/`, `${file.filename}`);
 
-  await sharp(file).resize(240, 320).toFile(newpath);
-  fs.unlinkSync(`./${file}`);
+  await sharp(oldpath).resize(200, 200).toFile(`./uploads/${username}/${newname}`);
+  fs.unlinkSync(oldpath);
 
   await usercollection.updateOne(
     { username },
-    { $push: {
-      photoUrl: newpath } });
-  return res.send({ error: '', newpath, numberOfPictures });
+    { $push: { photoUrl: newname } });
+  const picturesNb = userdb.photoUrl.length + 1;
+  return res.send({ error: '', fileName: newname, picturesNb });
 };
 
-const getAll = async (req, res, next) => {
-  const { username } = req.headers;
-  console.log('in getall username =', username);
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-  if (!userdb) {
-    return res.send({ error: 'get all Pictures', message: 'No user provided' });
-  }
-  const dirname = path.resolve(__dirname, `../uploads/${username}/`);
-  console.log('dirname', dirname);
-  if (!fs.existsSync(dirname)) {
-    console.log(fs.existsSync(dirname));
-    return res.send({ error: 'get all Pictures', message: 'No pictures' });
-  }
-
-  const pack = [];
-  fs.readdir(dirname, function(err, items) {
-    console.log(items);
-
-    for (let i = 0; i < items.length; i += 1) {
-      console.log(items[i]);
-      pack.push(`${dirname}/${items[i]}`);
-    }
-    console.log('pack', pack[1]);
-    const img = new Buffer(pack[1], 'base64');
-
-    res.writeHead(200, {
-      'Content-Type': 'image/png',
-      'Content-Length': img.length,
-    });
-    res.end(img);
-  });
-};
-
-export { nbVerif, upload, getAll };
+export { nbVerif, upload, initprofile, remove, favorite };

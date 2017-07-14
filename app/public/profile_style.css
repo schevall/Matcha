@@ -1,0 +1,114 @@
+.profile_page_container {
+  margin: 30px;
+}
+
+.progress {
+  width: 80%;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.profile_container {
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.profile_container_sub {
+  display: flex;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.profile_container_sub1 {
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.profile_container_sub2 {
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+
+.profile_binfo_container {
+  width: 200px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.profile_picture_container {
+  margin: 10px;
+  width: 200px;
+  height: 200px;
+}
+
+.bio_container {
+  margin: 20px 0;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.gallery_container{
+  box-sizing: border-box;
+  margin-top: 20px;
+  padding-top: 20px;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  border-radius: 2px;
+}
+
+.gallery_display_container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.gallery_pictures_container {
+    position: relative;
+    display: inline-flex;
+    margin: 20px;
+}
+
+.delete_button {
+  position: absolute;
+  background-color: Transparent;
+  border: none;
+  right: 0px;
+  bottom: 0px;
+  padding: 0;
+}
+
+.favorite_button {
+  position: absolute;
+  background-color: Transparent;
+  border: none;
+  left: 0px;
+  top: 0px;
+  padding: 0;
+}
+
+.upload_picture_container {
+  display: flex;
+  justify-content: center;
+}
+
+.dropzone {
+  margin: 20px;
+  border-style: solid;
+  border-width: medium;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.material-icons.orange600 { color: #FB8C00; }
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }

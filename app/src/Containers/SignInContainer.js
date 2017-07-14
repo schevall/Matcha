@@ -2,20 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import { loginBound } from '../Actions/Login/loginBound.js';
 import { SigninErrorEraseBound } from '../Actions/SigninError/SigninErrorBound.js';
 import SignInComponent from '../Components/SignInComponent.js';
-
-injectTapEventPlugin();
 
 class SignInContainer extends Component {
 
   state = {
     username: '',
     password: '',
-    errorusername: '',
+    errorUsername: '',
     errorPassword: '',
   };
 
@@ -40,7 +37,7 @@ class SignInContainer extends Component {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
     if (e.target.name === 'username' && this.state.errorusername) {
-      this.setState({ errorusername: '' });
+      this.setState({ errorUsername: '' });
     }
     if (e.target.name === 'password' && this.state.errorPassword) {
       this.setState({ errorPassword: '' });
@@ -55,7 +52,7 @@ class SignInContainer extends Component {
         <SignInComponent
           username={this.state.username}
           password={this.state.password}
-          errorusername={this.state.errorusername}
+          errorUsername={this.state.errorUsername}
           errorPassword={this.state.errorPassword}
           handleChange={this.saveState}
           handleSubmit={this.requestLogin}

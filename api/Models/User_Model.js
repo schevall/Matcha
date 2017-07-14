@@ -2,33 +2,47 @@ import bcrypt from 'bcrypt-nodejs';
 
 class User {
 
-  static make_hash(password) {
+  static makeHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
   }
 
-  static compare_password(password, dbpassword) {
+  static comparePassword(password, dbpassword) {
     return bcrypt.compareSync(password, dbpassword);
   }
 
-  static make_activationkey(nb) {
+  static makeActivationkey(nb) {
     const table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!';
     const length = table.length;
     let out = '';
-    for (let i = 0; i < nb; i++) {
+    for (let i = 0; i < nb; i += 1) {
       out += table.charAt(Math.floor(Math.random() * length));
     }
     return out;
   }
 
-  static create(username, email, password) {
-    let newpassword = this.make_hash(password);
-    let activationkey = this.make_activationkey(24);
+  static create(username, email, password, age, gender) {
+    const newpassword = this.makeHash(password);
+    const activationkey = this.makeActivationkey(24);
     return ({
       username,
+      age,
+      gender,
       password: newpassword,
       email,
       activationkey,
+      logged: false,
+      lastConnection: '',
       photoUrl: [],
+      profilePicturePath: '/static/icons/ic_face_black_36dp_2x.png',
+      orient: 'Bisexual',
+      popularite: '',
+      firstname: '',
+      lastname: '',
+      geo: '',
+      tags: [],
+      likedby: [],
+      liketo: [],
+      notification: [],
     });
   }
 }

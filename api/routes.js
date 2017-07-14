@@ -12,8 +12,10 @@ const routes = (app, upload) => {
 
   app.use('/api', authControl);
 
-  app.post('/api/users/:username/upload', Pictures.nbVerif, upload.single('imageUploaded'), Pictures.upload);
-  app.get('/api/users/pictures/getall', Pictures.getAll);
+  app.post('/api/users/upload', Pictures.nbVerif, upload.single('imageUploaded'), Pictures.upload);
+  app.post('/api/users/removepicture', Pictures.remove);
+  app.post('/api/users/favoritepicture', Pictures.favorite);
+  app.get('/api/users/initprofile', Pictures.initprofile);
 };
 
 export default routes;

@@ -10,20 +10,20 @@ const signin = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username) {
-    return res.send({ error: 'errorusername', message: 'Please fill the username error' });
+    return res.send({ error: 'errorUsername', message: 'Please fill the username error' });
   }
   if (!password) {
     return res.send({ error: 'errorPassword', message: 'Please fill the password field' });
   }
   const userdb = await Mongo.db.collection('users').findOne({ username });
   if (!userdb) {
-    return res.send({ error: 'errorusername', message: `This username (${username}) does not exist.` });
+    return res.send({ error: 'errorUsername', message: `This username (${username}) does not exist.` });
   }
-  if (!User.compare_password(password, userdb.password)) {
-    return res.send({ error:'errorPassword', message: 'The given password is incorrect.' });
+  if (!User.comparePassword(password, userdb.password)) {
+    return res.send({ error: 'errorPassword', message: 'The given password is incorrect.' });
   }
   const token = jwt.sign({
-    tokenUser: userdb.id}, config.secret, { expiresIn: '3h' });
+    tokenUser: userdb.id }, config.secret, { expiresIn: '3h' });
   return res.send({ token, username });
 };
 

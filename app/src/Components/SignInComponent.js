@@ -19,7 +19,7 @@ const SignInComponent = props =>
       floatingLabelText="username"
       value={props.username}
       onChange={props.handleChange}
-      errorText={props.errorusername}
+      errorText={props.errorUsername}
       required
     /><br />
     <TextField

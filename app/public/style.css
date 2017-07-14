@@ -15,10 +15,17 @@
     background-color: #5692B8;
 }
 
-.MessageBarError {
-  background-color: red;
+.signup_container {
+  margin: auto;
+  margin-top: 25px;
+  padding: 20px;
+  width: 80%;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 
-.MessageBarSuccess {
-  background-color: green;
+.MessageBar {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
 }

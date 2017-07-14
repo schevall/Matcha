@@ -1,50 +1,67 @@
 function verifusername(username) {
-  if (!(username.length >= 4 && username.length <= 12)) {
-    return 'username should be between 4 and 12 characters long.';
+  if (!(username.length >= 4 && username.length <= 20)) {
+    const message = 'Username should be between 4 and 20 characters long.';
+    const error = { error: 'errorUsername', message };
+    return error;
   }
   const reg = /^[a-zA-Z0-9]+$/;
   if (!username.match(reg)) {
-    return 'username should contain only alphanumeric characters.';
+    const message = 'Username should contain only alphanumeric characters.';
+    const error = { error: 'errorUsername', message };
+    return error;
   }
-  return false;
+  return null;
 }
 
-function verifpasswd(password, password1) {
-  if (password !== password1) {
-    return 'The passwords given are differents.';
+function verifpasswd(password, password2) {
+  if (password !== password2) {
+    const message = 'The passwords given are differents.';
+    const error = { error: 'errorPassword2', message };
+    return error;
   }
   const reg = /^(?=.*[0-9])[a-zA-Z0-9]{6,24}$/;
   if (!password.match(reg)) {
-    return 'Password should contain at least 1 digit and 1 letter and be between 6 and 24 characters long.';
+    const message = 'Password should contain at least 1 digit and 1 letter and be between 6 and 24 characters long.';
+    const error = { error: 'errorPassword', message };
+    return error;
   }
-  return false;
+  return null;
 }
 
 function verifemail(email) {
   const reg = /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
   if (!email.match(reg)) {
-    return 'The given email is invalid';
+    const message = 'The given email is invalid';
+    const error = { error: 'errorEmail', message };
+    return error;
   }
-  return false;
+  return null;
+}
+
+function verifage(age) {
+  if (age < 18) {
+    const message = 'You must be at least 18 years old, come back later !';
+    const error = { error: 'errorAge', message };
+    return error;
+  }
+  return null;
 }
 
 const VerifUserSignin = (req) => {
   const verif = {
-    success: false,
-    message: [],
+    success: true,
+    output: [],
   };
-  const error = [];
-  error.push(verifusername(req.username));
-  error.push(verifpasswd(req.password, req.password1));
-  error.push(verifemail(req.email));
-  error.forEach((item) => {
+
+  verif.output.push(verifusername(req.username));
+  verif.output.push(verifpasswd(req.password, req.password2));
+  verif.output.push(verifemail(req.email));
+  verif.output.push(verifage(req.age));
+  verif.output.forEach((item) => {
     if (item) {
-      verif.message.push(item);
+      verif.success = false;
     }
   });
-  if (verif.message.length === 0) {
-    verif.success = true;
-  }
   return (verif);
 };
 

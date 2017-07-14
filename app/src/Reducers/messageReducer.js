@@ -13,13 +13,13 @@ function messageReducer(state = initial, action) {
     case T.MESSAGE_GENERAL_SENT:
       return { ...state,
         messageObject: {
-          format: 'MessageBarSuccess',
+          format: 'info',
           message: action.message,
         } };
     case T.ERROR_GENERAL_SENT:
       return { ...state,
         messageObject: {
-          format: 'MessageBarError',
+          format: 'danger',
           message: action.message,
         } };
     case T.ERASE_GENERAL_MESSAGE:
