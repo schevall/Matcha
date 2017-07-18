@@ -1,32 +1,20 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+
 import secureAxios from '../secureAxios.js';
-import ProfileCardContainer from './ProfileCardContainer.js';
+import MyProfileCardComponent from '../Components/MyProfileCardComponent.js';
 import ProgressBarComponent from '../Components/ProgressBarComponent.js';
 import GalleryContainer from './GalleryContainer.js';
-import * as M from '../Actions/MessageGeneral/messageGeneralBound';
 
 class MyProfileContainer extends Component {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      username: props.username,
-      picturesNb: 0,
-      picturesPath: [],
-      profilePicturePath: '/static/icons/ic_face_black_36dp_2x.png',
-      gender: null,
-      orient: 'Bisexual',
-      popularity: '',
-      firstname: '',
-      lastname: '',
-      email: '',
-      bio: '',
-      geo: '',
-      tags: [],
-      likedby: [],
-      liketo: [],
-      notification: [],
+      loaded: false,
     };
   }
 
@@ -38,6 +26,8 @@ class MyProfileContainer extends Component {
           console.log('error with getnbofpictures');  //  to change
         } else {
           this.setState({
+            loaded: true,
+            username: data.userbox.username,
             picturesNb: data.userbox.picturesNb,
             picturesPath: data.userbox.photoUrl,
             profilePicturePath: data.userbox.profilePicturePath,
@@ -55,6 +45,10 @@ class MyProfileContainer extends Component {
           });
         }
       });
+  }
+
+  handleModifyInfo = (field) => {
+
   }
 
   handleFavorite = (fileName) => {
@@ -76,7 +70,9 @@ class MyProfileContainer extends Component {
   handleRemove = (fileName) => {
     const fileNamePath = `/static/${this.state.username}/${fileName}`;
     if (fileNamePath === this.state.profilePicturePath) {
-      this.props.dispatch(M.errorGeneralSendingBound("You can't erase your profile picture !"));
+      this.props.dispatch(
+        Notifications.error({ title: "You can't erase your profile picture !" }),
+      );
       return;
     }
     const url = '/users/removepicture';
@@ -115,33 +111,57 @@ class MyProfileContainer extends Component {
   }
 
   render() {
-    // console.log('in lobby, isLogged = ', isLogged)
+    if (!this.state.loaded) {
+      return null;
+    }
     const { picturesNb, picturesPath, username } = this.state;
+    const { isLogged } = this.props;
     const completionProgress = '100%';
     return (
-      <div className="profile_page_container">
-        <ProgressBarComponent completionProgress={completionProgress} />
-        <ProfileCardContainer userbox={this.state} />
-        <GalleryContainer
-          username={username}
-          picturesNb={picturesNb}
-          picturesPath={picturesPath}
-          handleFavorite={this.handleFavorite}
-          handleRemove={this.handleRemove}
-          handleImageUpload={this.handleImageUpload}
-        />
-      </div>
+      !isLogged ?
+        <Redirect to="/signin" /> :
+        <div className="profile_page_container">
+          <ProgressBarComponent completionProgress={completionProgress} />
+          <MyProfileCardComponent
+            handleModifyInfo={this.handleModifyInfo}
+            userInfo={this.state}
+          />
+          <GalleryContainer
+            username={username}
+            picturesNb={picturesNb}
+            picturesPath={picturesPath}
+            handleFavorite={this.handleFavorite}
+            handleRemove={this.handleRemove}
+            handleImageUpload={this.handleImageUpload}
+          />
+        </div>
     );
   }
 }
 
+MyProfileContainer.PropTypes = {
+  username: PropTypes.string,
+  isLogged: PropTypes.bool,
+  activated: PropTypes.bool,
+  completion: PropTypes.digit,
+  notifications: PropTypes.Object,
+};
+
+MyProfileContainer.defaultProps = {
+  username: '',
+  isLogged: false,
+  activated: false,
+  completion: 0,
+  notifications: null,
+};
+
+
 const mapStateToProps = ({
   loginReducer: { isLogged, username },
-  messageReducer: { message, format },
+  notifications,
 }) => ({
   isLogged,
   username,
-  message,
-  format,
+  notifications,
 });
 export default connect(mapStateToProps)(MyProfileContainer);

@@ -3,6 +3,8 @@ import * as T from './loginTypes';
 function loginRequest(data) {
   return {
     type: T.LOGIN_REQUEST,
+    activated: null,
+    completion: null,
     loading: true,
     isLogged: false,
     username: '',
@@ -14,6 +16,8 @@ function loginRequest(data) {
 function loginSuccess(data) {
   return {
     type: T.LOGIN_SUCCESS,
+    activated: data.activated,
+    completion: data.completion,
     loading: false,
     isLogged: true,
     username: data.username,
@@ -25,6 +29,8 @@ function loginSuccess(data) {
 function loginFailure() {
   return {
     type: T.LOGIN_FAILURE,
+    activated: null,
+    completion: null,
     loading: false,
     isLogged: false,
     username: '',
@@ -36,6 +42,8 @@ function loginFailure() {
 function logoutRequest(accessToken, username) {
   return {
     type: T.LOGOUT_REQUEST,
+    activated: null,
+    completion: null,
     loading: true,
     isLogged: true,
     username,
@@ -47,6 +55,8 @@ function logoutRequest(accessToken, username) {
 function logoutSuccess() {
   return {
     type: T.LOGOUT_SUCCESS,
+    activated: null,
+    completion: null,
     loading: false,
     isLogged: false,
     username: '',

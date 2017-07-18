@@ -6,7 +6,7 @@ class Logout extends Component {
 
   onLogout = () => {
     // console.log('in lougout event this props = ', this.props);
-    this.props.dispatch(logoutBound('You have been successfully disconnected'));
+    this.props.dispatch(logoutBound({ title: 'You have been successfully disconnected' }));
   };
 
   render() {
@@ -18,10 +18,9 @@ class Logout extends Component {
 }
 
 const mapStateToProps = ({
-  messageReducer: { message, format },
+  notifications,
 }) => ({
-  message,
-  format,
+  notifications,
 });
 
 export default connect(mapStateToProps)(Logout);

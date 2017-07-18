@@ -38,10 +38,17 @@ function verifemail(email) {
   return null;
 }
 
-function verifage(age) {
+function verifage(dateString) {
+  const today = new Date();
+  const birthDate = new Date(dateString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
   if (age < 18) {
     const message = 'You must be at least 18 years old, come back later !';
-    const error = { error: 'errorAge', message };
+    const error = { error: 'errorBirthDate', message };
     return error;
   }
   return null;
@@ -56,7 +63,7 @@ const VerifUserSignin = (req) => {
   verif.output.push(verifusername(req.username));
   verif.output.push(verifpasswd(req.password, req.password2));
   verif.output.push(verifemail(req.email));
-  verif.output.push(verifage(req.age));
+  verif.output.push(verifage(req.birthDate));
   verif.output.forEach((item) => {
     if (item) {
       verif.success = false;

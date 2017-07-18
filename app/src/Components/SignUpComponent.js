@@ -64,6 +64,7 @@ const SignUpComponent = props =>
         floatingLabelText="Gender"
         value={props.gender}
         onChange={props.handleGenderChange}
+        required
       >
         <MenuItem value={1} primaryText="Male" />
         <MenuItem value={2} primaryText="Female" />
@@ -80,6 +81,7 @@ const SignUpComponent = props =>
         value={props.birthDate}
         onChange={props.handleDateChange}
         errorText={props.errorBirthDate}
+        required
       />
 
       <RaisedButton

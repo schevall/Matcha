@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
-import loginReducer from './loginReducer';
-import messageReducer from './messageReducer';
-import signinErrorReducer from './signinErrorReducer';
+import { reducer as notifications } from 'react-notification-system-redux';
+import loginReducer from './loginReducer.js';
+import signinErrorReducer from './signinErrorReducer.js';
+
 
 const rootReducer = combineReducers({
   loginReducer,
-  messageReducer,
   signinErrorReducer,
+  notifications,
 });
 
 export default rootReducer;

@@ -20,12 +20,14 @@ class User {
     return out;
   }
 
-  static create(username, email, password, age, gender) {
+  static create(username, email, password, birthDate, gender) {
     const newpassword = this.makeHash(password);
     const activationkey = this.makeActivationkey(24);
     return ({
+      activated: false,
+      completion: 0,
       username,
-      age,
+      birthDate,
       gender,
       password: newpassword,
       email,

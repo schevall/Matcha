@@ -16,26 +16,18 @@
 
 .profile_container_sub {
   display: flex;
-  box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
-
-.profile_container_sub1 {
-  box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-}
-
-.profile_container_sub2 {
-  box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-}
-
 
 .profile_binfo_container {
-  width: 200px;
   padding: 10px;
   margin-bottom: 10px;
   box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.profile_allinfo_container {
+  padding: 10px;
+  margin-bottom: 10px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 

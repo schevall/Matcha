@@ -2,24 +2,26 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Notifications from 'react-notification-system-redux';
 
-import { messageGeneralSendingBound } from '../Actions/MessageGeneral/messageGeneralBound';
 import SignupComponent from '../Components/SignUpComponent.js';
+import myGeolocate from '../ToolBox/myGeolocate.js';
 
 class SignUpContainer extends Component {
 
   state = {
-    username: '',
-    password: '',
-    password2: '',
-    email: '',
+    username: 'schevall',
+    password: 'Patata11',
+    password2: 'Patata11',
+    email: 'sim.chvll@gmail.com',
     birthDate: null,
     gender: '',
-    genderValue: '',
+    genderValue: 'Male',
     errorUsername: '',
     errorPassword: '',
     errorPassword2: '',
     errorEmail: '',
+    errorEmail2: '',
     errorBirthDate: '',
     errorGender: '',
   };
@@ -27,7 +29,6 @@ class SignUpContainer extends Component {
   requestSignup = (event) => {
     event.preventDefault();
     const { username, password, password2, email, birthDate, genderValue } = this.state;
-
     this.setState({
       errorUsername: '',
       errorPassword: '',
@@ -36,8 +37,6 @@ class SignUpContainer extends Component {
       errorBirthDate: '',
       errorGender: '' });
 
-    console.log('state', this.state);
-    return null;
     axios.post('/api/signup', {
       username,
       password,
@@ -53,15 +52,15 @@ class SignUpContainer extends Component {
           if (item) this.setState({ [item.error]: item.message });
         });
       } else {
-        const message = 'Your account has been created, please activate your email';
-        this.props.dispatch(messageGeneralSendingBound(message));
+        const title = 'Your account has been created, you may now login, remember to activate your account';
+        this.props.dispatch(
+          Notifications.success({ title }),
+        );
       }
     });
   }
 
   saveState = (e) => {
-    console.log(e);
-    console.log('save target name', e.target.name);
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
     switch (e.target.name) {
@@ -77,9 +76,6 @@ class SignUpContainer extends Component {
       case 'email':
         this.setState({ errorEmail: '' });
         break;
-      case 'birthDate':
-        this.setState({ errorBirthDate: '' });
-        break;
       case 'gender':
         this.setState({ errorGender: '' });
         break;
@@ -91,13 +87,12 @@ class SignUpContainer extends Component {
 
   handleDateChange = (event, date) => {
     this.setState({
+      errorBirthDate: '',
       birthDate: date,
     });
   }
 
   handleGenderChange = (event, index, value) => {
-    console.log('gender change index', index);
-    console.log('gender change vallue', value);
     const genderList = ['Male', 'Female', 'Transgender'];
     this.setState({
       gender: value,
@@ -130,20 +125,17 @@ class SignUpContainer extends Component {
 }
 
 SignUpContainer.PropTypes = {
-  message: PropTypes.string,
-  format: PropTypes.string,
+  notifications: PropTypes.object,
 };
 
 SignUpContainer.defaultProps = {
-  message: '',
-  format: '',
+  notifications: null,
 };
 
 const mapStateToProps = ({
-  messageReducer: { message, format },
+  notifications,
 }) => ({
-  message,
-  format,
+  notifications,
 });
 
 export default connect(mapStateToProps)(SignUpContainer);

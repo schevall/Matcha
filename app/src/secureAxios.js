@@ -11,11 +11,17 @@ const secureAxios = (destination, method, data = {}, headers = {}) => {
   config.headers = { token, username };
   // console.log('in secure axios, config = ', config);
 
-  if (!token) { return Promise.reject(new Error('No token in secureaxios!')); }
-  if (!username) { return Promise.reject(new Error('No user in secureaxios!')); }
+  if (!token || !username) {
+    const message = 'No token or username in secureaxios!';
+    Promise.reject(new Error(message)).then(() => {
+      // not called
+    }, () => {
+      console.log(message);
+    });
+  }
 
   return axios(config).then((response) => {
-    // console.log('in secureAxios resp = ', response);
+    console.log('in secureAxios resp = ', response);
     return response;
   });
 };

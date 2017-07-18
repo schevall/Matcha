@@ -1,14 +1,26 @@
 import React from 'react';
+import TextField from 'material-ui/TextField';
 
-const ShowAllInfoComponent = props => (
-
-  <div>
-    <p>First name: {props.userbox.firstname ? props.userbox.firstname : 'Optional'}</p>
-    <p>Last name: {props.userbox.lastname ? props.userbox.lastname : 'Optional'}</p>
-    <p>Gender: {props.userbox.gender ? props.userbox.gender : 'Required'}</p>
-    <p>Sexual Orientation: {props.userbox.orient ? props.userbox.orient : 'Bisexual'}</p>
-    <p>Email: {props.userbox.email}</p>
-  </div>
-);
+const ShowAllInfoComponent = (props) => {
+  const { userInfo } = props;
+  return (
+    <div className="profile_allinfo_container">
+      <TextField
+        defaultValue={userInfo.firstname}
+        floatingLabelText="First name"
+      /><br />
+      <TextField
+        defaultValue={userInfo.lastname}
+        floatingLabelText="Last name"
+      /><br />
+      <TextField
+        defaultValue={userInfo.email}
+        floatingLabelText="email"
+      /><br />
+      <p>First name: { userInfo.firstname ? userInfo.firstname : 'Optional'}</p>
+      <p>Last name: { userInfo.lastname ? userInfo.lastname : 'Optional'}</p>
+      <p>Email: { userInfo.email }</p>
+    </div>);
+};
 
 export default ShowAllInfoComponent;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import UploadPictureComponent from '../Components/UploadPictureComponent.js';
 import GalleryDisplayComponent from '../Components/GalleryDisplayComponent.js';
 
@@ -51,11 +50,4 @@ class GalleryContainer extends Component {
   }
 }
 
-const mapStateToProps = ({
-  messageReducer: { message, format },
-}) => ({
-  message,
-  format,
-});
-
-export default connect(mapStateToProps)(GalleryContainer);
+export default GalleryContainer;
