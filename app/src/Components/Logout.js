@@ -12,7 +12,7 @@ class Logout extends Component {
   render() {
     // console.log('in lougout this props = ', this.props);
     return (
-      <radio onClick={this.onLogout} >Logout</radio>
+      <ol className="nav-item glyphicon glyphicon-log-out" onClick={this.onLogout}></ol>
     );
   }
 }

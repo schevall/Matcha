@@ -25,7 +25,6 @@ class User {
     const activationkey = this.makeActivationkey(24);
     return ({
       activated: false,
-      completion: 0,
       username,
       birthDate,
       gender,
@@ -34,8 +33,8 @@ class User {
       activationkey,
       logged: false,
       lastConnection: '',
-      photoUrl: [],
-      profilePicturePath: '/static/icons/ic_face_black_36dp_2x.png',
+      picturesPath: [],
+      profilePicturePath: '',
       orient: 'Bisexual',
       popularite: '',
       firstname: '',

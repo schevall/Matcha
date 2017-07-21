@@ -22,10 +22,10 @@ const signin = async (req, res) => {
   if (!User.comparePassword(password, userdb.password)) {
     return res.send({ error: 'errorPassword', message: 'The given password is incorrect.' });
   }
-  const { activated, completion } = userdb;
+  const { activated } = userdb;
   const token = jwt.sign({
     tokenUser: userdb.id }, config.secret, { expiresIn: '3h' });
-  return res.send({ activated, completion, token, username });
+  return res.send({ activated, token, username });
 };
 
 export default signin;

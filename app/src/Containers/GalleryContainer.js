@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import UploadPictureComponent from '../Components/UploadPictureComponent.js';
 import GalleryDisplayComponent from '../Components/GalleryDisplayComponent.js';
 
@@ -6,20 +7,24 @@ class GalleryContainer extends Component {
 
   constructor(props) {
     super(props);
+    const { username, picturesPath, profilePicturePath } = props;
+    const picturesNb = picturesPath.length;
     this.state = {
-      username: props.username,
-      picturesNb: 0,
-      picturesPath: [],
-      profilePicturePath: '',
-      errorUpload: '',
+      username,
+      picturesNb,
+      picturesPath,
+      profilePicturePath,
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    const { picturesPath, profilePicturePath } = nextProps;
+    const picturesNb = picturesPath.length;
+    console.log('in galery', nextProps);
     this.setState({
-      username: nextProps.username,
-      picturesNb: nextProps.picturesNb,
-      picturesPath: nextProps.picturesPath,
+      picturesNb,
+      picturesPath,
+      profilePicturePath,
     });
   }
 
@@ -49,5 +54,16 @@ class GalleryContainer extends Component {
     );
   }
 }
+
+GalleryContainer.PropTypes = {
+  username: PropTypes.string,
+  picturesPath: PropTypes.arrayOf(String),
+  profilePicturePath: PropTypes.string,
+};
+
+GalleryContainer.defaultProps = {
+  picturesPath: [],
+  profilePicturePath: '',
+};
 
 export default GalleryContainer;

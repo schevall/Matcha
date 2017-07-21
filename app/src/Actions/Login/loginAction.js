@@ -1,10 +1,9 @@
 import * as T from './loginTypes';
 
-function loginRequest(data) {
+export function loginRequest(data) {
   return {
     type: T.LOGIN_REQUEST,
     activated: null,
-    completion: null,
     loading: true,
     isLogged: false,
     username: '',
@@ -13,11 +12,10 @@ function loginRequest(data) {
   };
 }
 
-function loginSuccess(data) {
+export function loginSuccess(data) {
   return {
     type: T.LOGIN_SUCCESS,
     activated: data.activated,
-    completion: data.completion,
     loading: false,
     isLogged: true,
     username: data.username,
@@ -26,11 +24,22 @@ function loginSuccess(data) {
   };
 }
 
-function loginFailure() {
+export function activationSuccess(data) {
+  return {
+    type: T.ACTIVATION_SUCCESS,
+    activated: data.activated,
+    loading: false,
+    isLogged: true,
+    username: data.username,
+    access_token: data.token,
+    data: null,
+  };
+}
+
+export function loginFailure() {
   return {
     type: T.LOGIN_FAILURE,
     activated: null,
-    completion: null,
     loading: false,
     isLogged: false,
     username: '',
@@ -39,11 +48,10 @@ function loginFailure() {
   };
 }
 
-function logoutRequest(accessToken, username) {
+export function logoutRequest(accessToken, username) {
   return {
     type: T.LOGOUT_REQUEST,
     activated: null,
-    completion: null,
     loading: true,
     isLogged: true,
     username,
@@ -52,11 +60,10 @@ function logoutRequest(accessToken, username) {
   };
 }
 
-function logoutSuccess() {
+export function logoutSuccess() {
   return {
     type: T.LOGOUT_SUCCESS,
     activated: null,
-    completion: null,
     loading: false,
     isLogged: false,
     username: '',
@@ -64,6 +71,3 @@ function logoutSuccess() {
     data: null,
   };
 }
-
-
-export { loginRequest, loginSuccess, loginFailure, logoutSuccess, logoutRequest };

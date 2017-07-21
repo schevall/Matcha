@@ -2,16 +2,11 @@
   margin: 30px;
 }
 
-.progress {
-  width: 80%;
-  margin: auto;
-  margin-bottom: 20px;
-}
-
-.profile_container {
+.profile_container, .profile_binfo_container, .profile_all_info_container, .bio_container, .gallery_container, .extended-info-container, .activation-container {
   padding: 20px;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  background-color: #FCFCFC;
 }
 
 .profile_container_sub {
@@ -19,38 +14,38 @@
 }
 
 .profile_binfo_container {
-  padding: 10px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 
-.profile_allinfo_container {
-  padding: 10px;
-  margin-bottom: 10px;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+.extended-info-container {
+  margin-left: 20px;
+  width: 50%;
+}
+
+.extended-info-container > form > div.container {
+  width: auto;
 }
 
 .profile_picture_container {
   margin: 10px;
   width: 200px;
   height: 200px;
+  display: inline-flex;
+}
+
+.profile_picture_container img {
+  margin: auto;
+}
+
+.profile_picture_container span {
+  margin: auto;
 }
 
 .bio_container {
   margin: 20px 0;
-  padding: 10px;
-  box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 
-.gallery_container{
-  box-sizing: border-box;
+.gallery_container {
   margin-top: 20px;
-  padding-top: 20px;
-  text-align: center;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-  border-radius: 2px;
 }
 
 .gallery_display_container {

@@ -4,11 +4,12 @@ class GalleryDisplayComponent extends Component {
 
   constructor(props) {
     super(props);
+    const { username, picturesNb, picturesPath, profilePicturePath } = props;
     this.state = {
-      username: props.username,
-      picturesNb: 0,
-      picturesPath: [],
-      profilePicturePath: '',
+      username,
+      picturesNb,
+      picturesPath,
+      profilePicturePath,
     };
   }
 

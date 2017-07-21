@@ -2,35 +2,12 @@ import fs from 'fs';
 import sharp from 'sharp';
 import path from 'path';
 import Mongo from '../config/MongoConnection';
-
-const initprofile = async (req, res) => {
-  console.log('in initprofile');
-  const { username } = req.headers;
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-
-  if (!userdb) {
-    return res.send({ error: 'initprofile', message: 'No user found' }).end();
-  }
-
-  const userbox = userdb;
-  userbox.password = '';
-  userbox.picturesNb = Object.keys(userdb.photoUrl).length ?
-  Object.keys(userdb.photoUrl).length : 0;
-
-  return res.send({ userbox });
-};
+import * as db from '../DbAction/DbAction.js';
 
 const nbVerif = async (req, res, next) => {
   const { username } = req.headers;
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-
-  if (!userdb) {
-    return res.send({ error: 'pictureNbVerif', message: 'No user found' });
-  }
-
-  const numberOfPictures = Object.keys(userdb.photoUrl).length;
+  const userInfo = await db.getUserdb(username);
+  const numberOfPictures = Object.keys(userInfo.picturesPath).length;
   if (numberOfPictures >= 6) {
     return res.send({ error: 'pictureNbVerif', message: 'You have reach the maximum of photos' });
   }
@@ -39,12 +16,6 @@ const nbVerif = async (req, res, next) => {
 
 const remove = async (req, res) => {
   const { username } = req.headers;
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-
-  if (!userdb) {
-    return res.send({ error: 'removePicture', message: 'No user found' }).end();
-  }
   const { fileName } = req.body;
   const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
   const pathToErase = path.join(UserDirFullPath, fileName);
@@ -52,29 +23,15 @@ const remove = async (req, res) => {
     return res.send({ error: 'removePicture', message: 'Something went wrong while deleting a picture' });
   }
 
+  const doc = await db.removePicture(username, fileName);
+  const { picturesPath, profilePicturePath } = doc;
   fs.unlinkSync(pathToErase);
-  console.log('api, fileName = ', fileName);
-  await usercollection.update(
-    { username },
-    { $pull: { photoUrl: `${fileName}` } });
-  const picturesNb = userdb.photoUrl.length - 1;
-  if (path.basename(userdb.profilePicturePath) === fileName) {
-    await usercollection.update(
-      { username },
-      { $set: { profilePicturePath: '/static/icons/ic_face_black_36dp_2x.png' } });
-  }
-  return res.send({ error: '', fileName, picturesNb });
+
+  return res.send({ error: '', picturesPath, profilePicturePath });
 };
 
 const favorite = async (req, res) => {
   const { username } = req.headers;
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-
-  if (!userdb) {
-    return res.send({ error: 'favoritePicture', message: 'No user found' }).end();
-  }
-
   const { fileName } = req.body;
   const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
   const pathToFavorite = path.join(UserDirFullPath, fileName);
@@ -82,10 +39,8 @@ const favorite = async (req, res) => {
     return res.send({ error: 'favoritePicture', message: 'Something went wrong while faving this picture' });
   }
 
-  const profilePicturePath = `/static/${username}/${fileName}`;
-  await usercollection.updateOne(
-    { username },
-    { $set: { profilePicturePath } });
+  db.setter(username, 'profilePicturePath', fileName);
+  const profilePicturePath = fileName;
   return res.send({ error: '', profilePicturePath });
 };
 
@@ -99,7 +54,6 @@ const upload = async (req, res) => {
     fs.unlinkSync(file);
     return res.send({ error: 'upload error', message: 'User not found in db' });
   }
-
   const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
   if (!fs.existsSync(UserDirFullPath)) {
     fs.mkdirSync(UserDirFullPath);
@@ -113,9 +67,11 @@ const upload = async (req, res) => {
 
   await usercollection.updateOne(
     { username },
-    { $push: { photoUrl: newname } });
-  const picturesNb = userdb.photoUrl.length + 1;
-  return res.send({ error: '', fileName: newname, picturesNb });
+    { $push: { picturesPath: newname } });
+  const picturesNb = userdb.picturesPath.length + 1;
+  const picturesPath = userdb.picturesPath;
+  picturesPath.push(newname);
+  return res.send({ error: '', picturesPath, picturesNb });
 };
 
-export { nbVerif, upload, initprofile, remove, favorite };
+export { nbVerif, upload, remove, favorite };

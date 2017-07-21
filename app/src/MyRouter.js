@@ -25,7 +25,7 @@ const MyRouter = (props) => {
         <Switch>
           <Route exact path="/signup" component={SignUpContainer} />
           <Route exact path="/signin" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
-          <Route exact path="/myprofile" props={props} component={MyProfileContainer} />
+          <PrivateRoute exact path="/myprofile" props={props} component={MyProfileContainer} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
           <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
         </Switch>
@@ -38,7 +38,6 @@ MyRouter.PropTypes = {
   username: PropTypes.string,
   isLogged: PropTypes.bool,
   activated: PropTypes.bool,
-  completion: PropTypes.digit,
   SigninErrorObject: PropTypes.Object,
   notifications: PropTypes.Object,
 };
@@ -46,15 +45,15 @@ MyRouter.PropTypes = {
 MyRouter.defaultProps = {
   isLogged: false,
   activated: false,
-  completion: 0,
   SigninErrorObject: null,
 };
 
 const mapStateToProps = ({
-  loginReducer: { isLogged },
+  loginReducer: { isLogged, activated },
   signinErrorReducer: { SigninErrorObject },
 }) => ({
   isLogged,
+  activated,
   SigninErrorObject,
 });
 

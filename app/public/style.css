@@ -1,18 +1,45 @@
+body {
+  font-family: 'Josefin Slab', serif;
+  font-size: 1.8em;
+  padding: 20px;
+  background-color: #E8E3E4;
+}
+
 .navbar {
-  background-color: #C1E7FF;
+  display: flex;
+  background-color: #FCFCFC;
+  align-items: center;
+  border-style: ridge;
+  border-color: #9DA8A6;
 }
 
-.navbar-inverse .navbar-nav>li>a {
-  color: #2D2F4C;
+.navbar-nav > ul.nav-items {
+  align-items: center;
 }
 
-.navbar-inverse .navbar-brand {
-    color: #2D2F4C;
+.navbar-nav {
+  display: inline-flex;
 }
 
-.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
-    color: #fff;
-    background-color: #5692B8;
+.navbar-brand > a{
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 2em;
+  color: black;
+}
+
+.navbar .glyphicon {
+  font-size: 1.4em;
+  color: #313B39;
+  border-style: solid;
+  padding: 0.2em;
+  border-width: thin;
+  border-radius: 0.2em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.30), 0 2px 4px rgba(0,0,0,0.22);
+}
+
+.navbar .glyphicon-log-out {
+  align-self: flex-end;
+
 }
 
 .signup_container {
@@ -31,10 +58,4 @@
   width: 80%;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-}
-
-.MessageBar {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
 }

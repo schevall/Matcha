@@ -1,10 +1,11 @@
 import axios from 'axios';
 import Notifications from 'react-notification-system-redux';
+import secureAxios from '../../secureAxios.js';
 import * as A from './loginAction';
 import { SigninErrorSending } from '../SigninError/SigninErrorAction';
 
 
-function loginBound(input) {
+export function loginBound(input) {
   return (dispatch) => {
     dispatch(A.loginRequest(input));
     return axios.post('/api/signin', input)
@@ -25,7 +26,26 @@ function loginBound(input) {
   };
 }
 
-function logoutBound(title) {
+export function activation(input) {
+  return (dispatch) => {
+    console.log('here', input);
+    return secureAxios('/user/activation', 'POST', input)
+      .then(({ data }) => {
+        if (data.error) {
+          dispatch(Notifications.error({ title: data.message }));
+        } else {
+          dispatch(A.activationSuccess(data));
+          const message = `Hey ${data.username}, you have successfully activated your account`;
+          dispatch(
+            Notifications.success({ title: message }),
+          );
+        }
+      })
+      .catch(err => console.log('error in login proccess: ', err));
+  };
+}
+
+export function logoutBound(title) {
   return (dispatch) => {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
@@ -38,5 +58,3 @@ function logoutBound(title) {
     dispatch(Notifications.success(title));
   };
 }
-
-export { loginBound, logoutBound };
