@@ -19,13 +19,15 @@ const signin = async (req, res) => {
   if (!userdb) {
     return res.send({ error: 'errorUsername', message: `This username (${username}) does not exist.` });
   }
+  if (!userdb.activated || userdb.activationkey) {
+    return res.send({ error: 'errorUsername', message: 'You did not activate your account !' });
+  }
   if (!User.comparePassword(password, userdb.password)) {
     return res.send({ error: 'errorPassword', message: 'The given password is incorrect.' });
   }
-  const { activated } = userdb;
   const token = jwt.sign({
     tokenUser: userdb.id }, config.secret, { expiresIn: '3h' });
-  return res.send({ activated, token, username });
+  return res.send({ token, username });
 };
 
 export default signin;

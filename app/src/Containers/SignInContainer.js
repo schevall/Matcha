@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { loginBound } from '../Actions/Login/loginBound.js';
@@ -49,14 +49,19 @@ class SignInContainer extends Component {
     return (
       isLogged ?
         <Redirect to="/" /> :
-        <SignInComponent
-          username={this.state.username}
-          password={this.state.password}
-          errorUsername={this.state.errorUsername}
-          errorPassword={this.state.errorPassword}
-          handleChange={this.saveState}
-          handleSubmit={this.requestLogin}
-        />
+        <div className="signin_container">
+          <Link to="/signup">To Signup</Link>
+          <br />
+          <Link to="/activation">To Activation</Link>
+          <SignInComponent
+            username={this.state.username}
+            password={this.state.password}
+            errorUsername={this.state.errorUsername}
+            errorPassword={this.state.errorPassword}
+            handleChange={this.saveState}
+            handleSubmit={this.requestLogin}
+          />
+        </div>
     );
   }
 }

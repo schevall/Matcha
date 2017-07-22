@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { logoutBound } from '../Actions/Login/loginBound';
 
 class Logout extends Component {
@@ -12,7 +13,7 @@ class Logout extends Component {
   render() {
     // console.log('in lougout this props = ', this.props);
     return (
-      <ol className="nav-item glyphicon glyphicon-log-out" onClick={this.onLogout}></ol>
+      <Link to="/signin" className="nav-item glyphicon glyphicon-log-out" onClick={this.onLogout} />
     );
   }
 }

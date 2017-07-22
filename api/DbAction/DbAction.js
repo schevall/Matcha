@@ -1,12 +1,12 @@
 import Mongo from '../config/MongoConnection';
 
-const serveDb = async (username) => {
+export const serveDb = async (username) => {
   const usercollection = await Mongo.db.collection('users');
   const userdb = await usercollection.findOne({ username });
   return ({ usercollection, userdb });
 };
 
-const checkUser = async (username) => {
+export const checkUser = async (username) => {
   const { userdb } = await serveDb(username);
   if (!userdb) {
     return false;
@@ -14,23 +14,28 @@ const checkUser = async (username) => {
   return true;
 };
 
-const getUserdb = async (username) => {
+export const getUserpassword = async (username) => {
   const { userdb } = await serveDb(username);
-  userdb.password = null;
+  return userdb.password;
+};
+
+export const getUserdb = async (username) => {
+  const { userdb } = await serveDb(username);
+  if (userdb) userdb.password = null;
   return userdb;
 };
 
-const setter = async (username, field, value) => {
+export const setter = async (username, field, value) => {
   const { usercollection } = await serveDb(username);
-  usercollection.updateOne(
+  await usercollection.updateOne(
     { username },
     { $set: { [field]: value } });
 };
 
-const removePicture = async (username, fileName) => {
+export const removePicture = async (username, fileName) => {
   const { userdb, usercollection } = await serveDb(username);
   if (userdb.profilePicturePath === fileName) {
-    this.set(username, 'profilePicturePath', '');
+    await setter(username, 'profilePicturePath', '');
   }
   return new Promise((resolve, reject) => {
     usercollection.findAndModify(
@@ -48,5 +53,3 @@ const removePicture = async (username, fileName) => {
 };
 
 // const modifyUser = async (req, res)
-
-export { checkUser, getUserdb, setter, removePicture };

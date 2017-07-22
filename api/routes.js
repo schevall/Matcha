@@ -9,11 +9,11 @@ const routes = (app, upload) => {
   // public routes
   app.get('/api/users', showusers);
   app.post('/api/signup', signup);
+  app.post('/api/activation', Users.activation);
   app.post('/api/signin', signin);
 
   app.use('/api', authControl);
 
-  app.post('/api/user/activation', Users.activation);
   app.post('/api/users/upload', Pictures.nbVerif, upload.single('imageUploaded'), Pictures.upload);
   app.post('/api/users/removepicture', Pictures.remove);
   app.post('/api/users/favoritepicture', Pictures.favorite);

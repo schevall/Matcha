@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Notifications from 'react-notification-system-redux';
-import secureAxios from '../../secureAxios.js';
 import * as A from './loginAction';
 import { SigninErrorSending } from '../SigninError/SigninErrorAction';
 
@@ -14,30 +13,12 @@ export function loginBound(input) {
           dispatch(A.loginFailure());
           dispatch(SigninErrorSending(data));
         } else {
+          console.log('log success resp', data);
           localStorage.setItem('access_token', data.token);
           localStorage.setItem('username', data.username);
           dispatch(A.loginSuccess(data));
           dispatch(
             Notifications.success({ title: `Hello ${data.username}, you are connected` }),
-          );
-        }
-      })
-      .catch(err => console.log('error in login proccess: ', err));
-  };
-}
-
-export function activation(input) {
-  return (dispatch) => {
-    console.log('here', input);
-    return secureAxios('/user/activation', 'POST', input)
-      .then(({ data }) => {
-        if (data.error) {
-          dispatch(Notifications.error({ title: data.message }));
-        } else {
-          dispatch(A.activationSuccess(data));
-          const message = `Hey ${data.username}, you have successfully activated your account`;
-          dispatch(
-            Notifications.success({ title: message }),
           );
         }
       })

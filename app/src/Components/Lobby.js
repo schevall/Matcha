@@ -18,12 +18,9 @@ class Lobby extends Component {
 
 const mapStateToProps = ({
   loginReducer: { isLogged, username },
-  messageReducer: { message, format },
 }) => ({
   isLogged,
   username,
-  message,
-  format,
 });
 
 export default connect(mapStateToProps)(Lobby);

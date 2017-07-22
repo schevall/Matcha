@@ -9,6 +9,7 @@ import NavBar from './Components/NavBar.js';
 import NotificationsSystem from './Components/NotificationSystem.js';
 import SignInContainer from './Containers/SignInContainer.js';
 import SignUpContainer from './Containers/SignUpContainer.js';
+import Activation from './Containers/Activation.js'
 import Lobby from './Components/Lobby.js';
 import MyProfileContainer from './Containers/MyProfileContainer.js';
 
@@ -25,6 +26,7 @@ const MyRouter = (props) => {
         <Switch>
           <Route exact path="/signup" component={SignUpContainer} />
           <Route exact path="/signin" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
+          <Route exact path="/activation" component={Activation} />
           <PrivateRoute exact path="/myprofile" props={props} component={MyProfileContainer} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
           <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
@@ -37,23 +39,15 @@ const MyRouter = (props) => {
 MyRouter.PropTypes = {
   username: PropTypes.string,
   isLogged: PropTypes.bool,
-  activated: PropTypes.bool,
   SigninErrorObject: PropTypes.Object,
   notifications: PropTypes.Object,
 };
 
-MyRouter.defaultProps = {
-  isLogged: false,
-  activated: false,
-  SigninErrorObject: null,
-};
-
 const mapStateToProps = ({
-  loginReducer: { isLogged, activated },
+  loginReducer: { isLogged },
   signinErrorReducer: { SigninErrorObject },
 }) => ({
   isLogged,
-  activated,
   SigninErrorObject,
 });
 

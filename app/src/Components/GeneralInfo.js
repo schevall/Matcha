@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
-class ShowAllInfoComponent extends Component {
+export default class GeneralInfo extends Component {
 
   constructor(props) {
     super(props);
-    const { lastname, email, firstname, gender, orient, geo } = props.extendedInfo;
+    const { lastname, firstname, gender, orient, geo } = props.extendedInfo;
     this.state = {
       firstname,
       lastname,
-      email,
       gender,
       orient,
       geo,
@@ -28,11 +27,10 @@ class ShowAllInfoComponent extends Component {
   }
 
   render() {
-    const { email, firstname, lastname, geo, gender, orient } = this.state;
+    const { firstname, lastname, geo, gender, orient } = this.state;
     const tabtext = [
       { id: 1, name: 'firstname', value: firstname, text: '  : First Name' },
       { id: 2, name: 'lastname', value: lastname, text: '  : Last Name' },
-      { id: 3, name: 'email', value: email, text: '  : Email' },
     ];
     const textInput = tabtext.map(data => (
       <div key={data.id} className="row">
@@ -61,6 +59,7 @@ class ShowAllInfoComponent extends Component {
     );
     return (
       <div className="extended-info-container">
+        <p>General Informations</p>
         <div className="container">
           {textInput}
         </div>
@@ -70,9 +69,7 @@ class ShowAllInfoComponent extends Component {
         <div>
           {selectorOrient}
         </div>
-        <button type="submit" onClick={this.handleSubmit}>Submit</button>
+        <button type="submit" onClick={this.handleSubmit}>Save Change</button>
       </div>);
   }
 }
-
-export default ShowAllInfoComponent;

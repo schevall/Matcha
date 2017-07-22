@@ -5,7 +5,6 @@ const initial = {
   isLogged: !!localStorage.getItem('access_token'),
   username: localStorage.getItem('username'),
   token: localStorage.getItem('access_token'),
-  activated: false,
   data: null,
 };
 
@@ -16,7 +15,6 @@ function loginReducer(state = initial, action) {
     case T.LOGIN_REQUEST:
       return { ...state,
         loading: true,
-        activated: null,
         isLogged: false,
         token: '',
         username: '',
@@ -25,7 +23,6 @@ function loginReducer(state = initial, action) {
     case T.LOGIN_FAILURE:
       return { ...state,
         loading: false,
-        activated: null,
         isLogged: false,
         token: '',
         username: '',
@@ -34,7 +31,6 @@ function loginReducer(state = initial, action) {
     case T.LOGIN_SUCCESS:
       return { ...state,
         loading: false,
-        activated: action.activated,
         isLogged: true,
         token: action.token,
         username: action.username,
@@ -43,7 +39,6 @@ function loginReducer(state = initial, action) {
     case T.LOGOUT_REQUEST:
       return { ...state,
         loading: true,
-        activated: null,
         isLogged: true,
         username: action.username,
         token: action.token,
@@ -52,7 +47,6 @@ function loginReducer(state = initial, action) {
     case T.LOGOUT_SUCCESS:
       return { ...state,
         loading: false,
-        activated: null,
         isLogged: false,
         username: '',
         token: '',

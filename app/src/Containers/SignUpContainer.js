@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Notifications from 'react-notification-system-redux';
-
 import SignupComponent from '../Components/SignUpComponent.js';
-import myGeolocate from '../ToolBox/myGeolocate.js';
 
 class SignUpContainer extends Component {
 
@@ -14,9 +13,9 @@ class SignUpContainer extends Component {
     password: 'Patata11',
     password2: 'Patata11',
     email: 'sim.chvll@gmail.com',
-    birthDate: null,
-    gender: '',
-    genderValue: 'Male',
+    birthDate: (new Date('October 13, 1988')),
+    gender: 1,
+    genderValue: '',
     errorUsername: '',
     errorPassword: '',
     errorPassword2: '',
@@ -52,10 +51,11 @@ class SignUpContainer extends Component {
           if (item) this.setState({ [item.error]: item.message });
         });
       } else {
-        const title = 'Your account has been created, you may now login, remember to activate your account';
+        const title = 'Your account has been created, you may now enter the key you have received';
         this.props.dispatch(
           Notifications.success({ title }),
         );
+        this.props.history.push('/activation');
       }
     });
   }
@@ -100,26 +100,45 @@ class SignUpContainer extends Component {
     });
   }
 
+  sendKey = (activationkey) => {
+    axios.post('/api/activation', { activationkey })
+     .then(({ data }) => {
+       if (data.error) {
+         this.props.dispatch(Notifications.error({ title: data.message }));
+       } else {
+         this.setState({ step: 'last' });
+       }
+     });
+  }
+
   render() {
+    const { step } = this.state;
     return (
-      <SignupComponent
-        username={this.state.username}
-        password={this.state.password}
-        password2={this.state.password2}
-        email={this.state.email}
-        birthDate={this.state.birthDate}
-        gender={this.state.gender}
-        errorUsername={this.state.errorUsername}
-        errorPassword={this.state.errorPassword}
-        errorPassword2={this.state.errorPassword2}
-        errorEmail={this.state.errorEmail}
-        errorBirthDate={this.state.errorBirthDate}
-        errorGender={this.state.errorGender}
-        handleChange={this.saveState}
-        handleDateChange={this.handleDateChange}
-        handleGenderChange={this.handleGenderChange}
-        handleSubmit={this.requestSignup}
-      />
+      <div className="signup_container">
+        <h3>Welcome</h3>
+        <Link to="/signin">To Signin</Link>
+        <br />
+        <Link to="/activation">To Activation</Link>
+        <SignupComponent
+          step={step}
+          username={this.state.username}
+          password={this.state.password}
+          password2={this.state.password2}
+          email={this.state.email}
+          birthDate={this.state.birthDate}
+          gender={this.state.gender}
+          errorUsername={this.state.errorUsername}
+          errorPassword={this.state.errorPassword}
+          errorPassword2={this.state.errorPassword2}
+          errorEmail={this.state.errorEmail}
+          errorBirthDate={this.state.errorBirthDate}
+          errorGender={this.state.errorGender}
+          handleChange={this.saveState}
+          handleDateChange={this.handleDateChange}
+          handleGenderChange={this.handleGenderChange}
+          handleSubmit={this.requestSignup}
+        />
+      </div>
     );
   }
 }

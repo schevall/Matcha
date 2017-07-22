@@ -4,8 +4,9 @@ import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
+import CircularProgress from 'material-ui/CircularProgress';
+
 import secureAxios from '../secureAxios.js';
-import Activation from '../Containers/Activation.js'
 import MyProfileCardComponent from '../Components/MyProfileCardComponent.js';
 import GalleryContainer from './GalleryContainer.js';
 
@@ -33,12 +34,43 @@ class MyProfileContainer extends Component {
       });
   }
 
-  handleModifyInfo = (payload) => {
-    console.log('modify event', payload);
-    const url = '/users/update/generalinfo';
-    secureAxios(url, 'POST', payload)
+  ModifyGeneralInfo = (payload) => {
+    secureAxios('/users/update/generalinfo', 'POST', payload)
     .then(({ data }) => {
-      console.log('resp', data);
+      if (data.error) {
+        this.props.dispatch(Notifications.error({ title: data.message }));
+      } else {
+        const { userInfo } = data;
+        const title = 'Your infos has been changed';
+        this.props.dispatch(Notifications.success({ title }));
+        this.setState({ userInfo });
+      }
+    });
+  }
+
+  ModifyEmail = (email) => {
+    secureAxios('/users/update/email', 'POST', email)
+    .then(({ data }) => {
+      if (data.error) {
+        this.props.dispatch(Notifications.error({ title: data.message }));
+      } else {
+        const { userInfo } = data;
+        const title = 'Your email has been changed';
+        this.props.dispatch(Notifications.success({ title }));
+        this.setState({ userInfo });
+      }
+    });
+  }
+
+  ModifyPassword = (payload) => {
+    secureAxios('/users/update/password', 'POST', payload)
+    .then(({ data }) => {
+      if (data.error) {
+        this.props.dispatch(Notifications.error({ title: data.message }));
+      } else {
+        const title = 'Your password has been changed';
+        this.props.dispatch(Notifications.success({ title }));
+      }
     });
   }
 
@@ -83,7 +115,6 @@ class MyProfileContainer extends Component {
         if (data.error) {
           this.setState({ errorUpload: data.message });
         } else {
-          console.log('resp upload', data);
           const { picturesNb, picturesPath } = data;
           const { userInfo } = this.state;
           userInfo.picturesPath = picturesPath;
@@ -97,16 +128,16 @@ class MyProfileContainer extends Component {
     console.log('state in main ', this.state);
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
-    if (!this.state.userInfo) return null;
+    if (!this.state.userInfo) return <CircularProgress />;
 
     const { picturesPath, profilePicturePath, username } = this.state.userInfo;
     const { userInfo } = this.state;
-    console.log(picturesPath);
     return (
       <div className="profile_page_container">
-        <Activation props={this.props} />
         <MyProfileCardComponent
-          modifier={this.handleModifyInfo}
+          generalModifier={this.ModifyGeneralInfo}
+          emailModifier={this.ModifyEmail}
+          passwordModifier={this.ModifyPassword}
           userInfo={userInfo}
         />
         <GalleryContainer
@@ -125,14 +156,12 @@ class MyProfileContainer extends Component {
 MyProfileContainer.PropTypes = {
   username: PropTypes.string,
   isLogged: PropTypes.bool,
-  activated: PropTypes.bool,
   notifications: PropTypes.Object,
 };
 
 MyProfileContainer.defaultProps = {
   username: '',
   isLogged: false,
-  activated: false,
   notifications: null,
 };
 

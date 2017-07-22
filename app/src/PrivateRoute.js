@@ -6,6 +6,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { logoutBound } from './Actions/Login/loginBound.js';
 
 const CheckExpToken = (isLogged, rest) => {
+  console.log('in priv resst', rest);
   let title = null;
   if (!isLogged) {
     this.path = '/signin';
@@ -37,24 +38,11 @@ const CheckExpToken = (isLogged, rest) => {
   }
 };
 
-const CheckNavAuth = (Component, isLogged, activated, rest) => {
-  let title = null;
-  if (!CheckExpToken(isLogged, rest)) return false;
-  if (!activated && rest.path !== '/myprofile') {
-    console.log('pirv', activated);
-    this.path = '/myprofile';
-    title = 'Please provide the activation key to enjoy our features =)';
-    rest.dispatch(Notifications.error({ title }));
-    return false;
-  }
-  return true;
-};
-
-const PrivateRoute = ({ component: Component, isLogged, activated, ...rest }) => (
+const PrivateRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
     {...rest}
     render={props => (
-      CheckNavAuth(Component, isLogged, activated, rest) ? (
+      CheckExpToken(isLogged, rest) ? (
         <Component {...props} />
         ) : (
           <Redirect
@@ -67,11 +55,10 @@ const PrivateRoute = ({ component: Component, isLogged, activated, ...rest }) =>
 );
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, username, activated },
+  loginReducer: { isLogged, username },
 }) => ({
   isLogged,
   username,
-  activated,
 });
 
 export default connect(mapStateToProps)(PrivateRoute);
