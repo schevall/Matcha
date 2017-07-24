@@ -6,13 +6,13 @@ const subject = () => {
 const ftext = (username, key) => {
   const text = `Hi there ${username}!
   We are pleased to welcome you to our great new website
-  To activate your account, just enter this key in your profile page
+  To activate your account, just enter this key at /activation
   the key ! => ${key}`;
   return text;
 };
 
 const fhtml = (username, key) => {
-  const html = `<div><p>Hi there ${username}!</p><p>We are pleased to welcome you to our great new website</p><p>To activate your account, just enter this key in your profile page</p><p>the key ! => ${key}</p></div>`;
+  const html = `<div><p>Hi there ${username}!</p><p>We are pleased to welcome you to our great new website</p><p>To activate your account, just enter this key at /activation</p><p>the key ! => ${key}</p></div>`;
   return html;
 };
 

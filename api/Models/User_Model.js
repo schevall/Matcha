@@ -46,6 +46,7 @@ class User {
       likedby: [],
       liketo: [],
       notification: [],
+      bio: '',
     });
   }
 }

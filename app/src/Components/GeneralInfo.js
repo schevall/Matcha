@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
+import MyTag from '../ToolBox/MyTag.js';
 
 export default class GeneralInfo extends Component {
 
   constructor(props) {
     super(props);
-    const { lastname, firstname, gender, orient, geo } = props.extendedInfo;
+    const { lastname, firstname, gender, orient, geo, tags } = props.extendedInfo;
     this.state = {
       firstname,
       lastname,
       gender,
       orient,
       geo,
+      tags,
     };
   }
 
@@ -21,13 +23,17 @@ export default class GeneralInfo extends Component {
     });
   }
 
+  handleTagChange = (e) => {
+
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.handleOnSubmit(this.state);
   }
 
   render() {
-    const { firstname, lastname, geo, gender, orient } = this.state;
+    const { firstname, lastname, geo, gender, orient, tags } = this.state;
     const tabtext = [
       { id: 1, name: 'firstname', value: firstname, text: '  : First Name' },
       { id: 2, name: 'lastname', value: lastname, text: '  : Last Name' },
@@ -70,6 +76,10 @@ export default class GeneralInfo extends Component {
           {selectorOrient}
         </div>
         <button type="submit" onClick={this.handleSubmit}>Save Change</button>
+        <div> <br />
+          <p>Your tags :</p>
+          <MyTag tags={tags} handleOnSubmit={this.props.handleOnSubmitTags} />
+        </div>
       </div>);
   }
 }

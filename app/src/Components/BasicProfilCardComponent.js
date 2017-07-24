@@ -1,9 +1,10 @@
 import React from 'react';
 import ButtonContainer from '../Containers/ButtonContainer.js';
+import calculateAge from '../ToolBox/CalculAge.js';
 
 const BasicProfilCardComponent = (props) => {
   const { basicInfo, button } = props;
-  const { profilePicturePath, username, popularity, orient, gender, age } = basicInfo;
+  const { profilePicturePath, username, popularity, orient, gender, birthDate } = basicInfo;
   let path = '';
   let info = '';
   if (profilePicturePath) {
@@ -12,6 +13,7 @@ const BasicProfilCardComponent = (props) => {
     path = '/static/icons/ic_face_black_36dp_2x.png';
     info = 'Add a profile picture !';
   }
+  const age = calculateAge(birthDate);
   return (
     <div className="profile_binfo_container">
       <p><bold>{username}</bold></p>

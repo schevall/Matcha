@@ -9,6 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../secureAxios.js';
 import MyProfileCardComponent from '../Components/MyProfileCardComponent.js';
 import GalleryContainer from './GalleryContainer.js';
+import { logoutBound } from '../Actions/Login/loginBound.js';
 
 class MyProfileContainer extends Component {
 
@@ -48,16 +49,16 @@ class MyProfileContainer extends Component {
     });
   }
 
-  ModifyEmail = (email) => {
-    secureAxios('/users/update/email', 'POST', email)
+  ModifyEmail = (email, password) => {
+    const payload = { email, password };
+    secureAxios('/users/update/email', 'POST', payload)
     .then(({ data }) => {
       if (data.error) {
         this.props.dispatch(Notifications.error({ title: data.message }));
       } else {
-        const { userInfo } = data;
-        const title = 'Your email has been changed';
-        this.props.dispatch(Notifications.success({ title }));
-        this.setState({ userInfo });
+        const title = 'Your email has been changed =)';
+        this.props.history.push('/activation');
+        this.props.dispatch(logoutBound({ title }));
       }
     });
   }
@@ -74,8 +75,34 @@ class MyProfileContainer extends Component {
     });
   }
 
-  handleTag = (action, value = null) => {
+  ModifyTags = (newtags) => {
+    secureAxios('/users/update/tags', 'POST', { newtags })
+    .then(({ data }) => {
+      if (data.error) {
+        this.props.dispatch(Notifications.error({ title: data.message }));
+      } else {
+        const { tags } = data;
+        const { userInfo } = this.state;
+        userInfo.tags = tags;
+        this.setState({ userInfo });
+        const title = 'Your tags has been updated !';
+        this.props.dispatch(Notifications.success({ title }));
+      }
+    });
+  }
 
+  ModifyBio = (bio) => {
+    secureAxios('/users/update/generalinfo', 'POST', { bio })
+    .then(({ data }) => {
+      if (data.error) {
+        this.props.dispatch(Notifications.error({ title: data.message }));
+      } else {
+        const { userInfo } = data;
+        const title = 'Your bio has been updated';
+        this.props.dispatch(Notifications.success({ title }));
+        this.setState({ userInfo });
+      }
+    });
   }
 
   SetFavorite = (fileName) => {
@@ -138,6 +165,8 @@ class MyProfileContainer extends Component {
           generalModifier={this.ModifyGeneralInfo}
           emailModifier={this.ModifyEmail}
           passwordModifier={this.ModifyPassword}
+          tagModifier={this.ModifyTags}
+          bioModifier={this.ModifyBio}
           userInfo={userInfo}
         />
         <GalleryContainer

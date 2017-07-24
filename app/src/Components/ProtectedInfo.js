@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
+import ModalBox from '../ToolBox/Modal_box.js';
 
 
 class ProtectedInfo extends Component {
@@ -9,6 +10,7 @@ class ProtectedInfo extends Component {
     super(props);
     const { email } = props;
     this.state = {
+      modal: false,
       email,
       oldpassword: '',
       password: '',
@@ -41,17 +43,14 @@ class ProtectedInfo extends Component {
     return null;
   }
 
-  handleSubmitEmail = (e) => {
-    e.preventDefault();
-    const { email } = this.state;
-    if (!email) return null;
-    this.props.handleEmailModif(email);
+  handleSubmitEmail = (email, password) => {
+    if (!email || !password) return null;
+    this.props.handleEmailModif(email, password);
     return null;
   }
 
   render() {
     const { email, password, password2, oldpassword } = this.state;
-    console.log('in protected, state', this.state);
     const tabtext = [
       { id: 1, name: 'oldpassword', value: oldpassword, text: '  : Old password' },
       { id: 2, name: 'password', value: password, text: '  : New password' },
@@ -84,7 +83,7 @@ class ProtectedInfo extends Component {
         <div className="container">
           {emailInput}
         </div>
-        <button type="submit" onClick={this.handleSubmitEmail}>Save Change</button>
+        <ModalBox name="Save Change" email={this.state.email} handleOnSubmit={this.handleSubmitEmail} />
       </div>);
   }
 }
