@@ -7,18 +7,21 @@ export default class MyBio extends Component {
   constructor(props) {
     super(props);
     const { bio } = props;
-    console.log('bio', bio);
     const length = bio.length;
     this.state = {
       bio,
       cansubmit: false,
       length,
     };
+    this.styles = {
+      bioContent: {
+        fontFamily: 'Josefin Slab',
+      },
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     const { bio } = nextProps;
-    console.log('next.', bio);
     const length = bio.length;
     this.setState({ bio, length, cansubmit: false });
   }
@@ -46,7 +49,6 @@ export default class MyBio extends Component {
 
   render() {
     const { bio, length, cansubmit } = this.state;
-    console.log();
     let message = '';
     if (length >= 320) {
       message = 'You have reach the maximum';
@@ -59,6 +61,7 @@ export default class MyBio extends Component {
         <h3>Bio: </h3>
         <span>{message}</span>
         <TextField
+          style={this.styles.bioContent}
           name="mybio"
           hintText={bio ? null : 'Write something about you !'}
           onChange={this.handleChange}

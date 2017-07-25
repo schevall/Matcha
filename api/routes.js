@@ -4,6 +4,7 @@ import showusers from './Getter/User_list.js';
 import authControl from './Controllers/authControl.js';
 import * as Pictures from './Controllers/PictureManager.js';
 import * as Users from './Controllers/UsersManager.js';
+import * as Interactions from './Controllers/InteractionsManager.js';
 
 const routes = (app, upload) => {
   // public routes
@@ -19,6 +20,10 @@ const routes = (app, upload) => {
   app.post('/api/users/favoritepicture', Pictures.favorite);
   app.post('/api/users/update/:field', Users.updateGateway);
   app.get('/api/users/initprofile', Users.initprofile);
+  app.get('/api/users/logout', Users.logout);
+  app.get('/api/users/getprofile/:targeted', Users.visitProfile);
+
+  app.post('/api/interactions/likes', Interactions.like);
 };
 
 export default routes;

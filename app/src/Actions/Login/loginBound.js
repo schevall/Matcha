@@ -2,6 +2,7 @@ import axios from 'axios';
 import Notifications from 'react-notification-system-redux';
 import * as A from './loginAction';
 import { SigninErrorSending } from '../SigninError/SigninErrorAction';
+import secureAxios from '../../secureAxios.js';
 
 
 export function loginBound(input) {
@@ -30,12 +31,13 @@ export function logoutBound(title) {
   return (dispatch) => {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
-    // console.log('in logoutBound, token = ', token);
-    // console.log('in logoutBound, username = ', username);
-    dispatch(A.logoutRequest(token, username));
-    localStorage.setItem('access_token', '');
-    localStorage.setItem('username', '');
-    dispatch(A.logoutSuccess());
-    dispatch(Notifications.success(title));
+    secureAxios('/users/logout', 'GET')
+      .then(() => {
+        dispatch(A.logoutRequest(token, username));
+        localStorage.setItem('access_token', '');
+        localStorage.setItem('username', '');
+        dispatch(A.logoutSuccess());
+        dispatch(Notifications.success(title));
+      });
   };
 }

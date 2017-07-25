@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import MyTag from '../ToolBox/MyTag.js';
+import MyTag from './MyTag.js';
 
-export default class GeneralInfo extends Component {
+export default class MyGeneralInfo extends Component {
 
   constructor(props) {
     super(props);

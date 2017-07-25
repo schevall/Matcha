@@ -1,41 +1,19 @@
 import React, { Component } from 'react';
 
-class GalleryDisplayComponent extends Component {
+export default class OneGalleryDisplay extends Component {
 
   constructor(props) {
     super(props);
-    const { username, picturesNb, picturesPath, profilePicturePath } = props;
+    const { picturesNb, picturesPath, username } = props;
     this.state = {
       username,
       picturesNb,
       picturesPath,
-      profilePicturePath,
     };
   }
 
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      username: nextProps.username,
-      picturesNb: nextProps.picturesNb,
-      picturesPath: nextProps.picturesPath,
-    });
-  }
-
-  handleClick = (event) => {
-    event.preventDefault();
-    const filename = event.target.parentElement.parentElement.id;
-    const initiator = event.target.parentElement.className;
-    if (initiator === 'favorite_button') {
-      this.props.handleFavorite(filename);
-    } else if (initiator === 'delete_button') {
-      this.props.handleRemove(filename);
-    }
-    return false;
-  }
-
   render() {
-    const { picturesPath, username, picturesNb } = this.state;
+    const { picturesPath, picturesNb, username } = this.state;
     if (picturesNb === 0 || picturesNb === 'undefined') {
       return null;
     }
@@ -60,5 +38,3 @@ class GalleryDisplayComponent extends Component {
     return <div className="all-additional-pictures">{ finalSrc }</div>;
   }
 }
-
-export default GalleryDisplayComponent;

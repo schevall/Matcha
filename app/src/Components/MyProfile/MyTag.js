@@ -31,7 +31,7 @@ class Mytag extends React.Component {
 
   handleAddNewTag = (e) => {
     e.preventDefault();
-    const { tags, newtag } = this.state;
+    const { tags, newtag, changed } = this.state;
     const index = tags.length + 1;
     const double = tags.filter(obj => (
       obj.label === newtag
@@ -47,7 +47,7 @@ class Mytag extends React.Component {
       if (newtag.length >= 16) {
         const title = 'A tag cannot be more than 16 characters long';
         this.props.dispatch(Notifications.error({ title }));
-        this.setState({ newtag: '' });
+        this.setState({ tags, newtag: '', changed });
       } else {
         const toadd = { key: index, label: newtag };
         tags.push(toadd);

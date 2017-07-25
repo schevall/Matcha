@@ -1,12 +1,12 @@
 import Mongo from '../config/MongoConnection';
-import Verif from './Verif_User_Input_Tools';
+import { VerifUserSignin } from './Verif_User_Input_Tools';
 import User from '../Models/User_Model';
 import mymailer from '../mail_ressources/mymailer.js';
 import { ftext, fhtml, subject } from '../mail_ressources/signup_message.js';
 
 const signup = async (req, res) => {
   // verification on the User input
-  let verif = await Verif(req.body);
+  let verif = await VerifUserSignin(req.body);
   if (verif.success === false) {
     return res.send({ verif });
   }

@@ -1,21 +1,19 @@
 import jwt from 'jsonwebtoken';
 
 import User from '../Models/User_Model';
-import Mongo from '../config/MongoConnection';
+import * as db from '../DbAction/DbAction.js';
 import config from '../config/config';
 
 
 const signin = async (req, res) => {
-  console.log('in signin strat, re.body', req.body);
   const { username, password } = req.body;
-
   if (!username) {
     return res.send({ error: 'errorUsername', message: 'Please fill the username error' });
   }
   if (!password) {
     return res.send({ error: 'errorPassword', message: 'Please fill the password field' });
   }
-  const userdb = await Mongo.db.collection('users').findOne({ username });
+  const { userdb } = await db.serveDb(username);
   if (!userdb) {
     return res.send({ error: 'errorUsername', message: `This username (${username}) does not exist.` });
   }
@@ -25,6 +23,9 @@ const signin = async (req, res) => {
   if (!User.comparePassword(password, userdb.password)) {
     return res.send({ error: 'errorPassword', message: 'The given password is incorrect.' });
   }
+  db.setter(username, 'logged', true);
+  const date = new Date();
+  db.setter(username, 'lastConnection', date);
   const token = jwt.sign({
     tokenUser: userdb.id }, config.secret, { expiresIn: '3h' });
   return res.send({ token, username });

@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import PrivateRoute from './PrivateRoute.js';
+import './CSS/style.css';
+import './CSS/profile_style.css';
 
+import PrivateRoute from './PrivateRoute.js';
 import NavBar from './Components/NavBar.js';
 import NotificationsSystem from './Components/NotificationSystem.js';
 import SignInContainer from './Containers/SignInContainer.js';
 import SignUpContainer from './Containers/SignUpContainer.js';
-import Activation from './Containers/Activation.js'
+import Activation from './Containers/Activation.js';
 import Lobby from './Components/Lobby.js';
-import MyProfileContainer from './Containers/MyProfileContainer.js';
+import MyProfile from './Containers/MyProfile.js';
+import OneProfile from './Containers/OneProfile.js';
 
 
 const MyRouter = (props) => {
@@ -27,7 +30,8 @@ const MyRouter = (props) => {
           <Route exact path="/signup" component={SignUpContainer} />
           <Route exact path="/signin" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
           <Route exact path="/activation" component={Activation} />
-          <PrivateRoute exact path="/myprofile" props={props} component={MyProfileContainer} />
+          <PrivateRoute exact path="/myprofile" props={props} component={MyProfile} />
+          <PrivateRoute exact path="/profile/:username" props={props} component={OneProfile} />
           <PrivateRoute exact path="/" props={props} component={Lobby} />
           <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
         </Switch>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import UploadPictureComponent from '../Components/UploadPictureComponent.js';
-import GalleryDisplayComponent from '../Components/GalleryDisplayComponent.js';
+import MyUploadPicture from '../Components/MyProfile/MyUploadPicture.js';
+import MyGalleryDisplay from '../Components/MyProfile/MyGalleryDisplay.js';
 
-class GalleryContainer extends Component {
+export default class MyGallery extends Component {
 
   constructor(props) {
     super(props);
@@ -38,14 +38,14 @@ class GalleryContainer extends Component {
       <div className="gallery_container">
         Gallery
         <div className="gallery_display_container">
-          <GalleryDisplayComponent
+          <MyGalleryDisplay
             picturesPath={picturesPath}
             picturesNb={picturesNb}
             username={username}
             handleRemove={this.props.handleRemove}
             handleFavorite={this.props.handleFavorite}
           />
-          <UploadPictureComponent
+          <MyUploadPicture
             picturesNb={picturesNb}
             handleonImageDrop={this.handleonImageDrop}
           />
@@ -55,15 +55,13 @@ class GalleryContainer extends Component {
   }
 }
 
-GalleryContainer.PropTypes = {
+MyGallery.PropTypes = {
   username: PropTypes.string,
   picturesPath: PropTypes.arrayOf(String),
   profilePicturePath: PropTypes.string,
 };
 
-GalleryContainer.defaultProps = {
+MyGallery.defaultProps = {
   picturesPath: [],
   profilePicturePath: '',
 };
-
-export default GalleryContainer;

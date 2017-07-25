@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import GeneralInfo from './GeneralInfo.js';
-import BasicProfilCard from './BasicProfilCardComponent.js';
-import ProtectedInfo from './ProtectedInfo.js';
+import GeneralInfo from './MyGeneralInfo.js';
+import MyBasicProfilCard from './MyBasicProfilCard.js';
+import ProtectedInfo from './MyProtectedInfo.js';
 import MyBio from './MyBio.js';
 
-class MyProfileCardComponent extends Component {
+export default class MyProfileCard extends Component {
 
   constructor(props) {
     super(props);
@@ -12,8 +12,11 @@ class MyProfileCardComponent extends Component {
     this.state = {
       basicInfo: {
         username: userInfo.username,
+        logged: userInfo.logged,
+        lastConnection: userInfo.lastConnection,
         gender: userInfo.gender,
         orient: userInfo.orient,
+        popularity: userInfo.popularity,
         birthDate: userInfo.birthDate,
         profilePicturePath: userInfo.profilePicturePath,
       },
@@ -35,8 +38,11 @@ class MyProfileCardComponent extends Component {
     this.setState({
       basicInfo: {
         username: userInfo.username,
+        logged: userInfo.logged,
+        lastConnection: userInfo.lastConnection,
         gender: userInfo.gender,
         orient: userInfo.orient,
+        popularity: userInfo.popularity,
         birthDate: userInfo.birthDate,
         profilePicturePath: userInfo.profilePicturePath,
       },
@@ -59,7 +65,7 @@ class MyProfileCardComponent extends Component {
     return (
       <div className="profile_container">
         <div className="profile_container_sub">
-          <BasicProfilCard button={false} basicInfo={basicInfo} />
+          <MyBasicProfilCard basicInfo={basicInfo} />
           <GeneralInfo
             extendedInfo={extendedInfo}
             handleOnSubmit={this.props.generalModifier}
@@ -76,5 +82,3 @@ class MyProfileCardComponent extends Component {
     );
   }
 }
-
-export default MyProfileCardComponent;

@@ -7,11 +7,11 @@ import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import secureAxios from '../secureAxios.js';
-import MyProfileCardComponent from '../Components/MyProfileCardComponent.js';
-import GalleryContainer from './GalleryContainer.js';
+import MyProfileCard from '../Components/MyProfile/MyProfileCard.js';
+import MyGallery from './MyGallery.js';
 import { logoutBound } from '../Actions/Login/loginBound.js';
 
-class MyProfileContainer extends Component {
+class MyProfile extends Component {
 
   constructor() {
     super();
@@ -161,7 +161,7 @@ class MyProfileContainer extends Component {
     const { userInfo } = this.state;
     return (
       <div className="profile_page_container">
-        <MyProfileCardComponent
+        <MyProfileCard
           generalModifier={this.ModifyGeneralInfo}
           emailModifier={this.ModifyEmail}
           passwordModifier={this.ModifyPassword}
@@ -169,7 +169,7 @@ class MyProfileContainer extends Component {
           bioModifier={this.ModifyBio}
           userInfo={userInfo}
         />
-        <GalleryContainer
+        <MyGallery
           username={username}
           picturesPath={picturesPath}
           profilePicturePath={profilePicturePath}
@@ -182,13 +182,13 @@ class MyProfileContainer extends Component {
   }
 }
 
-MyProfileContainer.PropTypes = {
+MyProfile.PropTypes = {
   username: PropTypes.string,
   isLogged: PropTypes.bool,
   notifications: PropTypes.Object,
 };
 
-MyProfileContainer.defaultProps = {
+MyProfile.defaultProps = {
   username: '',
   isLogged: false,
   notifications: null,
@@ -203,4 +203,4 @@ const mapStateToProps = ({
   username,
   notifications,
 });
-export default connect(mapStateToProps)(MyProfileContainer);
+export default connect(mapStateToProps)(MyProfile);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
-import ModalBox from '../ToolBox/Modal_box.js';
+import ModalBox from '../../ToolBox/Modal_box.js';
 
 
 class ProtectedInfo extends Component {

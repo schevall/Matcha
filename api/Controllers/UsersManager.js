@@ -119,3 +119,21 @@ export const updateGateway = async (req, res) => {
     default:
   }
 };
+
+export const visitProfile = async (req, res) => {
+  const { username } = req.headers;
+  const { targeted } = req.params;
+  const target = await db.getUserdb(targeted);
+  target.email = '';
+  const visitor = await db.getUserdb(username);
+  visitor.email = '';
+  res.send({ error: '', target, visitor });
+};
+
+export const logout = (req, res) => {
+  const { username } = req.headers;
+  db.setter(username, 'logged', false);
+  const date = new Date();
+  db.setter(username, 'lastConnection', date);
+  res.send({ error: '' });
+};

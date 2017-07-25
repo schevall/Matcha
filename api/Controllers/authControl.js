@@ -14,6 +14,7 @@ const authControl = async (req, res, next) => {
     return res.send({ error: 'authControl', message: 'No token Provided' });
   }
 
+  console.log('auth', username);
   if (!await checkUser(username)) {
     return res.send({ error: 'No user', message: 'No user found' });
   } else {

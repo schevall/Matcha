@@ -2,7 +2,7 @@
   margin: 30px;
 }
 
-.profile_container, .profile_binfo_container, .profile_all_info_container, .bio_container, .gallery_container, .extended-info-container, .activation-container {
+.profile_container, .profile_binfo_container, .profile_all_info_container, .bio_container, .gallery_container, .extended-info-container, .activation-container, .match-info-container {
   padding: 20px;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
@@ -13,10 +13,12 @@
   display: flex;
 }
 
-.profile_binfo_container {
+.extended-info-container {
+  margin-left: 20px;
+  width: 35%;
 }
 
-.extended-info-container {
+.match-info-container {
   margin-left: 20px;
   width: 35%;
 }
@@ -42,6 +44,10 @@
 
 .bio_container {
   margin: 20px 0;
+}
+
+.bio_content {
+  font-family: 'Josefin Slab', serif;
 }
 
 .gallery_container {

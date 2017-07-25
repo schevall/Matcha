@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 
-const UploadPictureComponent = props => (
+const MyUploadPicture = props => (
   props.picturesNb >= 5 ? null :
   <div>
     <Dropzone
@@ -15,4 +15,4 @@ const UploadPictureComponent = props => (
   </div>
 );
 
-export default UploadPictureComponent;
+export default MyUploadPicture;

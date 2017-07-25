@@ -38,7 +38,7 @@ class User {
       picturesPath: [],
       profilePicturePath: '',
       orient: 'both',
-      popularite: '',
+      popularity: 0,
       firstname: '',
       lastname: '',
       geo: '',
