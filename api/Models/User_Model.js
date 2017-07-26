@@ -45,6 +45,10 @@ class User {
       tags: [],
       likedby: [],
       liketo: [],
+      blockedby: [],
+      blockedto: [],
+      reportedby: [],
+      reportedto: [],
       notification: [],
       bio: '',
     });

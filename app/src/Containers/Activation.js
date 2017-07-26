@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -7,12 +7,9 @@ import Notifications from 'react-notification-system-redux';
 
 class Activation extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      activationkey: '',
-      username: '',
-    };
+  state = {
+    activationkey: '',
+    username: '',
   }
 
   handleChange = (e) => {
@@ -40,8 +37,10 @@ class Activation extends Component {
   }
 
   render() {
-    return (
-      <div className="activation-container">
+    const { isLogged } = this.props;
+    const output = (
+      isLogged ? <Redirect to="/" /> :
+      (<div className="activation-container">
         <Link to="/signin">To Signin</Link>
         <br />
         <Link to="/signup">To Signup</Link>
@@ -56,11 +55,13 @@ class Activation extends Component {
           <input id="activationkey" type="password" onChange={this.handleChange} />
         </label>
         <button type="submit" onClick={this.sendKey}>Submit</button>
-      </div>);
+      </div>));
+    return output;
   }
 }
 
 Activation.PropTypes = {
+  isLogged: PropTypes.bool,
   notifications: PropTypes.object,
 };
 
@@ -69,8 +70,10 @@ Activation.defaultProps = {
 };
 
 const mapStateToProps = ({
+  loginReducer: { isLogged },
   notifications,
 }) => ({
+  isLogged,
   notifications,
 });
 

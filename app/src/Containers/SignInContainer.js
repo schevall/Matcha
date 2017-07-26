@@ -14,10 +14,9 @@ class SignInContainer extends Component {
     password: '',
     errorUsername: '',
     errorPassword: '',
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('in SIGNIN CONT, NEXT PROPS =', nextProps);
     if (nextProps.SigninErrorObject) {
       this.setState({
         [nextProps.SigninErrorObject.error]: nextProps.SigninErrorObject.message,
@@ -29,14 +28,16 @@ class SignInContainer extends Component {
     e.preventDefault();
     const { username, password } = this.state;
     const input = { username, password };
-    this.props.dispatch(SigninErrorEraseBound());
+    if (this.state.errorUsername || this.state.errorPassword) {
+      this.props.dispatch(SigninErrorEraseBound());
+    }
     this.props.dispatch(loginBound(input));
-  };
+  }
 
   saveState = (e) => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
-    if (e.target.name === 'username' && this.state.errorusername) {
+    if (e.target.name === 'username' && this.state.errorUsername) {
       this.setState({ errorUsername: '' });
     }
     if (e.target.name === 'password' && this.state.errorPassword) {
@@ -46,22 +47,22 @@ class SignInContainer extends Component {
 
   render() {
     const { isLogged } = this.props;
+    const { username, password, errorUsername, errorPassword } = this.state;
     return (
-      isLogged ?
-        <Redirect to="/" /> :
-        <div className="signin_container">
-          <Link to="/signup">To Signup</Link>
-          <br />
-          <Link to="/activation">To Activation</Link>
-          <SignInComponent
-            username={this.state.username}
-            password={this.state.password}
-            errorUsername={this.state.errorUsername}
-            errorPassword={this.state.errorPassword}
-            handleChange={this.saveState}
-            handleSubmit={this.requestLogin}
-          />
-        </div>
+      isLogged ? <Redirect to="/" /> :
+      (<div className="signin_container">
+        <Link to="/signup">To Signup</Link>
+        <br />
+        <Link to="/activation">To Activation</Link>
+        <SignInComponent
+          username={username}
+          password={password}
+          errorUsername={errorUsername}
+          errorPassword={errorPassword}
+          handleChange={this.saveState}
+          handleSubmit={this.requestLogin}
+        />
+      </div>)
     );
   }
 }
@@ -71,10 +72,6 @@ SignInContainer.PropTypes = {
   SigninErrorObject: PropTypes.Object,
 };
 
-SignInContainer.defaultProps = {
-  isLogged: false,
-  SigninErrorObject: null,
-};
 
 const mapStateToProps = ({
   loginReducer: { isLogged },

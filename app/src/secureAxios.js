@@ -20,10 +20,7 @@ const secureAxios = (destination, method, data = {}, headers = {}) => {
     });
   }
 
-  return axios(config).then((response) => {
-    console.log('in secureAxios resp = ', response);
-    return response;
-  });
+  return axios(config);
 };
 
 export default secureAxios;

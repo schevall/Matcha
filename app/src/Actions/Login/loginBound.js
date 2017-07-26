@@ -28,6 +28,7 @@ export function loginBound(input) {
 }
 
 export function logoutBound(title) {
+  console.log('here');
   return (dispatch) => {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');

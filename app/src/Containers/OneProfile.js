@@ -59,17 +59,15 @@ class OneProfile extends Component {
 }
 
 OneProfile.PropTypes = {
-  username: PropTypes.string,
   isLogged: PropTypes.bool,
   notifications: PropTypes.Object,
 };
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { isLogged },
   notifications,
 }) => ({
   isLogged,
-  username,
   notifications,
 });
 export default connect(mapStateToProps)(OneProfile);

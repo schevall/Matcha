@@ -39,6 +39,16 @@ export const pusher = async (username, field, value) => {
     { $push: { [field]: value } });
 };
 
+export const puller = async (username, field, value) => {
+  console.log('puller initiator', username);
+  console.log('puller field', field);
+  console.log('puller value', value);
+  const { usercollection } = await serveDb(username);
+  await usercollection.updateOne(
+    { username },
+    { $pull: { [field]: value } });
+};
+
 export const removePicture = async (username, fileName) => {
   const { userdb, usercollection } = await serveDb(username);
   if (userdb.profilePicturePath === fileName) {

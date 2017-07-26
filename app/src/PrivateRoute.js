@@ -6,7 +6,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { logoutBound } from './Actions/Login/loginBound.js';
 
 const CheckExpToken = (isLogged, rest) => {
-  console.log('in priv resst', rest);
+  console.log('PRIV', rest);
   let title = null;
   if (!isLogged) {
     this.path = '/signin';

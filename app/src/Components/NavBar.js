@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Logout from './Logout';
 
 class NavBar extends Component {
 
   render() {
+    console.log('NAV', this.props);
     const { isLogged } = this.props;
     if (!isLogged) {
       return null;
@@ -29,4 +32,15 @@ class NavBar extends Component {
   }
 }
 
-export default NavBar;
+NavBar.PropTypes = {
+  isLogged: PropTypes.bool,
+};
+
+const mapStateToProps = ({
+  loginReducer: { isLogged },
+}) => ({
+  isLogged,
+});
+
+
+export default connect(mapStateToProps)(NavBar);

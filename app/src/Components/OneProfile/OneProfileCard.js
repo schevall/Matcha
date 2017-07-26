@@ -9,7 +9,6 @@ class OneProfileCard extends Component {
   constructor(props) {
     super(props);
     const { target, visitor } = props;
-    console.log('PROPS', props);
     this.state = {
       target,
       visitor,

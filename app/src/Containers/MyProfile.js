@@ -13,12 +13,9 @@ import { logoutBound } from '../Actions/Login/loginBound.js';
 
 class MyProfile extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      userInfo: null,
-    };
-  }
+  state = {
+    userInfo: null,
+  };
 
   componentDidMount = () => {
     const url = '/users/initprofile';
@@ -183,24 +180,21 @@ class MyProfile extends Component {
 }
 
 MyProfile.PropTypes = {
-  username: PropTypes.string,
   isLogged: PropTypes.bool,
   notifications: PropTypes.Object,
 };
 
 MyProfile.defaultProps = {
-  username: '',
   isLogged: false,
   notifications: null,
 };
 
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { isLogged },
   notifications,
 }) => ({
   isLogged,
-  username,
   notifications,
 });
 export default connect(mapStateToProps)(MyProfile);

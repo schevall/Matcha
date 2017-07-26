@@ -23,7 +23,7 @@ const routes = (app, upload) => {
   app.get('/api/users/logout', Users.logout);
   app.get('/api/users/getprofile/:targeted', Users.visitProfile);
 
-  app.post('/api/interactions/likes', Interactions.like);
+  app.post('/api/interactions/:action', Interactions.actionGateway);
 };
 
 export default routes;

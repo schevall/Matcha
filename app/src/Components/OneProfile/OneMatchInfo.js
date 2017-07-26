@@ -30,7 +30,6 @@ export default class OneMatchInfo extends Component {
 
   getIsLiked = (visitor, target) => {
     const likesTarget = target.liketo;
-    console.log(likesTarget);
     const { username } = visitor;
   };
 
@@ -52,7 +51,6 @@ export default class OneMatchInfo extends Component {
   }
   render() {
     const { visitor, target } = this.state;
-    console.log('in MAtching', visitor, target);
     const { compat, liked, visits, common, score } = this.MatchCalcultor(visitor, target);
     const tab = [
       { key: 0, text: 'Compatibility :', info: compat },

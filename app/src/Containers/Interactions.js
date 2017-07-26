@@ -1,58 +1,59 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/lib/Button';
-import Notifications from 'react-notification-system-redux';
-import { connect } from 'react-redux';
-import secureAxios from '../secureAxios.js';
 
-class Interactions extends Component {
+export default class Interactions extends Component {
 
   constructor(props) {
     super(props);
-    const { visitor, target } = props;
+    const { actions } = props;
     this.state = {
-      visitor,
-      target,
+      actions,
     };
     this.style = {
       margin: '3px',
     };
   }
 
-  LikeSending = (e) => {
-    e.preventDefault();
-    const { visitor, target } = this.state;
-    const payload = { visitor: visitor.username, target: target.username };
-    secureAxios('/interactions/likes', 'POST', payload)
-      .then(({ data }) => {
-        if (data.error) {
-          this.props.dispatch(Notifications.error({ title: data.message }));
-        } else {
-          const title = `You have liked ${target.username}`;
-          this.props.dispatch(Notifications.success({ title }));
-        }
-      });
+  componentWillReceiveProps(nextProps) {
+    console.log('INTER NEXT', nextProps);
+    const { actions } = nextProps;
+    this.setState({ actions });
   }
 
-  DetermineActions = (visitor, target) => {
-    
+  ActionsSending = (e) => {
+    e.preventDefault();
+    const action = e.target.id;
+    this.props.handleActions(action);
+  }
+
+  ButtonMaker = (id, text, bsStyle) => {
+    const button = (
+      <Button
+        onClick={this.ActionsSending}
+        id={id}
+        style={this.style}
+        bsStyle={bsStyle}
+      >
+        {text}
+      </Button>
+    );
+    return button;
   }
 
   render() {
+    const { canlike, canchat, canblock, canreport } = this.state.actions;
+    console.log('INTER', this.state.actions);
+    const likeButton = canlike ? this.ButtonMaker('like', 'Like', 'info') : this.ButtonMaker('unlike', 'Unlike', 'info');
+    const chatButton = canchat ? this.ButtonMaker('chat', 'Chat', 'success') : null;
+    const blockButton = canblock ? this.ButtonMaker('block', 'Block', 'warning') : this.ButtonMaker('unblock', 'Unblock', 'warning');
+    const reportButton = canreport ? this.ButtonMaker('report', 'Report', 'danger') : <Button style={this.style} bsStyle="danger">Reported</Button>;
     return (
       <div className="profile_action_container">
-        <Button onClick={this.LikeSending} style={this.style}>Like</Button>
-        <Button style={this.style} bsStyle="success">Chat</Button>
-        <Button style={this.style} bsStyle="warning">Block</Button>
-        <Button style={this.style} bsStyle="danger">Report</Button>
+        {likeButton}
+        {chatButton}
+        {blockButton}
+        {reportButton}
       </div>
     );
   }
 }
-
-const mapStateToProps = ({
-  notifications,
-}) => ({
-  notifications,
-});
-
-export default connect(mapStateToProps)(Interactions);

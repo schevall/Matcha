@@ -19,21 +19,19 @@ import OneProfile from './Containers/OneProfile.js';
 
 const MyRouter = (props) => {
   console.log('in router props = ', props);
-  const { isLogged } = props;
-  const { SigninErrorObject } = props;
   return (
     <Router>
       <div>
-        <NavBar isLogged={isLogged} />
-        <NotificationsSystem props={props} />
+        <NavBar />
+        <NotificationsSystem />
         <Switch>
           <Route exact path="/signup" component={SignUpContainer} />
-          <Route exact path="/signin" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
+          <Route exact path="/signin" component={SignInContainer} />
           <Route exact path="/activation" component={Activation} />
-          <PrivateRoute exact path="/myprofile" props={props} component={MyProfile} />
-          <PrivateRoute exact path="/profile/:username" props={props} component={OneProfile} />
-          <PrivateRoute exact path="/" props={props} component={Lobby} />
-          <Route path="*" isLogged={isLogged} SigninErrorObject={SigninErrorObject} component={SignInContainer} />
+          <PrivateRoute exact path="/myprofile" component={MyProfile} />
+          <PrivateRoute exact path="/profile/:username" component={OneProfile} />
+          <PrivateRoute exact path="/" component={Lobby} />
+          <Route path="*" component={SignInContainer} />
         </Switch>
       </div>
     </Router>
@@ -41,7 +39,6 @@ const MyRouter = (props) => {
 };
 
 MyRouter.PropTypes = {
-  username: PropTypes.string,
   isLogged: PropTypes.bool,
   SigninErrorObject: PropTypes.Object,
   notifications: PropTypes.Object,
@@ -50,9 +47,11 @@ MyRouter.PropTypes = {
 const mapStateToProps = ({
   loginReducer: { isLogged },
   signinErrorReducer: { SigninErrorObject },
+  notifications,
 }) => ({
   isLogged,
   SigninErrorObject,
+  notifications,
 });
 
 

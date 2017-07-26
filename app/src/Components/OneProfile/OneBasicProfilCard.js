@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Notifications from 'react-notification-system-redux';
+import secureAxios from '../../secureAxios.js';
 import Interactions from '../../Containers/Interactions.js';
 import calculateAge from '../../ToolBox/CalculAge.js';
+import * as I from '../../ToolBox/MatchingCalculator.js';
 
-export default class MyBasicProfilCard extends Component {
+class OneBasicProfilCard extends Component {
 
   constructor(props) {
     super(props);
     const { visitor, button, target } = props;
+    const actions = this.GetPossibleActions(target, visitor);
     this.state = {
       visitor,
       button,
       target,
+      actions,
     };
     this.styles = {
       username: {
@@ -19,6 +25,7 @@ export default class MyBasicProfilCard extends Component {
       },
     };
   }
+
 
   getDiffDate = (lastConnection) => {
     const last = Date.parse(lastConnection);
@@ -64,18 +71,45 @@ export default class MyBasicProfilCard extends Component {
   };
 
   GetPossibleActions = (target, visitor) => {
+    const actions = {};
+    actions.canlike = !I.hasLiked(target, visitor);
+    actions.canchat = I.isaMatch(target, visitor);
+    actions.canblock = !I.hasBlocked(target, visitor);
+    actions.canreport = !I.hasReported(target, visitor);
+    return actions;
+  }
 
+
+  SendActions = (action) => {
+    const visitor = this.state.visitor.username;
+    const target = this.state.target.username;
+    const payload = { visitor, target, action };
+    secureAxios(`/interactions/${action}`, 'POST', payload)
+      .then(({ data }) => {
+        if (data.error) {
+          this.props.dispatch(Notifications.error({ title: data.message }));
+        } else {
+          const { field, newstatut, message } = data;
+          const { actions } = this.state;
+          console.log('BEFORE', actions);
+          actions[field] = newstatut;
+          console.log('AFTER', actions);
+          this.setState({
+            actions,
+          });
+          this.props.dispatch(Notifications.success({ title: message }));
+        }
+      });
   }
 
   render() {
-    console.log('in BASIC', this.state);
     const { logged, lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = this.state.target;
-    const { button, visitor, target } = this.state;
+    const { button, actions } = this.state;
+    console.log('BASICS ACTION', actions);
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(logged, lastConnection);
     const age = calculateAge(birthDate);
-    const actions = this.GetPossibleActions(target, visitor);
     return (
       <div className="profile_binfo_container">
         <p style={this.styles.username} >{username.charAt(0).toUpperCase() + username.slice(1)}</p>
@@ -88,7 +122,19 @@ export default class MyBasicProfilCard extends Component {
           <img src={path} alt="" />
           <span>{info}</span>
         </div>
-        {!button ? null : <Interactions visitor={visitor} target={target} action={actions} />}
+        {!button ? null :
+        <Interactions
+          actions={actions}
+          handleActions={this.SendActions}
+        />}
       </div>);
   }
 }
+
+const mapStateToProps = ({
+  notifications,
+}) => ({
+  notifications,
+});
+
+export default connect(mapStateToProps)(OneBasicProfilCard);
