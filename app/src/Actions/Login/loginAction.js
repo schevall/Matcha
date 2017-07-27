@@ -33,20 +33,9 @@ export function loginFailure() {
   };
 }
 
-export function logoutRequest(accessToken, username) {
+export function logout() {
   return {
-    type: T.LOGOUT_REQUEST,
-    loading: true,
-    isLogged: true,
-    username,
-    token: accessToken,
-    data: null,
-  };
-}
-
-export function logoutSuccess() {
-  return {
-    type: T.LOGOUT_SUCCESS,
+    type: T.LOGOUT,
     loading: false,
     isLogged: false,
     username: '',

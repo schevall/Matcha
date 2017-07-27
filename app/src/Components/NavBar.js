@@ -2,15 +2,41 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
+import Notifications from 'react-notification-system-redux';
 
 import Logout from './Logout';
 
 class NavBar extends Component {
 
+  constructor(props) {
+    super(props);
+    console.log('NAV', props);
+    const { username, isLogged } = props;
+    this.state = {
+      username,
+      isLogged,
+    };
+  }
+
+  componentDidMount() {
+    const { username, isLogged } = this.state;
+    if (username && isLogged) {
+      const token = localStorage.getItem('access_token');
+      console.log('DID MOUNT', username, token);
+      this.socket = io('http://localhost:8000', {
+        query: `token=${token}`,
+      });
+      this.socket.emit('login', username);
+      this.socket.on('logged', (msg) => {
+        this.props.dispatch(Notifications.success({ title: msg }));
+      });
+    }
+  }
+
   render() {
-    console.log('NAV', this.props);
-    const { isLogged } = this.props;
-    if (!isLogged) {
+    const { isLogged, username } = this.state;
+    if (!isLogged || !username) {
       return null;
     }
     return (
@@ -34,12 +60,14 @@ class NavBar extends Component {
 
 NavBar.PropTypes = {
   isLogged: PropTypes.bool,
+  username: PropTypes.string,
 };
 
 const mapStateToProps = ({
-  loginReducer: { isLogged },
+  loginReducer: { isLogged, username },
 }) => ({
   isLogged,
+  username,
 });
 
 

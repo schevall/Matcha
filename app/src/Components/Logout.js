@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { logoutBound } from '../Actions/Login/loginBound';
+import { logout } from '../Actions/Login/loginBound';
 
 class Logout extends Component {
 
   onLogout = () => {
     // console.log('in lougout event this props = ', this.props);
-    this.props.dispatch(logoutBound({ title: 'You have been successfully disconnected' }));
+    this.props.dispatch(logout('You have been successfully disconnected'));
   };
 
   render() {

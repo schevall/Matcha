@@ -5,18 +5,16 @@ import { checkUser } from '../DbAction/DbAction.js';
 
 const authControl = async (req, res, next) => {
   const { username } = req.headers;
-  if (!username) {
-    return res.send({ error: 'upload error', message: 'No user provided' });
+  if (!username || username === 'null') {
+    return res.send({ error: 'authControl', message: 'No user provided' });
   }
-
   const token = req.body.token || req.query.token || req.headers.token;
-  if (!token) {
+  if (!token || token === 'null') {
     return res.send({ error: 'authControl', message: 'No token Provided' });
   }
 
-  console.log('auth', username);
   if (!await checkUser(username)) {
-    return res.send({ error: 'No user', message: 'No user found' });
+    return res.send({ error: 'authControl', message: 'No user found' });
   } else {
     jwt.verify(token, config.secret, (err, decoded) => {
       if (err) {

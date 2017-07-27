@@ -27,18 +27,19 @@ export function loginBound(input) {
   };
 }
 
-export function logoutBound(title) {
-  console.log('here');
+export function logout(title) {
   return (dispatch) => {
-    const token = localStorage.getItem('access_token');
-    const username = localStorage.getItem('username');
+    dispatch(A.logout());
     secureAxios('/users/logout', 'GET')
-      .then(() => {
-        dispatch(A.logoutRequest(token, username));
-        localStorage.setItem('access_token', '');
-        localStorage.setItem('username', '');
-        dispatch(A.logoutSuccess());
-        dispatch(Notifications.success(title));
+      .then(({ data }) => {
+        if (data.error) {
+          dispatch(Notifications.error({ title: data.message }));
+        } else {
+          localStorage.setItem('access_token', '');
+          localStorage.setItem('username', '');
+          console.log('LOUGOUT RESP', title);
+          dispatch(Notifications.success({ title }));
+        }
       });
   };
 }

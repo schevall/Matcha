@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../secureAxios.js';
 import MyProfileCard from '../Components/MyProfile/MyProfileCard.js';
 import MyGallery from './MyGallery.js';
-import { logoutBound } from '../Actions/Login/loginBound.js';
+import { logout } from '../Actions/Login/loginBound.js';
 
 class MyProfile extends Component {
 
@@ -24,7 +24,6 @@ class MyProfile extends Component {
         if (data.error) {
         } else {
           const { userInfo } = data;
-          console.log('resp =', data);
           this.setState({
             userInfo,
           });
@@ -55,7 +54,7 @@ class MyProfile extends Component {
       } else {
         const title = 'Your email has been changed =)';
         this.props.history.push('/activation');
-        this.props.dispatch(logoutBound({ title }));
+        this.props.dispatch(logout({ title }));
       }
     });
   }
@@ -149,7 +148,6 @@ class MyProfile extends Component {
   }
 
   render() {
-    console.log('state in main ', this.state);
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.userInfo) return <CircularProgress />;

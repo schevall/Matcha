@@ -6,7 +6,6 @@ export default class MyBasicProfilCard extends Component {
   constructor(props) {
     super(props);
     const { basicInfo } = props;
-    console.log('IN BASIC', props);
     const { logged, lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = basicInfo;
     this.state = {
@@ -74,10 +73,8 @@ export default class MyBasicProfilCard extends Component {
   };
 
   ConnectionDisplay = (logged, lastConnection) => {
-    console.log('start connectio', logged, lastConnection);
     const { hours, min, sec } = this.getDiffDate(lastConnection);
     const diff = this.getDateMessage(hours, min, sec);
-    console.log('after connectio');
     if (logged) {
       return (
         <p><img src="/static/icons/Online.png" alt="" /> Online since : {diff}</p>
@@ -94,7 +91,6 @@ export default class MyBasicProfilCard extends Component {
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(logged, lastConnection);
     const age = calculateAge(birthDate);
-    console.log('about to render');
     return (
       <div className="profile_binfo_container">
         <p style={this.styles.username} >{username.charAt(0).toUpperCase() + username.slice(1)}</p>

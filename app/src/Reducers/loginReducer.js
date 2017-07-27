@@ -36,15 +36,7 @@ function loginReducer(state = initial, action) {
         username: action.username,
         data: null,
       };
-    case T.LOGOUT_REQUEST:
-      return { ...state,
-        loading: true,
-        isLogged: true,
-        username: action.username,
-        token: action.token,
-        data: null,
-      };
-    case T.LOGOUT_SUCCESS:
+    case T.LOGOUT:
       return { ...state,
         loading: false,
         isLogged: false,

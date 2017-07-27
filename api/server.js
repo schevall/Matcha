@@ -4,16 +4,27 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import multer from 'multer';
+import socketIo from 'socket.io';
+import socketioJwt from 'socketio-jwt';
 
-// import path from 'path';
-
-import Mongo from './config/MongoConnection';
-import routes from './routes';
+import config from './config/config.js';
+import Mongo from './config/MongoConnection.js';
+import routes from './routes.js';
+import socket from './socketGate.js';
 
 const app = express();
 const port = (8000);
 const server = http.createServer(app);
+const io = socketIo(server);
 const upload = multer({ dest: './uploads/tmp/' });
+const users = [];
+
+io.use(socketioJwt.authorize({
+  secret: config.secret,
+  handshake: true,
+}));
+
+io.on('connection', socket(users));
 
 Mongo.connect();
 

@@ -8,7 +8,7 @@ export default class OneMatchInfo extends Component {
     const { visitor, target } = props;
     this.state = {
       visitor,
-      target
+      target,
     };
     this.styles = {
       table: {

@@ -26,8 +26,9 @@ const signin = async (req, res) => {
   db.setter(username, 'logged', true);
   const date = new Date();
   db.setter(username, 'lastConnection', date);
-  const token = jwt.sign({
-    tokenUser: userdb.id }, config.secret, { expiresIn: '3h' });
+  const { _id } = userdb;
+  console.log("SIGNIN", _id);
+  const token = jwt.sign({ username, _id }, config.secret, { expiresIn: '3h' });
   return res.send({ token, username });
 };
 

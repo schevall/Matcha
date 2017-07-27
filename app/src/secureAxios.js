@@ -16,7 +16,7 @@ const secureAxios = (destination, method, data = {}, headers = {}) => {
     Promise.reject(new Error(message)).then(() => {
       // not called
     }, () => {
-      console.log(message);
+      console.log('ERROR secureAxios', message);
     });
   }
 
