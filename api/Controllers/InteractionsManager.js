@@ -9,11 +9,17 @@ export const like = async (req, res) => {
   if (visitorLiketo.includes(target)) {
     return res.send({ error: 'like', message: `You allready like ${target} !` });
   }
-  await db.pusher(visitor, 'liketo', target);
-  await db.pusher(target, 'likedby', visitor);
-  const field = 'canlike';
-  const newstatut = false;
-  return res.send({ error: '', field, newstatut, message: `You have liked ${target} !` });
+
+  db.pusher(visitor, 'liketo', target);
+  db.pusher(target, 'likedby', visitor);
+  const targetDb = await db.getUserdb(target);
+  const targetLiketo = targetDb.liketo;
+  if (!targetLiketo.includes(visitor)) {
+    const newactions = { canlike: false };
+    return res.send({ error: '', newactions, message: `You have liked ${target} !` });
+  }
+  const newactions = { canlike: false, canchat: true };
+  return res.send({ error: '', newactions, message: `You have liked ${target} and it's a Match, Congrats !!!` });
 };
 
 export const unlike = async (req, res) => {
@@ -25,11 +31,16 @@ export const unlike = async (req, res) => {
   if (!visitorLiketo.includes(target)) {
     return res.send({ error: 'like', message: 'You can only unlike people you already like !' });
   }
-  await db.puller(visitor, 'liketo', target);
-  await db.puller(target, 'likedby', visitor);
-  const field = 'canlike';
-  const newstatut = true;
-  return res.send({ error: '', field, newstatut, message: `You have unliked ${target} !` });
+  db.puller(visitor, 'liketo', target);
+  db.puller(target, 'likedby', visitor);
+  const targetDb = await db.getUserdb(target);
+  const targetLiketo = targetDb.liketo;
+  if (!targetLiketo.includes(visitor)) {
+    const newactions = { canlike: false };
+    return res.send({ error: '', newactions, message: `You have unliked ${target} !` });
+  }
+  const newactions = { canlike: true, canchat: false };
+  return res.send({ error: '', newactions, message: `You have unliked ${target}, then the match is canceled` });
 };
 
 export const block = (req, res) => {

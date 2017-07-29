@@ -9,6 +9,7 @@ import * as I from '../../ToolBox/MatchingCalculator.js';
 class OneBasicProfilCard extends Component {
 
   constructor(props) {
+    console.log('IN CONST BASIC CARD');
     super(props);
     const { visitor, button, target } = props;
     const actions = this.GetPossibleActions(target, visitor);
@@ -24,6 +25,23 @@ class OneBasicProfilCard extends Component {
         fontSize: '25px',
       },
     };
+  }
+
+  componentDidMount() {
+    global.socket.on('match', (visitor) => {
+      const { actions } = this.state;
+      actions.canchat = true;
+      this.setState({ actions });
+      const title = `You may now chat with ${visitor} !!!`;
+      this.props.dispatch(Notifications.success({ title }));
+    });
+    global.socket.on('unmatch', (visitor) => {
+      const { actions } = this.state;
+      actions.canchat = false;
+      this.setState({ actions });
+      const title = `You cannot chat with ${visitor} anymore =/`;
+      this.props.dispatch(Notifications.error({ title }));
+    });
   }
 
 
@@ -72,6 +90,7 @@ class OneBasicProfilCard extends Component {
 
   GetPossibleActions = (target, visitor) => {
     const actions = {};
+    console.log('IN GetPossibleActions');
     actions.canlike = !I.hasLiked(target, visitor);
     actions.canchat = I.isaMatch(target, visitor);
     actions.canblock = !I.hasBlocked(target, visitor);
@@ -89,11 +108,17 @@ class OneBasicProfilCard extends Component {
         if (data.error) {
           this.props.dispatch(Notifications.error({ title: data.message }));
         } else {
-          const { field, newstatut, message } = data;
+          global.socket.emit(action, target);
+          const { newactions, message } = data;
+          if (newactions.canchat) global.socket.emit('match', target);
+          if (!newactions.canchat) global.socket.emit('unmatch', target);
           const { actions } = this.state;
-          console.log('BEFORE', actions);
-          actions[field] = newstatut;
-          console.log('AFTER', actions);
+          Object.keys(actions).forEach((key) => {
+            if (newactions[key] !== undefined) {
+              actions[key] = newactions[key];
+            }
+          });
+          console.log('action after', actions);
           this.setState({
             actions,
           });
@@ -106,7 +131,6 @@ class OneBasicProfilCard extends Component {
     const { logged, lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = this.state.target;
     const { button, actions } = this.state;
-    console.log('BASICS ACTION', actions);
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(logged, lastConnection);
     const age = calculateAge(birthDate);

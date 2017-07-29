@@ -8,6 +8,7 @@ class OneProfileCard extends Component {
 
   constructor(props) {
     super(props);
+    console.log('IN ONE PROFILE CARD CONTRUCT');
     const { target, visitor } = props;
     this.state = {
       target,
@@ -15,7 +16,12 @@ class OneProfileCard extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log('NEXT PROPS IN ONE PROFILE CARD', nextProps);
+  }
+
   render() {
+    console.log('IN ONE PROFILE CARD RENDER');
     const { visitor, target } = this.state;
     const button = (target.username !== visitor.username);
     return (

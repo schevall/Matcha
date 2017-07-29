@@ -15,7 +15,6 @@ export default class Interactions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('INTER NEXT', nextProps);
     const { actions } = nextProps;
     this.setState({ actions });
   }
@@ -42,7 +41,6 @@ export default class Interactions extends Component {
 
   render() {
     const { canlike, canchat, canblock, canreport } = this.state.actions;
-    console.log('INTER', this.state.actions);
     const likeButton = canlike ? this.ButtonMaker('like', 'Like', 'info') : this.ButtonMaker('unlike', 'Unlike', 'info');
     const chatButton = canchat ? this.ButtonMaker('chat', 'Chat', 'success') : null;
     const blockButton = canblock ? this.ButtonMaker('block', 'Block', 'warning') : this.ButtonMaker('unblock', 'Unblock', 'warning');

@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import './CSS/style.css';
@@ -22,7 +20,7 @@ const MyRouter = (props) => {
   return (
     <Router>
       <div>
-        <NavBar />
+        <Route component={NavBar} />
         <NotificationsSystem />
         <Switch>
           <Route exact path="/signup" component={SignUpContainer} />
@@ -38,21 +36,4 @@ const MyRouter = (props) => {
   );
 };
 
-MyRouter.PropTypes = {
-  isLogged: PropTypes.bool,
-  SigninErrorObject: PropTypes.Object,
-  notifications: PropTypes.Object,
-};
-
-const mapStateToProps = ({
-  loginReducer: { isLogged },
-  signinErrorReducer: { SigninErrorObject },
-  notifications,
-}) => ({
-  isLogged,
-  SigninErrorObject,
-  notifications,
-});
-
-
-export default connect(mapStateToProps)(MyRouter);
+export default MyRouter;

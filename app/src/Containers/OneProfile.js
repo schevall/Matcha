@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -13,29 +12,33 @@ class OneProfile extends Component {
 
   constructor(props) {
     super(props);
-    console.log('ONE', props);
     const { username } = props;
     const { pathname } = props.location;
-    const target = pathname.substr(pathname.lastIndexOf('/') + 1);
+    this.targetname = pathname.substr(pathname.lastIndexOf('/') + 1);
     this.state = {
-      target,
+      target: null,
     };
   }
 
   componentDidMount = () => {
-    const { target } = this.state;
-    const url = `/users/getprofile/${target}`;
+    const targetname = this.targetname;
+    const url = `/users/getprofile/${targetname}`;
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
         } else {
-          const { target, visitor } = data;
+          const { target, visitor, actions } = data;
           console.log('resp =', data);
           this.setState({
-            target, visitor
+            target, visitor, actions,
           });
         }
       });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('SHOULD', nextProps, nextState);
+    return true;
   }
 
   render() {
@@ -60,14 +63,11 @@ class OneProfile extends Component {
 
 OneProfile.PropTypes = {
   isLogged: PropTypes.bool,
-  notifications: PropTypes.Object,
 };
 
 const mapStateToProps = ({
   loginReducer: { isLogged },
-  notifications,
 }) => ({
   isLogged,
-  notifications,
 });
 export default connect(mapStateToProps)(OneProfile);
