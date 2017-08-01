@@ -37,6 +37,7 @@ class MyProfile extends Component {
       if (data.error) {
         this.props.dispatch(Notifications.error({ title: data.message }));
       } else {
+        console.log('RESP MODIFY', data);
         const { userInfo } = data;
         const title = 'Your infos has been changed';
         this.props.dispatch(Notifications.success({ title }));

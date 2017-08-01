@@ -43,6 +43,22 @@ class NavBar extends Component {
         const title = `${visitor} has unliked your profile !`;
         this.props.dispatch(Notifications.error({ title }));
       });
+      this.socket.on('match', (visitor) => {
+        const title = `You may now chat with ${visitor} !!!`;
+        this.props.dispatch(Notifications.success({ title }));
+      });
+      this.socket.on('unmatch', (visitor) => {
+        const title = `You cannot chat with ${visitor} anymore =/`;
+        this.props.dispatch(Notifications.error({ title }));
+      });
+      this.socket.on('block', (visitor) => {
+        const title = `${visitor} has blocked you !`;
+        this.props.dispatch(Notifications.error({ title }));
+      });
+      this.socket.on('unblock', (visitor) => {
+        const title = `${visitor} has unblocked you !!!`;
+        this.props.dispatch(Notifications.success({ title }));
+      });
 
       const { pathname } = this.props.location;
       if (pathname.includes('/profile')) {

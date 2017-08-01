@@ -10,7 +10,7 @@ import NotificationsSystem from './Components/NotificationSystem.js';
 import SignInContainer from './Containers/SignInContainer.js';
 import SignUpContainer from './Containers/SignUpContainer.js';
 import Activation from './Containers/Activation.js';
-import Lobby from './Components/Lobby.js';
+import Suggestions from './Containers/Suggestions.js';
 import MyProfile from './Containers/MyProfile.js';
 import OneProfile from './Containers/OneProfile.js';
 
@@ -28,7 +28,7 @@ const MyRouter = (props) => {
           <Route exact path="/activation" component={Activation} />
           <PrivateRoute exact path="/myprofile" component={MyProfile} />
           <PrivateRoute exact path="/profile/:username" component={OneProfile} />
-          <PrivateRoute exact path="/" component={Lobby} />
+          <PrivateRoute exact path="/" component={Suggestions} />
           <Route path="*" component={SignInContainer} />
         </Switch>
       </div>

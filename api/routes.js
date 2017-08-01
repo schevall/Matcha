@@ -5,6 +5,7 @@ import authControl from './Controllers/authControl.js';
 import * as Pictures from './Controllers/PictureManager.js';
 import * as Users from './Controllers/UsersManager.js';
 import * as Interactions from './Controllers/InteractionsManager.js';
+import getSuggestions from './Controllers/Suggestions.js'
 
 const routes = (app, upload) => {
   // public routes
@@ -22,8 +23,16 @@ const routes = (app, upload) => {
   app.get('/api/users/initprofile', Users.initprofile);
   app.get('/api/users/logout', Users.logout);
   app.get('/api/users/getprofile/:targeted', Users.visitProfile);
+  app.get('/api/users/getsuggestions/:visitor', getSuggestions);
 
   app.post('/api/interactions/:action', Interactions.actionGateway);
+
+  app.get('*', (req, res) => {
+    res.send({ error: 'not found', message: 'this request cannot go throught' });
+  });
+  app.post('*', (req, res) => {
+    res.send({ error: 'not found', message: 'this request cannot go throught' });
+  });
 };
 
 export default routes;

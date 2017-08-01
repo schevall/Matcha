@@ -27,7 +27,11 @@ class OneProfileCard extends Component {
     return (
       <div className="profile_container">
         <div className="profile_container_sub">
-          <OneBasicProfilCard visitor={visitor} button={button} target={target} />
+          <OneBasicProfilCard
+            visitor={visitor}
+            button={button}
+            target={target}
+          />
           <OneGeneralInfo
             extendedInfo={target}
           />

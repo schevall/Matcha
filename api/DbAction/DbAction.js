@@ -36,13 +36,10 @@ export const pusher = async (username, field, value) => {
   const { usercollection } = await serveDb(username);
   await usercollection.updateOne(
     { username },
-    { $push: { [field]: value } });
+    { $addToSet: { [field]: value } });
 };
 
 export const puller = async (username, field, value) => {
-  console.log('puller initiator', username);
-  console.log('puller field', field);
-  console.log('puller value', value);
   const { usercollection } = await serveDb(username);
   await usercollection.updateOne(
     { username },

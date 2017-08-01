@@ -64,6 +64,23 @@ const socketGate = users => (socket) => {
       }
     });
   });
+  socket.on('block', (target) => {
+    console.log(`${username} has blocked ${target}`);
+    users.forEach((user) => {
+      if (user.socketUser === target) {
+        socket.to(user.socketId).emit('block', username);
+      }
+    });
+  });
+
+  socket.on('unblock', (target) => {
+    console.log(`${username} has unblocked ${target}`);
+    users.forEach((user) => {
+      if (user.socketUser === target) {
+        socket.to(user.socketId).emit('unblock', username);
+      }
+    });
+  });
 };
 
 export default socketGate;

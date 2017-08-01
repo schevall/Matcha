@@ -124,10 +124,27 @@ export const visitProfile = async (req, res) => {
   const { username } = req.headers;
   const { targeted } = req.params;
   const target = await db.getUserdb(targeted);
+  if (!target) {
+    return res.send({ error: 'notfound' });
+  }
   target.email = '';
   const visitor = await db.getUserdb(username);
   visitor.email = '';
-  res.send({ error: '', target, visitor });
+  console.log('VISITOR', visitor.blockedby);
+  if (visitor.blockedby.length || target.blockedto.length) {
+    if (visitor.blockedby.includes(target.username) || target.blocketo.includes(visitor.username)) {
+      return res.send({ error: 'block' });
+    }
+  }
+  return res.send({ error: '', target, visitor });
+};
+
+export const getSuggestions = async (req, res) => {
+  const { visitor } = req.params;
+  const suggestions = await db.getUserSuggestions(visitor);
+  console.log('SUGES', suggestions);
+  // return res.send({ error: '', suggestions });
+  return res.send({ error: 'aie' });
 };
 
 export const logout = (req, res) => {

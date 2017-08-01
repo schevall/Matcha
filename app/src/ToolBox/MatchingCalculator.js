@@ -21,3 +21,12 @@ export const hasReported = (target, visitor) => {
   const { reportedto } = visitor;
   return reportedto.includes(target.username);
 };
+
+export const canSee = (visitor, target) => {
+  const { blockedby } = visitor;
+  const { blockedto } = target;
+  if (blockedby.includes(target.username) || blockedto.includes(visitor.username)) {
+    return false;
+  }
+  return true;
+};

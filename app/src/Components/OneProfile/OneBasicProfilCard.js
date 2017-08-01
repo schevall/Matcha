@@ -9,11 +9,12 @@ import * as I from '../../ToolBox/MatchingCalculator.js';
 class OneBasicProfilCard extends Component {
 
   constructor(props) {
-    console.log('IN CONST BASIC CARD');
     super(props);
     const { visitor, button, target } = props;
     const actions = this.GetPossibleActions(target, visitor);
+    const canSeeProfile = I.canSee(visitor, target);
     this.state = {
+      canSeeProfile,
       visitor,
       button,
       target,
@@ -28,19 +29,21 @@ class OneBasicProfilCard extends Component {
   }
 
   componentDidMount() {
-    global.socket.on('match', (visitor) => {
+    global.socket.on('match', () => {
       const { actions } = this.state;
       actions.canchat = true;
       this.setState({ actions });
-      const title = `You may now chat with ${visitor} !!!`;
-      this.props.dispatch(Notifications.success({ title }));
     });
-    global.socket.on('unmatch', (visitor) => {
+    global.socket.on('unmatch', () => {
       const { actions } = this.state;
       actions.canchat = false;
       this.setState({ actions });
-      const title = `You cannot chat with ${visitor} anymore =/`;
-      this.props.dispatch(Notifications.error({ title }));
+    });
+    global.socket.on('block', () => {
+      this.setState({ canSeeProfile: false });
+    });
+    global.socket.on('unblock', () => {
+      this.setState({ canSeeProfile: true });
     });
   }
 
@@ -90,16 +93,19 @@ class OneBasicProfilCard extends Component {
 
   GetPossibleActions = (target, visitor) => {
     const actions = {};
-    console.log('IN GetPossibleActions');
     actions.canlike = !I.hasLiked(target, visitor);
     actions.canchat = I.isaMatch(target, visitor);
     actions.canblock = !I.hasBlocked(target, visitor);
+    if (!actions.canblock) {
+      actions.canlike = 'disabled';
+      actions.canchat = false;
+    }
     actions.canreport = !I.hasReported(target, visitor);
     return actions;
   }
 
 
-  SendActions = (action) => {
+  SendActions = (button, action) => {
     const visitor = this.state.visitor.username;
     const target = this.state.target.username;
     const payload = { visitor, target, action };
@@ -110,18 +116,19 @@ class OneBasicProfilCard extends Component {
         } else {
           global.socket.emit(action, target);
           const { newactions, message } = data;
-          if (newactions.canchat) global.socket.emit('match', target);
-          if (!newactions.canchat) global.socket.emit('unmatch', target);
+          console.log('IN SEND ACTION.', newactions);
+          if (newactions.canchat !== 'disabled' && newactions.canchat !== undefined && newactions.canchat) global.socket.emit('match', target);
+          if (newactions.canchat !== undefined && !newactions.canchat) global.socket.emit('unmatch', target);
           const { actions } = this.state;
           Object.keys(actions).forEach((key) => {
             if (newactions[key] !== undefined) {
               actions[key] = newactions[key];
             }
           });
-          console.log('action after', actions);
           this.setState({
             actions,
           });
+          button.disabled = false;
           this.props.dispatch(Notifications.success({ title: message }));
         }
       });
@@ -130,11 +137,12 @@ class OneBasicProfilCard extends Component {
   render() {
     const { logged, lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = this.state.target;
-    const { button, actions } = this.state;
+    const { button, actions, canSeeProfile } = this.state;
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(logged, lastConnection);
     const age = calculateAge(birthDate);
     return (
+      !canSeeProfile ? null :
       <div className="profile_binfo_container">
         <p style={this.styles.username} >{username.charAt(0).toUpperCase() + username.slice(1)}</p>
         <div>{connection}</div>
