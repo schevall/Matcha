@@ -23,11 +23,9 @@ const signin = async (req, res) => {
   if (!User.comparePassword(password, userdb.password)) {
     return res.send({ error: 'errorPassword', message: 'The given password is incorrect.' });
   }
-  db.setter(username, 'logged', true);
-  const date = new Date();
+  const date = Date.now();
   db.setter(username, 'lastConnection', date);
   const { _id } = userdb;
-  console.log("SIGNIN", _id);
   const token = jwt.sign({ username, _id }, config.secret, { expiresIn: '3h' });
   return res.send({ token, username });
 };

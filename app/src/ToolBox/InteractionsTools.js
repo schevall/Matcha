@@ -23,6 +23,7 @@ export const hasReported = (target, visitor) => {
 };
 
 export const canSee = (visitor, target) => {
+  console.log('CAN SEE');
   const { blockedby } = visitor;
   const { blockedto } = target;
   if (blockedby.includes(target.username) || blockedto.includes(visitor.username)) {

@@ -6,7 +6,6 @@ export default class Interactions extends Component {
   constructor(props) {
     super(props);
     const { actions } = props;
-    console.log('Interactions', actions);
     this.state = {
       actions,
     };
@@ -58,7 +57,6 @@ export default class Interactions extends Component {
 
   render() {
     const { canlike, canchat, canblock, canreport } = this.state.actions;
-    console.log('ACTION ', this.state.actions);
     const likeButton = canlike === 'disabled' ? null : this.LikeButtonMaker(canlike);
     const chatButton = this.ChatButtonMaker(canchat);
     const blockButton = canblock ? this.ButtonMaker('block', 'Block', 'warning') : this.ButtonMaker('unblock', 'Unblock', 'warning');

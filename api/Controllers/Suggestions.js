@@ -6,6 +6,7 @@ const getProj = () => {
     gender: 1,
     orient: 1,
     profilePicturePath: 1,
+    lastConnection: 1,
     liketo: 1,
     blockedto: 1,
     popularity: 1,
@@ -19,13 +20,14 @@ const getProj = () => {
 
 const getMatch = (username, gender, orient) => {
   const lookfor = (orient === 'both' ?
-  [{ gender: 'male' }, { gender: 'female' }] : { gender: orient });
+  [{ gender: 'male' }, { gender: 'female' }] : [{ gender: orient }]);
   const match = {
     $and: [
     { username: { $ne: username } },
     { $or: lookfor },
     { $or: [{ orient: gender }, { orient: 'both' }] },
     { blockedto: { $ne: username } },
+    { blockedby: { $ne: username } },
     ] };
   return match;
 };
@@ -45,7 +47,7 @@ const getSuggestions = async (req, res) => {
     ]);
   const users = await result.toArray();
   result.close();
-  console.log(users);
+  // console.log(users);
 
   return res.send({ error: '', suggestions: users, visitor: userdb });
 };

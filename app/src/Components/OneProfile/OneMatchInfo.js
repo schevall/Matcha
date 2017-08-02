@@ -29,8 +29,8 @@ export default class OneMatchInfo extends Component {
   }
 
   getIsLiked = (visitor, target) => {
-    const likesTarget = target.liketo;
-    const { username } = visitor;
+    // const likesTarget = target.liketo;
+    // const { username } = visitor;
   };
 
   Row1 = (key, text, info) => {

@@ -26,12 +26,6 @@ export default class OneGalleryDisplay extends Component {
           alt=""
           height="200"
         />
-        <button className="favorite_button" onClick={this.handleClick}>
-          <i className="material-icons orange600">star_border</i>
-        </button>
-        <button className="delete_button" onClick={this.handleClick}>
-          <i className="material-icons">delete</i>
-        </button>
       </div>
     ));
 

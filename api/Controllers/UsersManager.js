@@ -130,7 +130,6 @@ export const visitProfile = async (req, res) => {
   target.email = '';
   const visitor = await db.getUserdb(username);
   visitor.email = '';
-  console.log('VISITOR', visitor.blockedby);
   if (visitor.blockedby.length || target.blockedto.length) {
     if (visitor.blockedby.includes(target.username) || target.blocketo.includes(visitor.username)) {
       return res.send({ error: 'block' });
@@ -149,8 +148,7 @@ export const getSuggestions = async (req, res) => {
 
 export const logout = (req, res) => {
   const { username } = req.headers;
-  db.setter(username, 'logged', false);
-  const date = new Date();
+  const date = Date.now();
   db.setter(username, 'lastConnection', date);
   res.send({ error: '' });
 };

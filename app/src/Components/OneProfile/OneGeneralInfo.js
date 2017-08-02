@@ -17,7 +17,7 @@ export default class OneGeneralInfo extends Component {
   }
 
   render() {
-    const { firstname, lastname, geo, gender, orient, tags } = this.state;
+    const { firstname, lastname, gender, orient, tags } = this.state;
     const tabtext = [
       { id: 1, name: 'firstname', value: firstname, text: 'First Name :  ' },
       { id: 2, name: 'lastname', value: lastname, text: 'Last Name :  ' },

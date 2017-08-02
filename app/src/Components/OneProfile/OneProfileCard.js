@@ -28,6 +28,7 @@ class OneProfileCard extends Component {
       <div className="profile_container">
         <div className="profile_container_sub">
           <OneBasicProfilCard
+            isProfilePage
             visitor={visitor}
             button={button}
             target={target}

@@ -5,7 +5,7 @@ import authControl from './Controllers/authControl.js';
 import * as Pictures from './Controllers/PictureManager.js';
 import * as Users from './Controllers/UsersManager.js';
 import * as Interactions from './Controllers/InteractionsManager.js';
-import getSuggestions from './Controllers/Suggestions.js'
+import getSuggestions from './Controllers/Suggestions.js';
 
 const routes = (app, upload) => {
   // public routes

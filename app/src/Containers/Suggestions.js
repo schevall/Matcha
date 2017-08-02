@@ -7,6 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../secureAxios.js';
 import OneBasicProfilCard from '../Components/OneProfile/OneBasicProfilCard.js';
 
+
 class Suggestions extends Component {
 
   constructor(props) {
@@ -15,6 +16,14 @@ class Suggestions extends Component {
     this.state = {
       username,
       mounted: null,
+    };
+    this.style = {
+      container: {
+        display: 'flex',
+      },
+      card: {
+        margin: '5px',
+      },
     };
   }
 
@@ -33,20 +42,22 @@ class Suggestions extends Component {
   }
 
   render() {
-    console.log('state in Suggestions ', this.state);
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
     const { suggestions, visitor } = this.state;
     const output = suggestions.map(user => (
       <OneBasicProfilCard
+        isProfilePage={false}
+        key={user.username}
+        style={this.style.card}
         visitor={visitor}
         target={user}
         button
       />
-    ));
+  ));
     return (
-      <div className="suggestion_page_container">
+      <div style={this.style.container}>
         {output}
       </div>
     );

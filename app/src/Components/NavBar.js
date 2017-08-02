@@ -22,7 +22,7 @@ class NavBar extends Component {
     const { username, isLogged } = this.state;
     if (username && isLogged) {
       const token = localStorage.getItem('access_token');
-      this.socket = io('http://localhost:8000', {
+      this.socket = io('http://10.12.6.15:8000', {
         query: `token=${token}`,
       });
       global.socket = this.socket;

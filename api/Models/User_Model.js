@@ -33,7 +33,6 @@ class User {
       password: newpassword,
       email,
       activationkey,
-      logged: false,
       lastConnection: '',
       picturesPath: [],
       profilePicturePath: '',

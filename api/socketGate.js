@@ -2,13 +2,13 @@ const socketGate = users => (socket) => {
   const { username } = socket.decoded_token;
   const socketId = socket.id;
   if (!username) console.log('Trouble maker', socket.decoded_token);
-  console.log(`user connected : ${username}, id : ${socketId}`);
+  // console.log(`user connected : ${username}, id : ${socketId}`);
 
-  console.log('current array', users);
+  // console.log('current array', users);
   if (username) {
     users.push({ socketUser: username, socketId });
   }
-  console.log('next array', users);
+  // console.log('next array', users);
 
   socket.on('disconnect', () => {
     console.log(`user disconnected : ${username}, id : ${socketId}`);
@@ -17,6 +17,13 @@ const socketGate = users => (socket) => {
       users.splice(index, 1);
       index = users.findIndex(user => (user.socketUser === username));
     }
+  });
+
+  socket.on('isUserLogged', (target) => {
+    const statement = users.some(el => el.socketUser === target);
+    console.log(`TARGET: ${target} is logged: ${statement}`);
+    console.log(`EMIT TO: ${username}, socket: ${socketId}`);
+    socket.emit(`userIsLogged/${target}`, statement, target);
   });
 
   socket.on('visit', (target) => {
@@ -29,7 +36,6 @@ const socketGate = users => (socket) => {
   });
 
   socket.on('like', (target) => {
-
     console.log(`${username} has liked ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
@@ -51,6 +57,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has matched with ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
+        socket.to(user.socketId).emit(`match/${target}`);
         socket.to(user.socketId).emit('match', username);
       }
     });
@@ -60,6 +67,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has unmatched with ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
+        socket.to(user.socketId).emit(`unmatch/${target}`);
         socket.to(user.socketId).emit('unmatch', username);
       }
     });
@@ -68,6 +76,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has blocked ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
+        socket.to(user.socketId).emit(`block/${username}`);
         socket.to(user.socketId).emit('block', username);
       }
     });
@@ -77,6 +86,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has unblocked ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
+        socket.to(user.socketId).emit(`unblock/${username}`);
         socket.to(user.socketId).emit('unblock', username);
       }
     });

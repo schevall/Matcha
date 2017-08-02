@@ -1,86 +1,86 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Notifications from 'react-notification-system-redux';
+import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../../secureAxios.js';
 import Interactions from '../../Containers/Interactions.js';
-import calculateAge from '../../ToolBox/CalculAge.js';
-import * as I from '../../ToolBox/MatchingCalculator.js';
+import * as D from '../../ToolBox/DateTools.js';
+import * as I from '../../ToolBox/InteractionsTools.js';
+
 
 class OneBasicProfilCard extends Component {
 
   constructor(props) {
     super(props);
-    const { visitor, button, target } = props;
+    const { isProfilePage, visitor, button, target } = props;
     const actions = this.GetPossibleActions(target, visitor);
     const canSeeProfile = I.canSee(visitor, target);
+    console.log('CONSTRUCTOR', props);
     this.state = {
+      isProfilePage,
       canSeeProfile,
+      isUserLogged: 'loading',
       visitor,
       button,
       target,
       actions,
     };
     this.styles = {
-      username: {
+      link: {
         fontWeight: 700,
         fontSize: '25px',
+        pointerEvents: 'true',
+        color: 'inherit',
+        textDecoration: 'none',
       },
     };
+    if (isProfilePage) this.styles.link.pointerEvents = 'none';
   }
 
-  componentDidMount() {
-    global.socket.on('match', () => {
+  componentWillMount() {
+    const targetName = this.state.target.username;
+    console.log('componentWillMount', targetName);
+    if (this.state.isUserLogged === 'loading') {
+      global.socket.emit('isUserLogged', targetName);
+    }
+    global.socket.on(`userIsLogged/${targetName}`, (statement) => {
+      if (this.state.isUserLogged === 'loading') {
+        this.setState({ isUserLogged: statement });
+      }
+    });
+    global.socket.on(`match`, () => {
+      console.log('MATCH SOCKET');
       const { actions } = this.state;
       actions.canchat = true;
       this.setState({ actions });
     });
-    global.socket.on('unmatch', () => {
+    global.socket.on(`unmatch`, () => {
+      console.log('UNMATCH SOCKET');
       const { actions } = this.state;
       actions.canchat = false;
       this.setState({ actions });
     });
-    global.socket.on('block', () => {
+    global.socket.on(`block/${targetName}`, () => {
       this.setState({ canSeeProfile: false });
     });
-    global.socket.on('unblock', () => {
+    global.socket.on(`unblock/${targetName}`, () => {
       this.setState({ canSeeProfile: true });
     });
   }
 
-
-  getDiffDate = (lastConnection) => {
-    const last = Date.parse(lastConnection);
-    const today = Date.now();
-    const diff = new Date(today - last);
-    const hour = diff.getHours();
-    const min = diff.getMinutes();
-    const sec = diff.getSeconds();
-    return { hour, min, sec };
-  };
-
-  getDateMessage = (hours, min, sec) => {
-    if (hours) {
-      return `(${hours}h : ${min}min)`;
-    } else if (min) {
-      return `(${min} minutes)`;
-    }
-    return `(${sec} seconds)`;
-  };
-
-  ProfilePictureDisplay = (username, profilePicturePath) => {
-    if (profilePicturePath) {
-      const path = `/static/${username}/${profilePicturePath}`;
-      const info = '';
-      return { path, info };
-    }
-    const path = '/static/icons/ic_face_black_36dp_2x.png';
-    const info = 'Add a profile picture !';
-    return { path, info };
-  };
+  componentWillUnmount = () => {
+    const { username } = this.state.target;
+    global.socket.off('isUserLogged');
+    global.socket.off(`userIsLogged/${username}`);
+    global.socket.off('match');
+    global.socket.off('unmatch');
+    global.socket.off('block');
+    global.socket.off('unblock');
+  }
 
   ConnectionDisplay = (logged, lastConnection) => {
-    const { hours, min, sec } = this.getDiffDate(lastConnection);
-    const diff = this.getDateMessage(hours, min, sec);
+    const diff = D.getDiffDate(lastConnection);
     if (logged) {
       return (
         <p><img src="/static/icons/Online.png" alt="" /> Online since : {diff}</p>
@@ -104,6 +104,17 @@ class OneBasicProfilCard extends Component {
     return actions;
   }
 
+  ProfilePictureDisplay = (username, profilePicturePath) => {
+    if (profilePicturePath) {
+      const path = `/static/${username}/${profilePicturePath}`;
+      const info = '';
+      return { path, info };
+    }
+    const path = '/static/icons/ic_face_black_36dp_2x.png';
+    const info = 'Add a profile picture !';
+    return { path, info };
+  };
+
 
   SendActions = (button, action) => {
     const visitor = this.state.visitor.username;
@@ -116,7 +127,6 @@ class OneBasicProfilCard extends Component {
         } else {
           global.socket.emit(action, target);
           const { newactions, message } = data;
-          console.log('IN SEND ACTION.', newactions);
           if (newactions.canchat !== 'disabled' && newactions.canchat !== undefined && newactions.canchat) global.socket.emit('match', target);
           if (newactions.canchat !== undefined && !newactions.canchat) global.socket.emit('unmatch', target);
           const { actions } = this.state;
@@ -135,24 +145,29 @@ class OneBasicProfilCard extends Component {
   }
 
   render() {
-    const { logged, lastConnection, profilePicturePath, username,
+    const { isUserLogged } = this.state;
+    if (isUserLogged === 'loading') return <CircularProgress />;
+    const { lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = this.state.target;
     const { button, actions, canSeeProfile } = this.state;
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
-    const connection = this.ConnectionDisplay(logged, lastConnection);
-    const age = calculateAge(birthDate);
+    const connection = this.ConnectionDisplay(isUserLogged, lastConnection);
+    const age = D.calculateAge(birthDate);
+    const formatUsername = username.charAt(0).toUpperCase() + username.slice(1);
     return (
-      !canSeeProfile ? null :
-      <div className="profile_binfo_container">
-        <p style={this.styles.username} >{username.charAt(0).toUpperCase() + username.slice(1)}</p>
+      !canSeeProfile ? <div>oups</div> :
+      <div style={this.props.style} className="profile_binfo_container">
+        <Link style={this.styles.link} to={`/profile/${username}`}>{formatUsername}</Link>
         <div>{connection}</div>
         <p>Popularity: {popularity}</p>
         <p>Age: {age}</p>
         <p>Gender: {gender}</p>
         <p>Sexual orientation: {orient}</p>
         <div className="profile_picture_container" >
-          <img src={path} alt="" />
-          <span>{info}</span>
+          <Link style={this.styles.link} to={`/profile/${username}`}>
+            <img src={path} alt="" />
+            <span>{info}</span>
+          </Link>
         </div>
         {!button ? null :
         <Interactions

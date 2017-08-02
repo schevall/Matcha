@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import calculateAge from '../../ToolBox/CalculAge.js';
+import * as D from '../../ToolBox/DateTools.js';
 
 export default class MyBasicProfilCard extends Component {
 
   constructor(props) {
     super(props);
     const { basicInfo } = props;
-    const { logged, lastConnection, profilePicturePath, username,
+    const { lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = basicInfo;
     this.state = {
-      logged,
+      logged: true,
       lastConnection,
       profilePicturePath,
       username,
@@ -28,10 +28,10 @@ export default class MyBasicProfilCard extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { basicInfo } = nextProps;
-    const { logged, lastConnection, profilePicturePath, username,
+    const { lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = basicInfo;
     this.setState({
-      logged,
+      logged: true,
       lastConnection,
       profilePicturePath,
       username,
@@ -41,25 +41,6 @@ export default class MyBasicProfilCard extends Component {
       birthDate,
     });
   }
-
-  getDiffDate = (lastConnection) => {
-    const last = Date.parse(lastConnection);
-    const today = Date.now();
-    const diff = new Date(today - last);
-    const hour = diff.getHours();
-    const min = diff.getMinutes();
-    const sec = diff.getSeconds();
-    return { hour, min, sec };
-  };
-
-  getDateMessage = (hours, min, sec) => {
-    if (hours) {
-      return `(${hours}h : ${min}min)`;
-    } else if (min) {
-      return `(${min} minutes)`;
-    }
-    return `(${sec} seconds)`;
-  };
 
   ProfilePictureDisplay = (username, profilePicturePath) => {
     if (profilePicturePath) {
@@ -73,8 +54,7 @@ export default class MyBasicProfilCard extends Component {
   };
 
   ConnectionDisplay = (logged, lastConnection) => {
-    const { hours, min, sec } = this.getDiffDate(lastConnection);
-    const diff = this.getDateMessage(hours, min, sec);
+    const diff = D.getDiffDate(lastConnection);
     if (logged) {
       return (
         <p><img src="/static/icons/Online.png" alt="" /> Online since : {diff}</p>
@@ -90,7 +70,7 @@ export default class MyBasicProfilCard extends Component {
             popularity, orient, gender, birthDate } = this.state;
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(logged, lastConnection);
-    const age = calculateAge(birthDate);
+    const age = D.calculateAge(birthDate);
     return (
       <div className="profile_binfo_container">
         <p style={this.styles.username} >{username.charAt(0).toUpperCase() + username.slice(1)}</p>
