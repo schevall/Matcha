@@ -12,6 +12,7 @@ import SignUpContainer from './Containers/SignUpContainer.js';
 import Activation from './Containers/Activation.js';
 import Suggestions from './Containers/Suggestions.js';
 import MyProfile from './Containers/MyProfile.js';
+import Activity from './Containers/Activity.js';
 import OneProfile from './Containers/OneProfile.js';
 
 
@@ -27,6 +28,7 @@ const MyRouter = (props) => {
           <Route exact path="/signin" component={SignInContainer} />
           <Route exact path="/activation" component={Activation} />
           <PrivateRoute exact path="/myprofile" component={MyProfile} />
+          <PrivateRoute exact path="/activity" component={Activity} />
           <PrivateRoute exact path="/profile/:username" component={OneProfile} />
           <PrivateRoute exact path="/" component={Suggestions} />
           <Route path="*" component={SignInContainer} />

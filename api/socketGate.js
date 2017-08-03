@@ -21,8 +21,6 @@ const socketGate = users => (socket) => {
 
   socket.on('isUserLogged', (target) => {
     const statement = users.some(el => el.socketUser === target);
-    console.log(`TARGET: ${target} is logged: ${statement}`);
-    console.log(`EMIT TO: ${username}, socket: ${socketId}`);
     socket.emit(`userIsLogged/${target}`, statement, target);
   });
 
@@ -57,7 +55,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has matched with ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
-        socket.to(user.socketId).emit(`match/${target}`);
+        socket.to(user.socketId).emit(`match/${username}`);
         socket.to(user.socketId).emit('match', username);
       }
     });
@@ -67,7 +65,7 @@ const socketGate = users => (socket) => {
     console.log(`${username} has unmatched with ${target}`);
     users.forEach((user) => {
       if (user.socketUser === target) {
-        socket.to(user.socketId).emit(`unmatch/${target}`);
+        socket.to(user.socketId).emit(`unmatch/${username}`);
         socket.to(user.socketId).emit('unmatch', username);
       }
     });

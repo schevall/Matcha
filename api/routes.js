@@ -22,9 +22,11 @@ const routes = (app, upload) => {
   app.post('/api/users/update/:field', Users.updateGateway);
   app.get('/api/users/initprofile', Users.initprofile);
   app.get('/api/users/logout', Users.logout);
-  app.get('/api/users/getprofile/:targeted', Users.visitProfile);
   app.get('/api/users/getsuggestions/:visitor', getSuggestions);
+  app.get('/api/users/getfavoritepicture/:username', Users.getFavPic);
+  app.get('/api/users/getActivity/:username', Users.getActivity);
 
+  app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
   app.post('/api/interactions/:action', Interactions.actionGateway);
 
   app.get('*', (req, res) => {

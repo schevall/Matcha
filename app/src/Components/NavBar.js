@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import Notifications from 'react-notification-system-redux';
+import Avatar from 'material-ui/Avatar';
+import CircularProgress from 'material-ui/CircularProgress';
 
+import secureAxios from '../secureAxios.js';
 import Logout from './Logout';
 
 class NavBar extends Component {
@@ -15,6 +18,7 @@ class NavBar extends Component {
     this.state = {
       username,
       isLogged,
+      profilePicturePath: '',
     };
   }
 
@@ -22,7 +26,7 @@ class NavBar extends Component {
     const { username, isLogged } = this.state;
     if (username && isLogged) {
       const token = localStorage.getItem('access_token');
-      this.socket = io('http://10.12.6.15:8000', {
+      this.socket = io('http://10.12.8.16:8000', {
         query: `token=${token}`,
       });
       global.socket = this.socket;
@@ -60,6 +64,14 @@ class NavBar extends Component {
         this.props.dispatch(Notifications.success({ title }));
       });
 
+      secureAxios(`/users/getfavoritepicture/${username}`, 'GET')
+        .then(({ data }) => {
+          if (!data.error) {
+            const { profilePicturePath } = data;
+            this.setState({ profilePicturePath });
+          }
+        });
+
       const { pathname } = this.props.location;
       if (pathname.includes('/profile')) {
         const target = pathname.split('/').pop();
@@ -81,9 +93,14 @@ class NavBar extends Component {
   }
 
   render() {
-    const { isLogged, username } = this.state;
+    const { isLogged, username, profilePicturePath } = this.state;
     if (!isLogged || !username) {
       return null;
+    }
+    let avatar = <CircularProgress />;
+    if (profilePicturePath) {
+      const path = `/static/${username}/${profilePicturePath}`;
+      avatar = <Link to="/myprofile"><Avatar src={path} /></Link>;
     }
     return (
       <nav className="navbar">
@@ -92,8 +109,8 @@ class NavBar extends Component {
         </div>
         <div className="navbar-collapse collapse">
           <ul className="navbar-nav">
-            <ol className="nav-item"><Link to="/myprofile" className="glyphicon glyphicon-user" /></ol>
-            <ol className="nav-item"><Link to="/activy" className="glyphicon glyphicon-flag" /></ol>
+            <ol className="nav-item">{avatar}</ol>
+            <ol className="nav-item"><Link to="/activity" className="glyphicon glyphicon-flag" /></ol>
           </ul>
           <ul className="navbar-nav">
             <Logout />

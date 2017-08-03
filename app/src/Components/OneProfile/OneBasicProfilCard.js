@@ -5,6 +5,7 @@ import Notifications from 'react-notification-system-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../../secureAxios.js';
 import Interactions from '../../Containers/Interactions.js';
+import LinkProfile from '../../ToolBox/LinkProfile.js';
 import * as D from '../../ToolBox/DateTools.js';
 import * as I from '../../ToolBox/InteractionsTools.js';
 
@@ -16,7 +17,6 @@ class OneBasicProfilCard extends Component {
     const { isProfilePage, visitor, button, target } = props;
     const actions = this.GetPossibleActions(target, visitor);
     const canSeeProfile = I.canSee(visitor, target);
-    console.log('CONSTRUCTOR', props);
     this.state = {
       isProfilePage,
       canSeeProfile,
@@ -40,7 +40,6 @@ class OneBasicProfilCard extends Component {
 
   componentWillMount() {
     const targetName = this.state.target.username;
-    console.log('componentWillMount', targetName);
     if (this.state.isUserLogged === 'loading') {
       global.socket.emit('isUserLogged', targetName);
     }
@@ -49,20 +48,20 @@ class OneBasicProfilCard extends Component {
         this.setState({ isUserLogged: statement });
       }
     });
-    global.socket.on(`match`, () => {
-      console.log('MATCH SOCKET');
+    global.socket.on(`match/${targetName}`, () => {
       const { actions } = this.state;
       actions.canchat = true;
       this.setState({ actions });
     });
-    global.socket.on(`unmatch`, () => {
-      console.log('UNMATCH SOCKET');
+    global.socket.on(`unmatch/${targetName}`, () => {
       const { actions } = this.state;
       actions.canchat = false;
       this.setState({ actions });
     });
     global.socket.on(`block/${targetName}`, () => {
-      this.setState({ canSeeProfile: false });
+      const { actions } = this.state;
+      actions.canchat = false;
+      this.setState({ canSeeProfile: false, actions });
     });
     global.socket.on(`unblock/${targetName}`, () => {
       this.setState({ canSeeProfile: true });
@@ -73,10 +72,10 @@ class OneBasicProfilCard extends Component {
     const { username } = this.state.target;
     global.socket.off('isUserLogged');
     global.socket.off(`userIsLogged/${username}`);
-    global.socket.off('match');
-    global.socket.off('unmatch');
-    global.socket.off('block');
-    global.socket.off('unblock');
+    global.socket.off(`match/${username}`);
+    global.socket.off(`unmatch/${username}`);
+    global.socket.off(`block/${username}`);
+    global.socket.off(`unblock/${username}`);
   }
 
   ConnectionDisplay = (logged, lastConnection) => {
@@ -153,11 +152,11 @@ class OneBasicProfilCard extends Component {
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(isUserLogged, lastConnection);
     const age = D.calculateAge(birthDate);
-    const formatUsername = username.charAt(0).toUpperCase() + username.slice(1);
+    const toProfile = LinkProfile(this.styles.link, username);
     return (
-      !canSeeProfile ? <div>oups</div> :
+      !canSeeProfile ? null :
       <div style={this.props.style} className="profile_binfo_container">
-        <Link style={this.styles.link} to={`/profile/${username}`}>{formatUsername}</Link>
+        {toProfile}
         <div>{connection}</div>
         <p>Popularity: {popularity}</p>
         <p>Age: {age}</p>

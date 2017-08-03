@@ -120,22 +120,22 @@ export const updateGateway = async (req, res) => {
   }
 };
 
-export const visitProfile = async (req, res) => {
-  const { username } = req.headers;
-  const { targeted } = req.params;
-  const target = await db.getUserdb(targeted);
-  if (!target) {
-    return res.send({ error: 'notfound' });
-  }
-  target.email = '';
-  const visitor = await db.getUserdb(username);
-  visitor.email = '';
-  if (visitor.blockedby.length || target.blockedto.length) {
-    if (visitor.blockedby.includes(target.username) || target.blocketo.includes(visitor.username)) {
-      return res.send({ error: 'block' });
-    }
-  }
-  return res.send({ error: '', target, visitor });
+export const getFavPic = async (req, res) => {
+  const { username } = req.params;
+  const output = await db.getter(username, ['profilePicturePath']);
+  const { profilePicturePath } = output[0];
+  return res.send({ error: '', profilePicturePath });
+};
+
+export const getActivity = async (req, res) => {
+  const { username } = req.params;
+  const output = await db.getter(username, ['activity']);
+  await db.setter(username, 'activity', []);
+  console.log('OUPT', output);
+  console.log('About to push', Object.values(output[0].activity));
+  await db.activityPusher(username, Object.values(output[0].activity));
+  const activity = output[0];
+  return res.send({ error: '', activity });
 };
 
 export const getSuggestions = async (req, res) => {

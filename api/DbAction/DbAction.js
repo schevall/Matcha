@@ -32,6 +32,23 @@ export const setter = async (username, field, value) => {
     { $set: { [field]: value } });
 };
 
+export const getter = async (username, fields) => {
+  const { userdb } = await serveDb(username);
+  const output = [];
+  for (let i = 0; fields[i]; i += 1) {
+    output.push({ [fields[i]]: userdb[fields[i]] });
+  }
+  return output;
+};
+
+export const activityPusher = async (username, array) => {
+  const { usercollection } = await serveDb(username);
+  console.log('About to push', array);
+  await usercollection.updateOne(
+    { username },
+    { $pushAll: { array } });
+};
+
 export const pusher = async (username, field, value) => {
   const { usercollection } = await serveDb(username);
   await usercollection.updateOne(
