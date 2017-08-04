@@ -21,16 +21,16 @@ const MyRouter = (props) => {
   return (
     <Router>
       <div>
-        <Route component={NavBar} />
+        <PrivateRoute component={NavBar} />
         <NotificationsSystem />
         <Switch>
           <Route exact path="/signup" component={SignUpContainer} />
           <Route exact path="/signin" component={SignInContainer} />
           <Route exact path="/activation" component={Activation} />
+          <PrivateRoute exact path="/" component={Suggestions} />
           <PrivateRoute exact path="/myprofile" component={MyProfile} />
           <PrivateRoute exact path="/activity" component={Activity} />
           <PrivateRoute exact path="/profile/:username" component={OneProfile} />
-          <PrivateRoute exact path="/" component={Suggestions} />
           <Route path="*" component={SignInContainer} />
         </Switch>
       </div>

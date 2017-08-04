@@ -2,13 +2,13 @@ const socketGate = users => (socket) => {
   const { username } = socket.decoded_token;
   const socketId = socket.id;
   if (!username) console.log('Trouble maker', socket.decoded_token);
-  // console.log(`user connected : ${username}, id : ${socketId}`);
+  console.log(`user connected : ${username}, id : ${socketId}`);
 
-  // console.log('current array', users);
+  console.log('current array', users);
   if (username) {
     users.push({ socketUser: username, socketId });
   }
-  // console.log('next array', users);
+  console.log('next array', users);
 
   socket.on('disconnect', () => {
     console.log(`user disconnected : ${username}, id : ${socketId}`);

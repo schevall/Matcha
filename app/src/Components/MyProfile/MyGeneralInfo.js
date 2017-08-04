@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MyTag from './MyTag.js';
+import MyGeo from './MyGeo.js';
 
 export default class MyGeneralInfo extends Component {
 
@@ -23,17 +24,13 @@ export default class MyGeneralInfo extends Component {
     });
   }
 
-  handleTagChange = (e) => {
-
-  }
-
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.handleOnSubmit(this.state);
   }
 
   render() {
-    const { firstname, lastname, gender, orient, tags } = this.state;
+    const { firstname, lastname, gender, orient, tags, geo } = this.state;
     const tabtext = [
       { id: 1, name: 'firstname', value: firstname, text: '  : First Name' },
       { id: 2, name: 'lastname', value: lastname, text: '  : Last Name' },
@@ -79,7 +76,8 @@ export default class MyGeneralInfo extends Component {
         <div> <br />
           <p>Your tags :</p>
           <MyTag tags={tags} handleOnSubmit={this.props.handleOnSubmitTags} />
-        </div>
+        </div> <br />
+        <MyGeo geo={geo} />
       </div>);
   }
 }

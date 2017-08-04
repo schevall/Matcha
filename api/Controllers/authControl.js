@@ -15,17 +15,16 @@ const authControl = async (req, res, next) => {
 
   if (!await checkUser(username)) {
     return res.send({ error: 'authControl', message: 'No user found' });
-  } else {
-    jwt.verify(token, config.secret, (err, decoded) => {
-      if (err) {
-        return res.send({ error: 'authControl', message: err.message });
-      }
-      if (Date.now() / 1000 > decoded.exp) {
-        return res.send({ error: 'authControl', message: 'Your session has expired' });
-      }
-      return next();
-    });
   }
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      return res.send({ error: 'authControl', message: err.message });
+    }
+    if (Date.now() / 1000 > decoded.exp) {
+      return res.send({ error: 'authControl', message: 'Your session has expired' });
+    }
+    return next();
+  });
 };
 
 export default authControl;

@@ -18,9 +18,7 @@ export function loginBound(input) {
           localStorage.setItem('access_token', data.token);
           localStorage.setItem('username', data.username);
           dispatch(A.loginSuccess(data));
-          dispatch(
-            Notifications.success({ title: `Hello ${data.username}, you are connected` }),
-          );
+          dispatch(Notifications.success({ title: `Hello ${data.username}, you are connected` }));
         }
       })
       .catch(err => console.log('error in login proccess: ', err));
@@ -33,6 +31,8 @@ export function logout(title) {
     secureAxios('/users/logout', 'GET')
       .then(({ data }) => {
         if (data.error) {
+          localStorage.setItem('access_token', '');
+          localStorage.setItem('username', '');
           dispatch(Notifications.error({ title: data.message }));
         } else {
           localStorage.setItem('access_token', '');

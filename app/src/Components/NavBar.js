@@ -7,6 +7,7 @@ import Notifications from 'react-notification-system-redux';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 
+
 import secureAxios from '../secureAxios.js';
 import Logout from './Logout';
 
@@ -25,45 +26,7 @@ class NavBar extends Component {
   componentDidMount() {
     const { username, isLogged } = this.state;
     if (username && isLogged) {
-      const token = localStorage.getItem('access_token');
-      this.socket = io('http://10.12.8.16:8000', {
-        query: `token=${token}`,
-      });
-      global.socket = this.socket;
-      this.socket.on('connect', () => {
-        console.log('connected from the client side', this.socket.id);
-      });
-      this.socket.on('visit', (visitor) => {
-        const title = `${visitor} has visited your profile !`;
-        this.props.dispatch(Notifications.success({ title }));
-      });
-
-      this.socket.on('like', (visitor) => {
-        const title = `${visitor} has liked your profile !`;
-        this.props.dispatch(Notifications.success({ title }));
-      });
-
-      this.socket.on('unlike', (visitor) => {
-        const title = `${visitor} has unliked your profile !`;
-        this.props.dispatch(Notifications.error({ title }));
-      });
-      this.socket.on('match', (visitor) => {
-        const title = `You may now chat with ${visitor} !!!`;
-        this.props.dispatch(Notifications.success({ title }));
-      });
-      this.socket.on('unmatch', (visitor) => {
-        const title = `You cannot chat with ${visitor} anymore =/`;
-        this.props.dispatch(Notifications.error({ title }));
-      });
-      this.socket.on('block', (visitor) => {
-        const title = `${visitor} has blocked you !`;
-        this.props.dispatch(Notifications.error({ title }));
-      });
-      this.socket.on('unblock', (visitor) => {
-        const title = `${visitor} has unblocked you !!!`;
-        this.props.dispatch(Notifications.success({ title }));
-      });
-
+      this.initSocket();
       secureAxios(`/users/getfavoritepicture/${username}`, 'GET')
         .then(({ data }) => {
           if (!data.error) {
@@ -75,7 +38,7 @@ class NavBar extends Component {
       const { pathname } = this.props.location;
       if (pathname.includes('/profile')) {
         const target = pathname.split('/').pop();
-        this.socket.emit('visit', target);
+        global.socket.emit('visit', target);
       }
     }
   }
@@ -88,8 +51,21 @@ class NavBar extends Component {
     const { pathname } = nextProps.location;
     if (pathname.includes('/profile')) {
       const target = pathname.split('/').pop();
-      this.socket.emit('visit', target);
+      global.socket.emit('visit', target);
     }
+  }
+
+  initSocket = () => {
+    const token = localStorage.getItem('access_token');
+    global.socket = io.connect('', { query: `token=${token}` });
+    global.socket.on('connect', () => { console.log('connected from the client side', global.socket.id); });
+    global.socket.on('visit', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has visited your profile !` })); });
+    global.socket.on('like', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has liked your profile !` })); });
+    global.socket.on('unlike', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has unliked your profile !` })); });
+    global.socket.on('match', (visitor) => { this.props.dispatch(Notifications.success({ title: `You may now chat with ${visitor} !!!` })); });
+    global.socket.on('unmatch', (visitor) => { this.props.dispatch(Notifications.error({ title: `You cannot chat with ${visitor} anymore =/` })); });
+    global.socket.on('block', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has blocked you !` })); });
+    global.socket.on('unblock', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` })); });
   }
 
   render() {

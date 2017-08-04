@@ -47,7 +47,6 @@ const getSuggestions = async (req, res) => {
     ]);
   const users = await result.toArray();
   result.close();
-  // console.log(users);
 
   return res.send({ error: '', suggestions: users, visitor: userdb });
 };
