@@ -32,21 +32,16 @@ export const setter = async (username, field, value) => {
     { $set: { [field]: value } });
 };
 
+
 export const getter = async (username, fields) => {
   const { userdb } = await serveDb(username);
+  console.log('in getter', fields);
   const output = [];
   for (let i = 0; fields[i]; i += 1) {
+    console.log('in for', [fields[i]], userdb[fields[i]]);
     output.push({ [fields[i]]: userdb[fields[i]] });
   }
   return output;
-};
-
-export const activityPusher = async (username, array) => {
-  const { usercollection } = await serveDb(username);
-  console.log('About to push', array);
-  await usercollection.updateOne(
-    { username },
-    { $pushAll: { array } });
 };
 
 export const pusher = async (username, field, value) => {
@@ -83,4 +78,11 @@ export const removePicture = async (username, fileName) => {
   });
 };
 
-// const modifyUser = async (req, res)
+
+export const oldActivityPusher = async (username, array) => {
+  const { usercollection } = await serveDb(username);
+  console.log('About to push', array);
+  await usercollection.updateOne(
+    { username },
+    { $pushAll: { oldactivity: array } });
+};

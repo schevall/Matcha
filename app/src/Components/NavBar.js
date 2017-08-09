@@ -87,9 +87,8 @@ class NavBar extends Component {
           <ul className="navbar-nav">
             <ol className="nav-item">{avatar}</ol>
             <ol className="nav-item"><Link to="/activity" className="glyphicon glyphicon-flag" /></ol>
-          </ul>
-          <ul className="navbar-nav">
-            <Logout />
+            <ol className="nav-item"><Link to="/chat" className="glyphicon glyphicon-comment" /></ol>
+            <ol className="nav-item"><Logout /></ol>
           </ul>
         </div>
       </nav>

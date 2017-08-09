@@ -34,9 +34,11 @@ class Activity extends Component {
         if (data.error) {
           console.log(data.error);
         } else {
+          console.log('resp ', data);
           const { activity } = data.activity;
-          console.log('RESP FROM ACTIVITY', activity);
-          this.setState({ mounted: true, activity });
+          const { oldactivity } = data.oldactivity;
+          console.log('RESP FROM ACTIVITY', activity, oldactivity);
+          this.setState({ mounted: true, activity, oldactivity });
         }
       });
   }
@@ -45,11 +47,11 @@ class Activity extends Component {
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
-    const { activity } = this.state;
-    console.log('AT first ', activity);
+    const { activity, oldactivity } = this.state;
+    console.log('AT first ', activity, oldactivity);
     return (
       <div className="activity_container" style={this.style.container}>
-        <ActivityDisplay activity={activity} />
+        <ActivityDisplay activity={activity} oldactivity={oldactivity} />
       </div>
     );
   }

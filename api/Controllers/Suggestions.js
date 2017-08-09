@@ -26,6 +26,7 @@ const getMatch = (username, gender, orient) => {
     { username: { $ne: username } },
     { $or: lookfor },
     { $or: [{ orient: gender }, { orient: 'both' }] },
+    { profilePicturePath: { $ne: '' } },
     { blockedto: { $ne: username } },
     { blockedby: { $ne: username } },
     ] };

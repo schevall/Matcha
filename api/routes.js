@@ -5,6 +5,7 @@ import authControl from './Controllers/authControl.js';
 import * as Pictures from './Controllers/PictureManager.js';
 import * as Users from './Controllers/UsersManager.js';
 import * as Interactions from './Controllers/InteractionsManager.js';
+import * as Chat from './Controllers/ChatManager.js';
 import getSuggestions from './Controllers/Suggestions.js';
 
 const routes = (app, upload) => {
@@ -28,6 +29,10 @@ const routes = (app, upload) => {
 
   app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
   app.post('/api/interactions/:action', Interactions.actionGateway);
+
+  app.get('/api/chat/getAllMessage', Chat.getConversations);
+  app.get('/api/chat/getMessage/:target', Chat.getMessages);
+  app.post('/api/chat/newMessage', Chat.inputMessage);
 
   app.get('*', (req, res) => {
     res.send({ error: 'not found', message: 'this request cannot go throught' });

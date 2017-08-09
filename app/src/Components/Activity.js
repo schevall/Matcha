@@ -6,15 +6,8 @@ class ActivityDisplay extends Component {
 
   constructor() {
     super();
+    this.state = { open: false };
     this.styles = {
-      button: {
-        border: 'none',
-        outline: 'none',
-        backgroundColor: 'ligthgrey',
-        color: 'white',
-        borderRadius: '40px',
-        fontSize: '10px',
-      },
       row: {
         padding: '4px',
       },
@@ -89,13 +82,43 @@ class ActivityDisplay extends Component {
     return null;
   };
 
+  handleClick = (e) => {
+    e.preventDefault();
+    this.setState({ open: true });
+  }
+
   render() {
-    const { activity } = this.props;
+    const { activity, oldactivity } = this.props;
+    console.log('in render', activity, oldactivity);
+    const { open } = this.state;
     const output = [];
+    const output2 = [];
     activity.map(el => (
       output.push(this.formatActivity(el))
     ));
-    return <div>{output}</div>;
+    oldactivity.map(el => (
+      output2.push(this.formatActivity(el))
+    ));
+    if (!activity || activity === undefined || !activity.length) {
+      output[0] =
+        (<div style={this.styles.row} className="row" key="activity">
+          <div className="col">No new activity to show</div>
+        </div>);
+    }
+    console.log('Avyivity', output);
+    return (
+      <div>
+        {open ? output2 :
+        <div style={this.styles.row} className="row" key="oldactivity">
+          <div className="col">
+            <button onClick={this.handleClick}>
+               Show old activity
+            </button>
+          </div>
+        </div>}
+        {!open ? output : null}
+      </div>
+    );
   }
 }
 

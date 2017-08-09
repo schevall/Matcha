@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Notifications from 'react-notification-system-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../../secureAxios.js';
@@ -25,6 +25,7 @@ class OneBasicProfilCard extends Component {
       button,
       target,
       actions,
+      tochat: false,
     };
     this.styles = {
       link: {
@@ -118,34 +119,42 @@ class OneBasicProfilCard extends Component {
   SendActions = (button, action) => {
     const visitor = this.state.visitor.username;
     const target = this.state.target.username;
-    const payload = { visitor, target, action };
-    secureAxios(`/interactions/${action}`, 'POST', payload)
-      .then(({ data }) => {
-        if (data.error) {
-          this.props.dispatch(Notifications.error({ title: data.message }));
-        } else {
-          global.socket.emit(action, target);
-          const { newactions, message } = data;
-          if (newactions.canchat !== 'disabled' && newactions.canchat !== undefined && newactions.canchat) global.socket.emit('match', target);
-          if (newactions.canchat !== undefined && !newactions.canchat) global.socket.emit('unmatch', target);
-          const { actions } = this.state;
-          Object.keys(actions).forEach((key) => {
-            if (newactions[key] !== undefined) {
-              actions[key] = newactions[key];
-            }
-          });
-          this.setState({
-            actions,
-          });
-          button.disabled = false;
-          this.props.dispatch(Notifications.success({ title: message }));
-        }
-      });
+    if (action === 'chat') {
+      this.setState({ tochat: true });
+    } else {
+      const payload = { visitor, target, action };
+      secureAxios(`/interactions/${action}`, 'POST', payload)
+        .then(({ data }) => {
+          if (data.error) {
+            this.props.dispatch(Notifications.error({ title: data.message }));
+          } else {
+            global.socket.emit(action, target);
+            const { newactions, message } = data;
+            if (newactions.canchat !== 'disabled' && newactions.canchat !== undefined && newactions.canchat) global.socket.emit('match', target);
+            if (newactions.canchat !== undefined && !newactions.canchat) global.socket.emit('unmatch', target);
+            const { actions } = this.state;
+            Object.keys(actions).forEach((key) => {
+              if (newactions[key] !== undefined) {
+                actions[key] = newactions[key];
+              }
+            });
+            this.setState({
+              actions,
+            });
+            button.disabled = false;
+            this.props.dispatch(Notifications.success({ title: message }));
+          }
+        });
+    }
   }
 
   render() {
     const { isUserLogged } = this.state;
     if (isUserLogged === 'loading') return <CircularProgress />;
+    if (this.state.tochat) {
+      const room = `/chat/${this.state.target.username}`;
+      return <Redirect to={room} />;
+    }
     const { lastConnection, profilePicturePath, username,
             popularity, orient, gender, birthDate } = this.state.target;
     const { button, actions, canSeeProfile } = this.state;

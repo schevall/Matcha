@@ -21,7 +21,7 @@ class OneProfileCard extends Component {
   }
 
   render() {
-    console.log('IN ONE PROFILE CARD RENDER');
+    console.log('IN ONE PROFILE CARD RENDER', this.props);
     const { visitor, target } = this.state;
     const button = (target.username !== visitor.username);
     return (

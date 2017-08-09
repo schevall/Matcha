@@ -129,13 +129,15 @@ export const getFavPic = async (req, res) => {
 
 export const getActivity = async (req, res) => {
   const { username } = req.params;
-  const output = await db.getter(username, ['activity']);
+  const activity = await db.getter(username, ['activity']);
+  const oldactivity = await db.getter(username, ['oldactivity']);
   await db.setter(username, 'activity', []);
-  console.log('OUPT', output);
-  console.log('About to push', Object.values(output[0].activity));
-  await db.activityPusher(username, Object.values(output[0].activity));
-  const activity = output[0];
-  return res.send({ error: '', activity });
+  console.log('about to push', activity);
+  console.log('About to push', Object.values(activity));
+  await db.oldActivityPusher(username, Object.values(activity[0].activity));
+  console.log('before sending', activity[0]);
+  console.log('before sending', oldactivity[0]);
+  return res.send({ error: '', activity: activity[0], oldactivity: oldactivity[0] });
 };
 
 export const getSuggestions = async (req, res) => {

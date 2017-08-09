@@ -49,6 +49,9 @@ class User {
       reportedby: [],
       reportedto: [],
       notification: [],
+      activity: [],
+      oldactivity: [],
+      conversations: null,
       bio: '',
     });
   }

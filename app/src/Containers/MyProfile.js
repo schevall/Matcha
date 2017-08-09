@@ -22,6 +22,7 @@ class MyProfile extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
+          console.log(data.error);
         } else {
           const { userInfo } = data;
           this.setState({

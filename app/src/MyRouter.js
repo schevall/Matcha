@@ -12,8 +12,10 @@ import SignUpContainer from './Containers/SignUpContainer.js';
 import Activation from './Containers/Activation.js';
 import Suggestions from './Containers/Suggestions.js';
 import MyProfile from './Containers/MyProfile.js';
-import Activity from './Containers/Activity.js';
 import OneProfile from './Containers/OneProfile.js';
+import Activity from './Containers/Activity.js';
+import Chat from './Containers/Chat.js';
+import ChatRoom from './Containers/ChatRoom.js';
 
 
 const MyRouter = (props) => {
@@ -30,6 +32,8 @@ const MyRouter = (props) => {
           <PrivateRoute exact path="/" component={Suggestions} />
           <PrivateRoute exact path="/myprofile" component={MyProfile} />
           <PrivateRoute exact path="/activity" component={Activity} />
+          <PrivateRoute exact path="/chat" component={Chat} />
+          <PrivateRoute exact path="/chat/:target" component={ChatRoom} />
           <PrivateRoute exact path="/profile/:username" component={OneProfile} />
           <Route path="*" component={SignInContainer} />
         </Switch>
