@@ -140,14 +140,6 @@ export const getActivity = async (req, res) => {
   return res.send({ error: '', activity: activity[0], oldactivity: oldactivity[0] });
 };
 
-export const getSuggestions = async (req, res) => {
-  const { visitor } = req.params;
-  const suggestions = await db.getUserSuggestions(visitor);
-  console.log('SUGES', suggestions);
-  // return res.send({ error: '', suggestions });
-  return res.send({ error: 'aie' });
-};
-
 export const logout = (req, res) => {
   const { username } = req.headers;
   const date = Date.now();

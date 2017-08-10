@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import secureAxios from '../secureAxios.js';
+import ConversationCard from '../Components/ConversationCard.js';
 
 class Chat extends Component {
 
@@ -12,26 +13,25 @@ class Chat extends Component {
     super(props);
     const { username } = props;
     this.styles = {
-      container: {
+      chat_container: {
         width: '100%',
         height: '70vh',
-        backgroundColor: 'white',
       },
     };
     this.state = { username, mounted: false };
   }
 
   componentWillMount = () => {
-    const url = '/users/getAllMessage/';
+    const url = '/chat/getAllMessage/';
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
           this.setState({ mounted: true });
           console.log(data.error);
         } else {
-          const { conversation } = data;
-          this.setState({ conversation, mounted: true });
-          console.log('resp ', data);
+          console.log('resp getAllMessage', data);
+          const { conversations } = data;
+          this.setState({ conversations, mounted: true });
         }
       });
   }
@@ -39,6 +39,14 @@ class Chat extends Component {
   formatConversation = (conversations) => {
     if (!conversations) return <p>No conversations</p>;
     const output = [];
+    output.push(conversations.map((el) => {
+      if (el !== 'blocked') {
+        const other = el.user1 !== this.state.username ? el.user1 : el.user2;
+        const pic = el.user1 !== this.state.username ? el.picUser1 : el.picUser2;
+        const path = `/static/${other}/${pic}`;
+        return <ConversationCard target={other} path={path} />;
+      }
+    }));
     return output;
   }
 
@@ -47,10 +55,10 @@ class Chat extends Component {
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
-    const { conversation } = this.state;
-    const output = this.formatConversation(conversation);
+    const { conversations } = this.state;
+    const output = this.formatConversation(conversations);
     return (
-      <div className="chat_container" style={this.styles.container}>
+      <div style={this.styles.chat_container}>
         {output}
       </div>
     );

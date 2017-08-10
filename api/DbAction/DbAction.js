@@ -44,6 +44,12 @@ export const getter = async (username, fields) => {
   return output;
 };
 
+export const getPic = async (username) => {
+  const { userdb } = await serveDb(username);
+  const pic = userdb.profilePicturePath;
+  return pic;
+};
+
 export const pusher = async (username, field, value) => {
   const { usercollection } = await serveDb(username);
   await usercollection.updateOne(

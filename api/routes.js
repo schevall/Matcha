@@ -30,7 +30,7 @@ const routes = (app, upload) => {
   app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
   app.post('/api/interactions/:action', Interactions.actionGateway);
 
-  app.get('/api/chat/getAllMessage', Chat.getConversations);
+  app.get('/api/chat/getAllMessage', Chat.getAllConversations);
   app.get('/api/chat/getMessage/:target', Chat.getMessages);
   app.post('/api/chat/newMessage', Chat.inputMessage);
 

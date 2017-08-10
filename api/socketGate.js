@@ -89,6 +89,16 @@ const socketGate = users => (socket) => {
       }
     });
   });
+
+  socket.on('message', (target, input) => {
+    console.log(`${username} has sent a message to ${target} : ${input}`);
+    users.forEach((user) => {
+      if (user.socketUser === target) {
+        const newMessage = { author: username, date: Date.now(), message: input };
+        socket.to(user.socketId).emit(`message/${username}`, newMessage);
+      }
+    });
+  });
 };
 
 export default socketGate;

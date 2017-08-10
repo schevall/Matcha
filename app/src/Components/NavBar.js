@@ -23,7 +23,7 @@ class NavBar extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { username, isLogged } = this.state;
     if (username && isLogged) {
       this.initSocket();
