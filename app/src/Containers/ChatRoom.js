@@ -97,11 +97,6 @@ class Chat extends Component {
     this.setState({ input });
   }
 
-  autoScroll = () => {
-    const div = document.querySelector('#scroll');
-    div.scrollTop = div.scrollHeight;
-  }
-
   handleSubmit = (e) => {
     e.preventDefault();
     const { input } = this.state;
@@ -110,7 +105,7 @@ class Chat extends Component {
     const newMessage = { author: this.username, date: Date.now(), message: input };
     this.handleNewMessage(newMessage);
     global.socket.emit('message', target, input);
-    e.target.parentNode.parentNode.firstChild.value = '';
+    e.target.firstChild.firstChild.value = '';
     const payload = { target, input };
     secureAxios('/chat/newMessage', 'POST', payload)
       .then(({ data }) => {
@@ -164,7 +159,6 @@ class Chat extends Component {
     const history = this.formatMessage(message);
     const connection = this.ConnectionDisplay(isTargetLogged);
     const path = `/static/${this.target}/${this.state.pic}`;
-    this.autoScroll();
     return (
       <div>
         <div style={this.styles.chat_avatar} className="container-fluid">
@@ -176,12 +170,14 @@ class Chat extends Component {
         <div id="scroll" className="container-fluid" style={this.styles.chat_room_container}>
           {history}
         </div>
-        <div className="input-group">
-          <input id="chat_input" onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
-          <span className="input-group-btn">
-            <button onClick={this.handleSubmit} className="btn btn-default" type="button">Go!</button>
-          </span>
-        </div>
+        <form onSubmit={this.handleSubmit}>
+          <div className="input-group">
+            <input id="chat_input" onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
+            <span className="input-group-btn">
+              <button type="submit" className="btn btn-default" >Send!</button>
+            </span>
+          </div>
+        </form>
       </div>
     );
   }

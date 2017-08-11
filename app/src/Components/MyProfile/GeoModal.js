@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import MapContainer from './MapContainer.js';
 
 export default class GeoModal extends Component {
   constructor(props) {
     super(props);
-    const { geo, address, key } = props;
+    const { geo, address, Googlekey } = props;
+    const path = `https://maps.googleapis.com/maps/api/js?key=${Googlekey}&`;
+    console.log('GEO MODAL', props);
     this.state = {
       showModal: false,
       geo,
       address,
-      key,
+      Googlekey,
+      path,
     };
   }
 
@@ -21,8 +25,13 @@ export default class GeoModal extends Component {
     this.setState({ showModal: true });
   }
 
+  initializeMap = () => {
+    const { geo } = this.state;
+    // const mapOption = { zoom: 8, center: new google.maps.LatLng(geo)}
+  }
+
   render() {
-    const { address, geo } = this.state;
+    const { address, geo, path } = this.state;
     return (
       <div>
         <p>Your current address : {address}</p>
@@ -37,10 +46,10 @@ export default class GeoModal extends Component {
 
         <Modal show={this.state.showModal} onHide={this.close}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Current Address: {address}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            There gonne be a map someday
+            <MapContainer Googlekey={this.state.Googlekey} />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close}>Close</Button>

@@ -63,7 +63,7 @@ export const visitProfile = async (req, res) => {
   const visitor = await db.getUserdb(username);
   visitor.email = '';
   if (visitor.blockedby.length || target.blockedto.length) {
-    if (visitor.blockedby.includes(target.username) || target.blocketo.includes(visitor.username)) {
+    if (visitor.blockedby.includes(target.username) || target.blockedto.includes(visitor.username)) {
       return res.send({ error: 'block' });
     }
   }

@@ -83,11 +83,11 @@ class OneBasicProfilCard extends Component {
     const diff = D.getDiffDate(lastConnection);
     if (logged) {
       return (
-        <p><img src="/static/icons/Online.png" alt="" /> Online since : {diff}</p>
+        <p><img src="/static/icons/Online.png" alt="" /> Online for: {diff}</p>
       );
     }
     return (
-      <p><img src="/static/icons/Offline.png" alt="" /> Offline since : {diff}</p>
+      <p><img src="/static/icons/Offline.png" alt="" /> Offline for: {diff}</p>
     );
   };
 
@@ -162,15 +162,19 @@ class OneBasicProfilCard extends Component {
     const connection = this.ConnectionDisplay(isUserLogged, lastConnection);
     const age = D.calculateAge(birthDate);
     const toProfile = LinkProfile(this.styles.link, username);
+    const commonTags = I.CountCommonTags(this.state.visitor, this.state.target);
+    const distance = I.CalculateDistance(this.state.visitor, this.state.target);
     return (
       !canSeeProfile ? null :
       <div style={this.props.style} className="profile_binfo_container">
         {toProfile}
         <div>{connection}</div>
-        <p>Popularity: {popularity}</p>
         <p>Age: {age}</p>
         <p>Gender: {gender}</p>
         <p>Sexual orientation: {orient}</p>
+        <p>Popularity: {popularity}</p>
+        <p>Tag in common: {commonTags}</p>
+        <p>Distance: {distance}</p>
         <div className="profile_picture_container" >
           <Link style={this.styles.link} to={`/profile/${username}`}>
             <img src={path} alt="" />
