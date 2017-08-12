@@ -1,3 +1,6 @@
+import ipInfo from 'ipinfo';
+
+import * as db from '../DbAction/DbAction.js';
 import Mongo from '../config/MongoConnection';
 import { VerifUserSignin } from './Verif_User_Input_Tools';
 import User from '../Models/User_Model';
@@ -26,6 +29,10 @@ const signup = async (req, res) => {
     };
     return res.send({ verif });
   }
+  ipInfo((err, cLoc) => {
+    if (err) console.log(err);
+    else db.setter(username, 'geo', cLoc.loc);
+  });
   const newUser = User.create(username, email, password, birthDate, genderValue);
   const { activationkey } = newUser;
   const text = ftext(username, activationkey);

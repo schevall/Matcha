@@ -8,7 +8,9 @@ const getProj = () => {
     profilePicturePath: 1,
     lastConnection: 1,
     liketo: 1,
+    likedby: 1,
     blockedto: 1,
+    blockedby: 1,
     popularity: 1,
     logged: 1,
     birthDate: 1,
@@ -33,6 +35,19 @@ const getMatch = (username, gender, orient) => {
   return match;
 };
 
+const getGeo = (geo) => {
+  const array = geo.split(',');
+  array[0] = parseFloat(array[0]);
+  array[1] = parseFloat(array[1]);
+  console.log('array', array);
+  return ({
+    near: { type: 'Point', coordinates: array },
+    distanceField: 'distance',
+    maxDistance: 50 * 1000,
+    spherical: true,
+  });
+};
+
 const getSuggestions = async (req, res) => {
   const { visitor } = req.params;
   const { usercollection, userdb } = await db.serveDb(visitor);
@@ -41,8 +56,11 @@ const getSuggestions = async (req, res) => {
   const userOrient = userdb.orient;
   const match = getMatch(visitor, userGender, userOrient);
   const project = getProj();
+  const geo = getGeo(userdb.geo);
+  console.log('Geo OBJET', geo);
   const result = usercollection.aggregate(
     [
+      { $geoNear: geo },
       { $match: match },
       { $project: project },
     ]);

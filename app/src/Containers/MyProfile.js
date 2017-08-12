@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import secureAxios from '../secureAxios.js';
 import MyProfileCard from '../Components/MyProfile/MyProfileCard.js';
 import MyGallery from './MyGallery.js';
-import { logout } from '../Actions/Login/loginBound.js';
+import { logout, handleNewFavPic } from '../Actions/Login/loginBound.js';
 
 class MyProfile extends Component {
 
@@ -38,7 +38,6 @@ class MyProfile extends Component {
       if (data.error) {
         this.props.dispatch(Notifications.error({ title: data.message }));
       } else {
-        console.log('RESP MODIFY', data);
         const { userInfo } = data;
         const title = 'Your infos has been changed';
         this.props.dispatch(Notifications.success({ title }));
@@ -113,6 +112,7 @@ class MyProfile extends Component {
           const { userInfo } = this.state;
           userInfo.profilePicturePath = profilePicturePath;
           this.setState({ userInfo });
+          this.props.dispatch(handleNewFavPic(profilePicturePath, this.state.userInfo.username));
         }
       });
   }
@@ -121,7 +121,7 @@ class MyProfile extends Component {
     secureAxios('/users/removepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) {
-          console.log(data.message);
+          this.props.dispatch(Notifications.error({ title: data.message }));
         } else {
           const { userInfo } = this.state;
           userInfo.picturesPath = data.picturesPath;

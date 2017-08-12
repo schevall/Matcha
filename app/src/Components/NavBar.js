@@ -15,11 +15,11 @@ class NavBar extends Component {
 
   constructor(props) {
     super(props);
-    const { username, isLogged } = props;
+    const { username, isLogged, profilePicturePath } = props;
     this.state = {
       username,
       isLogged,
-      profilePicturePath: '',
+      profilePicturePath,
     };
   }
 
@@ -32,6 +32,10 @@ class NavBar extends Component {
           if (!data.error) {
             const { profilePicturePath } = data;
             this.setState({ profilePicturePath });
+          } else if (this.props.location !== '/myprofile') {
+            this.props.history.push('/myprofile');
+            const title = 'You have to upload a picture to enjoy our website';
+            this.props.dispatch(Notifications.error({ title }));
           }
         });
 
@@ -44,9 +48,9 @@ class NavBar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { username, isLogged } = nextProps;
+    const { username, isLogged, profilePicturePath } = nextProps;
     this.setState({
-      username, isLogged,
+      username, isLogged, profilePicturePath,
     });
     const { pathname } = nextProps.location;
     if (pathname.includes('/profile')) {
@@ -55,9 +59,20 @@ class NavBar extends Component {
     }
   }
 
+  componentWillUnmount() {
+    global.socket.off('connect');
+    global.socket.off('visit');
+    global.socket.off('like');
+    global.socket.off('unlike');
+    global.socket.off('match');
+    global.socket.off('unmatch');
+    global.socket.off('block');
+    global.socket.off('unblock');
+  }
+
   initSocket = () => {
     const token = localStorage.getItem('access_token');
-    global.socket = io.connect('', { query: `token=${token}` });
+    global.socket = io.connect('http://localhost:8000', { query: `token=${token}` });
     global.socket.on('connect', () => { console.log('connected from the client side', global.socket.id); });
     global.socket.on('visit', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has visited your profile !` })); });
     global.socket.on('like', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has liked your profile !` })); });
@@ -81,13 +96,18 @@ class NavBar extends Component {
     return (
       <nav className="navbar">
         <div className="navbar-brand">
+          {!profilePicturePath ? null :
           <Link to="/">Matcha</Link>
+          }
         </div>
         <div className="navbar-collapse collapse">
+          {!profilePicturePath ? null :
           <ul className="navbar-nav">
             <ol className="nav-item">{avatar}</ol>
             <ol className="nav-item"><Link to="/activity" className="glyphicon glyphicon-flag" /></ol>
             <ol className="nav-item"><Link to="/chat" className="glyphicon glyphicon-comment" /></ol>
+          </ul>}
+          <ul className="navbar-nav">
             <ol className="nav-item"><Logout /></ol>
           </ul>
         </div>
@@ -99,13 +119,15 @@ class NavBar extends Component {
 NavBar.PropTypes = {
   isLogged: PropTypes.bool,
   username: PropTypes.string,
+  profilePicturePath: PropTypes.string,
 };
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { isLogged, username, profilePicturePath },
 }) => ({
   isLogged,
   username,
+  profilePicturePath,
 });
 
 

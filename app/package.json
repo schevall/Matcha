@@ -5,6 +5,7 @@
   "proxy": "http://localhost:8000",
   "dependencies": {
     "axios": "^0.16.1",
+    "can-use-dom": "^0.1.0",
     "geolib": "^2.0.23",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.4",
@@ -12,6 +13,7 @@
     "material-ui": "^0.18.3",
     "prop-types": "^15.5.10",
     "query-string": "^4.3.4",
+    "raf": "^3.3.2",
     "react": "^15.5.4",
     "react-bootstrap": "^0.31.2",
     "react-dom": "^15.5.4",

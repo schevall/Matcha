@@ -156,7 +156,7 @@ class OneBasicProfilCard extends Component {
       return <Redirect to={room} />;
     }
     const { lastConnection, profilePicturePath, username,
-            popularity, orient, gender, birthDate } = this.state.target;
+            orient, gender, birthDate } = this.state.target;
     const { button, actions, canSeeProfile } = this.state;
     const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
     const connection = this.ConnectionDisplay(isUserLogged, lastConnection);
@@ -164,6 +164,7 @@ class OneBasicProfilCard extends Component {
     const toProfile = LinkProfile(this.styles.link, username);
     const commonTags = I.CountCommonTags(this.state.visitor, this.state.target);
     const distance = I.CalculateDistance(this.state.visitor, this.state.target);
+    const popularity = I.CalculatePopularity(this.state.target);
     return (
       !canSeeProfile ? null :
       <div style={this.props.style} className="profile_binfo_container">
@@ -174,7 +175,7 @@ class OneBasicProfilCard extends Component {
         <p>Sexual orientation: {orient}</p>
         <p>Popularity: {popularity}</p>
         <p>Tag in common: {commonTags}</p>
-        <p>Distance: {distance}</p>
+        <p>Distance: {distance.text}</p>
         <div className="profile_picture_container" >
           <Link style={this.styles.link} to={`/profile/${username}`}>
             <img src={path} alt="" />

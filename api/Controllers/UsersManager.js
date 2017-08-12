@@ -80,6 +80,7 @@ const changeEmail = async (username, payload, res) => {
 export const updateGateway = async (req, res) => {
   const { username } = req.headers;
   const { field } = req.params;
+  console.log('UPDATE GATEWAY', username, field);
   switch (field) {
     case 'generalinfo': {
       const { userInfo } = await updateGeneral(username, req.body);
@@ -116,6 +117,14 @@ export const updateGateway = async (req, res) => {
       res.send({ error: '', tags });
       break;
     }
+    case 'geo': {
+      const { geo } = req.body;
+      if (!geo) return res.send({ error: 'no geo' });
+      console.log('in update GEO', geo);
+      db.setter(username, 'geo', geo);
+      res.send({ error: '' });
+      break;
+    }
     default:
   }
 };
@@ -124,6 +133,7 @@ export const getFavPic = async (req, res) => {
   const { username } = req.params;
   const output = await db.getter(username, ['profilePicturePath']);
   const { profilePicturePath } = output[0];
+  if (!profilePicturePath) return res.send({ error: 'no fav pic' });
   return res.send({ error: '', profilePicturePath });
 };
 

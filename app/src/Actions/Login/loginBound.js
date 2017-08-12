@@ -17,11 +17,20 @@ export function loginBound(input) {
           console.log('log success resp', data);
           localStorage.setItem('access_token', data.token);
           localStorage.setItem('username', data.username);
+          localStorage.setItem('profilePicturePath', data.profilePicturePath);
           dispatch(A.loginSuccess(data));
           dispatch(Notifications.success({ title: `Hello ${data.username}, you are connected` }));
         }
       })
       .catch(err => console.log('error in login proccess: ', err));
+  };
+}
+
+export function handleNewFavPic(profilePicturePath, username) {
+  return (dispatch) => {
+    localStorage.setItem('profilePicturePath', profilePicturePath);
+    const token = localStorage.getItem('access_token');
+    dispatch(A.NewfavPic(username, profilePicturePath, token));
   };
 }
 
@@ -37,6 +46,7 @@ export function logout(title) {
         } else {
           localStorage.setItem('access_token', '');
           localStorage.setItem('username', '');
+          localStorage.setItem('profilePicturePath', '');
           console.log('LOUGOUT RESP', title);
           dispatch(Notifications.success({ title }));
         }

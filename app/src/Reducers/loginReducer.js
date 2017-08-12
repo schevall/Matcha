@@ -5,6 +5,7 @@ const initial = {
   isLogged: !!localStorage.getItem('access_token'),
   username: localStorage.getItem('username'),
   token: localStorage.getItem('access_token'),
+  profilePicturePath: localStorage.getItem('profilePicturePath'),
   data: null,
 };
 
@@ -34,6 +35,16 @@ function loginReducer(state = initial, action) {
         isLogged: true,
         token: action.token,
         username: action.username,
+        profilePicturePath: action.profilePicturePath,
+        data: null,
+      };
+    case T.NEWFAVPIC:
+      return { ...state,
+        loading: false,
+        isLogged: true,
+        token: action.token,
+        username: action.username,
+        profilePicturePath: action.profilePicturePath,
         data: null,
       };
     case T.LOGOUT:

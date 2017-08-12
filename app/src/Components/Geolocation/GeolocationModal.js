@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import MapContainer from './MapContainer.js';
+import Geolocate from './Geolocation.js';
 
 export default class GeoModal extends Component {
   constructor(props) {
     super(props);
-    const { geo, address, Googlekey } = props;
-    const path = `https://maps.googleapis.com/maps/api/js?key=${Googlekey}&`;
-    console.log('GEO MODAL', props);
     this.state = {
       showModal: false,
-      geo,
-      address,
-      Googlekey,
-      path,
     };
   }
 
@@ -25,33 +18,38 @@ export default class GeoModal extends Component {
     this.setState({ showModal: true });
   }
 
-  initializeMap = () => {
-    const { geo } = this.state;
-    // const mapOption = { zoom: 8, center: new google.maps.LatLng(geo)}
+  handleNewAddress = (newGeo, newAddress) => {
+    this.setState({ newGeo, newAddress });
+  }
+
+  handleSave = (e) => {
+    e.preventDefault();
+    const { newGeo, newAddress } = this.state;
+    this.props.handleSave(newGeo, newAddress);
+    this.close();
   }
 
   render() {
-    const { address, geo, path } = this.state;
+    const loaded = !!this.state.newGeo;
     return (
       <div>
-        <p>Your current address : {address}</p>
-
         <Button
           bsStyle="primary"
           bsSize="small"
           onClick={this.open}
         >
-          Change address
+          Geolocate
         </Button>
 
-        <Modal show={this.state.showModal} onHide={this.close}>
+        <Modal show={this.state.showModal} onHide={this.close} bsSize="lg">
           <Modal.Header closeButton>
-            <Modal.Title>Current Address: {address}</Modal.Title>
+            <Modal.Title>Geolocation</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <MapContainer Googlekey={this.state.Googlekey} />
+            <Geolocate handleNewAddress={this.handleNewAddress} />
           </Modal.Body>
           <Modal.Footer>
+            { loaded ? <Button onClick={this.handleSave}>Save</Button> : null }
             <Button onClick={this.close}>Close</Button>
           </Modal.Footer>
         </Modal>

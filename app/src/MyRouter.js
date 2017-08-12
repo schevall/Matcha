@@ -16,7 +16,6 @@ import OneProfile from './Containers/OneProfile.js';
 import Activity from './Containers/Activity.js';
 import Chat from './Containers/Chat.js';
 import ChatRoom from './Containers/ChatRoom.js';
-import MapContainer from './Components/MyProfile/MapContainer.js';
 
 
 const MyRouter = (props) => {
@@ -31,7 +30,6 @@ const MyRouter = (props) => {
           <Route exact path="/signin" component={SignInContainer} />
           <Route exact path="/activation" component={Activation} />
           <PrivateRoute exact path="/" component={Suggestions} />
-          <PrivateRoute exact path="/map" component={MapContainer} />
           <PrivateRoute exact path="/myprofile" component={MyProfile} />
           <PrivateRoute exact path="/activity" component={Activity} />
           <PrivateRoute exact path="/chat" component={Chat} />

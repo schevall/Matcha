@@ -18,6 +18,7 @@ export function loginSuccess(data) {
     isLogged: true,
     username: data.username,
     token: data.token,
+    profilePicturePath: data.profilePicturePath,
     data: null,
   };
 }
@@ -40,6 +41,18 @@ export function logout() {
     isLogged: false,
     username: '',
     token: '',
+    data: null,
+  };
+}
+
+export function NewfavPic(username, profilePicturePath, token) {
+  return {
+    type: T.NEWFAVPIC,
+    loading: false,
+    isLogged: true,
+    username,
+    token,
+    profilePicturePath,
     data: null,
   };
 }

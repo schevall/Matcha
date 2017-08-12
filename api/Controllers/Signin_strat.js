@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import ipInfo from 'ipinfo';
 
 import User from '../Models/User_Model';
 import * as db from '../DbAction/DbAction.js';
@@ -27,14 +26,10 @@ const signin = async (req, res) => {
   const date = Date.now();
   await db.setter(username, 'lastConnection', date);
 
-  await ipInfo((err, cLoc) => {
-    if (err) console.log(err);
-    else db.setter(username, 'geo', cLoc.loc);
-  });
-
   const { _id } = userdb;
   const token = jwt.sign({ username, _id }, config.secret, { expiresIn: '3h' });
-  return res.send({ token, username });
+  const { profilePicturePath } = userdb;
+  return res.send({ token, username, profilePicturePath });
 };
 
 export default signin;

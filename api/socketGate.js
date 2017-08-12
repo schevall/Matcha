@@ -3,7 +3,6 @@ const socketGate = users => (socket) => {
   const socketId = socket.id;
   if (!username) console.log('Trouble maker', socket.decoded_token);
   console.log(`user connected : ${username}, id : ${socketId}`);
-
   console.log('current array', users);
   if (username) {
     users.push({ socketUser: username, socketId });

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import CircularProgress from 'material-ui/CircularProgress';
-import GeoModal from './GeoModal.js';
-
-const style = { fontSize: '20px', color: 'red' };
-const Marker = () => <i style={style} className="glyphicon glyphicon-map-marker" />;
+import GeolocationModal from '../Geolocation/GeolocationModal.js';
+import AddressModal from '../Geolocation/AddressModal.js';
+import GetAddress from '../Geolocation/GetAddress.js';
+import secureAxios from '../../secureAxios.js';
 
 export default class MyGeo extends Component {
 
@@ -12,24 +11,44 @@ export default class MyGeo extends Component {
     super(props);
     const { geo } = props;
     this.state = { geo, address: '' };
-    this.key = 'AIzaSyBzraJ9crCly5WvgMOzFdNZwqvIvAVLP30';
+    this.style = {
+      container: { display: 'flex' },
+      button: { marginRight: '10px' },
+    };
   }
 
   componentWillMount() {
     const { geo } = this.state;
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${geo}&key=${this.key}`;
-    axios(url, 'GET')
-      .then(({ data }) => {
-        console.log('REP FROM GEO', data);
-        this.setState({ address: data.results[0].formatted_address });
-      });
+    GetAddress(geo).then((address) => {
+      this.setState({ address });
+    });
+  }
+
+
+  SaveAddress = (geo, address) => {
+    this.setState({ address, geo });
+    const payload = { geo };
+    secureAxios('/users/update/geo', 'POST', payload);
   }
 
   render() {
     if (!this.state.address) return (<CircularProgress />);
     const { geo, address } = this.state;
     return (
-      <GeoModal geo={geo} address={address} Googlekey={this.key} />
+      <div>
+        <p>Current Address: <br />{address}</p>
+        <div style={this.style.container}>
+          <div style={this.style.button}>
+            <GeolocationModal
+              handleSave={this.SaveAddress}
+            />
+          </div>
+          <AddressModal
+            geo={geo}
+            handleSave={this.SaveAddress}
+          />
+        </div>
+      </div>
     );
   }
 }

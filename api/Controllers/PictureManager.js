@@ -22,7 +22,10 @@ const remove = async (req, res) => {
   if (!fs.existsSync(pathToErase)) {
     return res.send({ error: 'removePicture', message: 'Something went wrong while deleting a picture' });
   }
-
+  const userdb = await db.getUserdb(username);
+  if (userdb.profilePicturePath === fileName) {
+    return res.send({ error: 'removePicture', message: 'You can\'t delete yout profile picture !' });
+  }
   const doc = await db.removePicture(username, fileName);
   const { picturesPath, profilePicturePath } = doc;
   fs.unlinkSync(pathToErase);

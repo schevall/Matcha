@@ -49,7 +49,7 @@ class SignInContainer extends Component {
     const { isLogged } = this.props;
     const { username, password, errorUsername, errorPassword } = this.state;
     return (
-      isLogged ? <Redirect to="/" /> :
+      isLogged ? <Redirect to="/myprofile" /> :
       (<div className="signin_container">
         <Link to="/signup">To Signup</Link>
         <br />

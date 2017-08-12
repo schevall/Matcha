@@ -51,6 +51,22 @@ export const CalculateDistance = (visitor, target) => {
   const visitorGeo = visitor.geo;
   if (!targetGeo) return `${target.username} is not geolocalized`;
   if (!visitorGeo) return 'You are not geolocalized';
-  console.log('Geo', visitorGeo, targetGeo);
-  return 1;
+  const array1 = targetGeo.split(',');
+  const array2 = visitorGeo.split(',');
+  const lat1 = array1[0];
+  const lng1 = array1[1];
+  const lat2 = array2[0];
+  const lng2 = array2[1];
+  const meters = geolib.getDistance(
+    { latitude: lat1, longitude: lng1 },
+    { latitude: lat2, longitude: lng2 },
+  );
+  const text = meters >= 1000 ? `${parseInt(meters / 1000, 10)} Km` : `${meters} meters`;
+  const distance = { meters, text };
+  return (distance);
+};
+
+export const CalculatePopularity = (target) => {
+  const { likedby, blockedby } = target;
+  return (likedby.length - blockedby.length);
 };
