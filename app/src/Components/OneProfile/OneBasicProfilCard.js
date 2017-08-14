@@ -8,6 +8,7 @@ import Interactions from '../../Containers/Interactions.js';
 import LinkProfile from '../../ToolBox/LinkProfile.js';
 import * as D from '../../ToolBox/DateTools.js';
 import * as I from '../../ToolBox/InteractionsTools.js';
+import { GetMatchingScore } from '../../ToolBox/MatchingTool.js';
 
 
 class OneBasicProfilCard extends Component {
@@ -162,9 +163,11 @@ class OneBasicProfilCard extends Component {
     const connection = this.ConnectionDisplay(isUserLogged, lastConnection);
     const age = D.calculateAge(birthDate);
     const toProfile = LinkProfile(this.styles.link, username);
-    const commonTags = I.CountCommonTags(this.state.visitor, this.state.target);
-    const distance = I.CalculateDistance(this.state.visitor, this.state.target);
+    const commonTags = I.CountCommonTags(this.state.visitor.tags, this.state.target.tags);
+    const distance = I.getDistance(this.state.visitor.geo, this.state.target.geo);
+    const text = distance >= 1000 ? `${parseInt(distance / 1000, 10)} Km` : `${distance} meters`;
     const popularity = I.CalculatePopularity(this.state.target);
+    const matchingScore = GetMatchingScore(this.state.target, this.state.visitor);
     return (
       !canSeeProfile ? null :
       <div style={this.props.style} className="profile_binfo_container">
@@ -175,7 +178,8 @@ class OneBasicProfilCard extends Component {
         <p>Sexual orientation: {orient}</p>
         <p>Popularity: {popularity}</p>
         <p>Tag in common: {commonTags}</p>
-        <p>Distance: {distance.text}</p>
+        <p>Distance: {text}</p>
+        <p> Matching Score: {matchingScore}</p>
         <div className="profile_picture_container" >
           <Link style={this.styles.link} to={`/profile/${username}`}>
             <img src={path} alt="" />

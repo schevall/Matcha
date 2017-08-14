@@ -33,24 +33,20 @@ export const canSee = (visitor, target) => {
   return true;
 };
 
-export const CountCommonTags = (visitor, target) => {
-  const targetTags = target.tags.map(el => el.label);
-  const visitorTags = visitor.tags.map(el => el.label);
-  if (!targetTags || !visitorTags) return 0;
+export const CountCommonTags = (visitorTags, targetTags) => {
+  const target = targetTags.map(el => el.label);
+  const visitor = visitorTags.map(el => el.label);
+  if (!target || !visitor) return 0;
   let count = 0;
-  targetTags.forEach((el) => {
-    if (visitorTags.includes(el)) {
+  target.forEach((el) => {
+    if (visitor.includes(el)) {
       count += 1;
     }
   });
   return count;
 };
 
-export const CalculateDistance = (visitor, target) => {
-  const targetGeo = target.geo;
-  const visitorGeo = visitor.geo;
-  if (!targetGeo) return `${target.username} is not geolocalized`;
-  if (!visitorGeo) return 'You are not geolocalized';
+export const getDistance = (visitorGeo, targetGeo) => {
   const array1 = targetGeo.split(',');
   const array2 = visitorGeo.split(',');
   const lat1 = array1[0];
@@ -61,9 +57,7 @@ export const CalculateDistance = (visitor, target) => {
     { latitude: lat1, longitude: lng1 },
     { latitude: lat2, longitude: lng2 },
   );
-  const text = meters >= 1000 ? `${parseInt(meters / 1000, 10)} Km` : `${meters} meters`;
-  const distance = { meters, text };
-  return (distance);
+  return (meters);
 };
 
 export const CalculatePopularity = (target) => {

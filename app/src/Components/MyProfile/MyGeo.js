@@ -19,6 +19,7 @@ export default class MyGeo extends Component {
 
   componentWillMount() {
     const { geo } = this.state;
+    if (!geo) this.setState({ address: 'Not localized' });
     GetAddress(geo).then((address) => {
       this.setState({ address });
     });
