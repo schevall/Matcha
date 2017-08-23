@@ -46,9 +46,9 @@ class Chat extends Component {
   componentWillMount() {
     if (!this.state.mounted) {
       global.socket.emit('isUserLogged', this.target);
+      global.socket.emit('resetMessageCount', this.target);
     }
     global.socket.on(`userIsLogged/${this.target}`, (statement) => {
-      console.log(`RECEPTION ON ${this.target}`);
       if (!this.state.mounted) {
         this.setState({ isTargetLogged: statement, mounted: true });
       }
@@ -68,9 +68,9 @@ class Chat extends Component {
           console.log(data.error);
         } else {
           const { message } = data;
-          console.log('RESPPPPPPPP', message);
           const pic = message.user1 !== this.username ? message.picUser1 : message.picUser2;
           this.setState({ pic, message, loaded: true });
+          this.scrollToBottom();
         }
       });
   }
@@ -84,10 +84,11 @@ class Chat extends Component {
 
   handleNewMessage = (newMessage) => {
     const { message } = this.state;
-    if (!message) this.setState({ message: { conversation: [newMessage] } });
+    if (!message || message === undefined) this.setState({ message: { conversation: [newMessage] } });
     else {
       message.conversation.push(newMessage);
       this.setState({ message });
+      this.scrollToBottom();
     }
   }
 
@@ -109,10 +110,9 @@ class Chat extends Component {
     const payload = { target, input };
     secureAxios('/chat/newMessage', 'POST', payload)
       .then(({ data }) => {
+        this.setState({ input: '' });
         if (data.error) console.log(data.error);
-        else {
-          console.log('data from chat', data);
-        }
+        this.scrollToBottom();
       });
   }
 
@@ -128,17 +128,17 @@ class Chat extends Component {
   )
 
   formatMessage = (message) => {
-    if (!message) return <p>No messages</p>;
+    console.log('IN FORMAT', message);
+    if (!message || message === undefined) return <p>No messages</p>;
     const { conversation } = message;
-    const output = [];
-    conversation.map((el) => {
+    if (!conversation || conversation === undefined) return <p>No messages</p>;
+    const output = conversation.map((el) => {
       const date = getDiffDate(el.date);
       const time = `${date} ago`;
       if (el.author === this.username) {
-        output.push(this.formatRow(this.styles.selfRow, el.date, time, 'You', el.message));
-      } else {
-        output.push(this.formatRow(this.styles.otherRow, el.date, time, el.author, el.message));
+        return this.formatRow(this.styles.selfRow, el.date, time, 'You', el.message);
       }
+      return this.formatRow(this.styles.otherRow, el.date, time, el.author, el.message);
     });
     return output;
   }
@@ -149,6 +149,10 @@ class Chat extends Component {
     }
     return (<div className="col flex-middle"><img src="/static/icons/Offline.png" alt="" />Offline</div>);
   };
+
+  scrollToBottom = () => {
+    this.node.scrollIntoView();
+  }
 
 
   render() {
@@ -169,10 +173,11 @@ class Chat extends Component {
         </div>
         <div id="scroll" className="container-fluid" style={this.styles.chat_room_container}>
           {history}
+          <div ref={node => (this.node = node)} />
         </div>
         <form onSubmit={this.handleSubmit}>
           <div className="input-group">
-            <input id="chat_input" onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
+            <input id="chat_input" autoFocus onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
             <span className="input-group-btn">
               <button type="submit" className="btn btn-default" >Send!</button>
             </span>

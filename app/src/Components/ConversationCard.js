@@ -5,15 +5,17 @@ import { Redirect, Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Avatar from 'material-ui/Avatar';
 
+
 import LinkProfile from '../ToolBox/LinkProfile.js';
 
 class ConversationCard extends Component {
 
   constructor(props) {
     super(props);
-    const { target } = props;
+    const { target, newMessage } = props;
     this.state = {
       mounted: false,
+      newMessage,
     };
     this.target = target;
     this.styles = {
@@ -37,6 +39,10 @@ class ConversationCard extends Component {
         pointerEvents: 'true',
         color: 'inherit',
         textDecoration: 'none',
+      },
+      messages: {
+        fontWeight: 200,
+        fontSize: '15px',
       },
     };
   }
@@ -73,19 +79,22 @@ class ConversationCard extends Component {
     const { path, target } = this.props;
     const connection = this.ConnectionDisplay(isTargetLogged);
     const toProfile = LinkProfile(this.styles.link, target, 'toProfile');
-    const toChat = `/chat/${target}`;
+    const toChat = <Link style={this.styles.link} to={`/chat/${target}`}>To Chat</Link>;
+    const { newMessage } = this.state;
+    const newMessageDisplay = newMessage ? `${newMessage} new messages` : 'no new message';
     return (
       <div style={this.styles.conversation_container}>
         <div style={this.styles.conversation_item}>
           <div className="container-fluid">
             <div className="row">{target}</div>
-            <div className="row ">
+            <div className="row">
               <div className="col"><Avatar src={path} /></div>
               {connection}
             </div>
-            <div className="row ">{toProfile}</div>
-            <div className="row ">
-              <Link to={toChat} style={this.styles.link}>To Chat</Link>
+            <div className="row">{toProfile}</div>
+            <div className="row">
+              <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">{toChat}</div>
+              <div style={this.styles.messages} className="col-xs-6 col-sm-6 col-md-6 col-lg-6">{newMessageDisplay}</div>
             </div>
           </div>
         </div>

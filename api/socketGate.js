@@ -95,8 +95,14 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         const newMessage = { author: username, date: Date.now(), message: input };
         socket.to(user.socketId).emit(`message/${username}`, newMessage);
+        socket.to(user.socketId).emit(`messageCount/${target}`, username);
       }
     });
+  });
+
+  socket.on('resetMessageCount', (target) => {
+    console.log(`${username} will reset message count on ${target}`);
+    socket.emit('resetMessageCount');
   });
 };
 

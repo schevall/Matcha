@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import Notifications from 'react-notification-system-redux';
+import Badge from 'material-ui/Badge';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -20,6 +21,7 @@ class NavBar extends Component {
       username,
       isLogged,
       profilePicturePath,
+      messageCount: 0,
     };
   }
 
@@ -37,12 +39,16 @@ class NavBar extends Component {
             const title = 'You have to upload a picture to enjoy our website';
             this.props.dispatch(Notifications.error({ title }));
           }
+          this.getNewMessageCount();
         });
-
       const { pathname } = this.props.location;
+      this.pathname = pathname;
+      const target = pathname.split('/').pop();
       if (pathname.includes('/profile')) {
-        const target = pathname.split('/').pop();
         global.socket.emit('visit', target);
+      }
+      if (pathname.includes('/chat/')) {
+        global.socket.emit('resetMessageCount', target);
       }
     }
   }
@@ -53,9 +59,13 @@ class NavBar extends Component {
       username, isLogged, profilePicturePath,
     });
     const { pathname } = nextProps.location;
+    this.pathname = pathname;
+    const target = pathname.split('/').pop();
     if (pathname.includes('/profile')) {
-      const target = pathname.split('/').pop();
       global.socket.emit('visit', target);
+    }
+    if (pathname.includes('/chat/')) {
+      global.socket.emit('resetMessageCount', target);
     }
   }
 
@@ -68,6 +78,19 @@ class NavBar extends Component {
     global.socket.off('unmatch');
     global.socket.off('block');
     global.socket.off('unblock');
+    global.socket.off('resetMessageCount');
+    global.socket.off(`message/${this.state.username}`);
+  }
+
+  getNewMessageCount = () => {
+    secureAxios('/chat/getNewMessageCount', 'GET')
+      .then(({ data }) => {
+        if (!data.error) {
+          console.log('GET newMessageCount');
+          const { messageCount } = data;
+          this.setState({ messageCount });
+        }
+      });
   }
 
   initSocket = () => {
@@ -81,6 +104,20 @@ class NavBar extends Component {
     global.socket.on('unmatch', (visitor) => { this.props.dispatch(Notifications.error({ title: `You cannot chat with ${visitor} anymore =/` })); });
     global.socket.on('block', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has blocked you !` })); });
     global.socket.on('unblock', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` })); });
+    global.socket.on('resetMessageCount', () => { this.getNewMessageCount(); });
+    global.socket.on(`messageCount/${this.state.username}`, (target) => {
+      console.log('Message received');
+      this.handleNewMessage(target);
+    });
+  }
+
+  handleNewMessage = (target) => {
+    console.log('IN HANDLE NEW MESSAGE', this.pathname);
+    if (!this.pathname.includes(`/chat/${target}`)) {
+      const { messageCount } = this.state;
+      const newMessageCount = messageCount + 1;
+      this.setState({ messageCount: newMessageCount });
+    }
   }
 
   render() {
@@ -93,6 +130,7 @@ class NavBar extends Component {
       const path = `/static/${username}/${profilePicturePath}`;
       avatar = <Link to="/myprofile"><Avatar src={path} /></Link>;
     }
+    const { messageCount } = this.state;
     return (
       <nav className="navbar">
         <div className="navbar-brand">
@@ -105,7 +143,11 @@ class NavBar extends Component {
           <ul className="navbar-nav">
             <ol className="nav-item">{avatar}</ol>
             <ol className="nav-item"><Link to="/activity" className="glyphicon glyphicon-flag" /></ol>
-            <ol className="nav-item"><Link to="/chat" className="glyphicon glyphicon-comment" /></ol>
+            <ol className="nav-item">
+              <Badge style={{ padding: '0px 20px' }} badgeContent={messageCount} secondary>
+                <Link to="/chat" className="glyphicon glyphicon-comment" />
+              </Badge>
+            </ol>
           </ul>}
           <ul className="navbar-nav">
             <ol className="nav-item"><Logout /></ol>

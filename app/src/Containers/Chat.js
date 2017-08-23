@@ -42,9 +42,11 @@ class Chat extends Component {
     output.push(conversations.map((el) => {
       if (el !== 'blocked') {
         const other = el.user1 !== this.state.username ? el.user1 : el.user2;
+        const field = el.user1 === this.state.username ? 'newMessage1' : 'newMessage2';
+        const newMessage = el[field];
         const pic = el.user1 !== this.state.username ? el.picUser1 : el.picUser2;
         const path = `/static/${other}/${pic}`;
-        return <ConversationCard target={other} path={path} />;
+        return <ConversationCard newMessage={newMessage} target={other} path={path} />;
       }
     }));
     return output;

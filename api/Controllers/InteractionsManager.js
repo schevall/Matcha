@@ -1,4 +1,5 @@
 import * as db from '../DbAction/DbAction.js';
+import { createConversation } from '../DbAction/DbChat.js';
 
 export const pushActivity = async (target, author, event) => {
   console.log('PUSH ACTIVITY', target, author, event);
@@ -26,6 +27,7 @@ export const like = async (req, res) => {
   }
   const newactions = { canlike: false, canchat: true };
   await pushActivity(target, visitor, 'match');
+  await createConversation(visitor, target);
   return res.send({ error: '', newactions, message: `You have liked ${target} and it's a Match, Congrats !!!` });
 };
 

@@ -3,35 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
-import Button from 'react-bootstrap/lib/Button';
 import secureAxios from '../secureAxios.js';
 import OneBasicProfilCard from '../Components/OneProfile/OneBasicProfilCard.js';
 import { GetMatchingScore } from '../ToolBox/MatchingTool.js';
 import { calculateAge } from '../ToolBox/DateTools.js';
 import { getDistance, CountCommonTags, CalculatePopularity } from '../ToolBox/InteractionsTools.js';
 import AdvancedFilterSelector from '../Components/AdvancedFilter.js';
-
-
-const SortingButton = (filter) => {
-  const type = ['Age', 'Distance', 'Tags in Common', 'Popularity', 'Matching Score'];
-  const Buttons = type.map(el => (
-    <Button
-      onClick={filter}
-      id={el}
-      key={el}
-      style={{ margin: '3px' }}
-      bsStyle="default"
-    >
-      {el}
-    </Button>
-  ));
-  const Container = (
-    <div style={{ margin: 'auto', width: '50%' }}> Sort by:
-      { Buttons }
-    </div>
-  );
-  return Container;
-};
+import SortingSelector from '../Components/SortingSelector.js';
 
 class Suggestions extends Component {
 
@@ -40,10 +18,13 @@ class Suggestions extends Component {
     const { username } = props;
     this.state = {
       username,
+      visitor: null,
       mounted: null,
       sorting: null,
       rev: 1,
-      advancedSorting: null,
+      advancedFilter: null,
+      suggestions: null,
+      toShow: null,
     };
     this.style = {
       container: {
@@ -64,7 +45,6 @@ class Suggestions extends Component {
           console.log(data.error);
         } else {
           const { suggestions, visitor } = data;
-          console.log('RESP FROM SUGGES', suggestions);
           this.sortSuggestions(suggestions, visitor);
         }
       });
@@ -78,13 +58,13 @@ class Suggestions extends Component {
       if (aPoints > bPoints) return -1;
       return 0;
     });
-    this.setState({ mounted: true, suggestions: sorted, visitor });
+    this.setState({ mounted: true, suggestions: sorted, toShow: suggestions, visitor });
   }
 
   sortBy = (sorting, rev) => {
-    const { suggestions } = this.state;
+    const { toShow } = this.state;
     const v = this.state.visitor;
-    const sorted = suggestions.sort((a, b) => {
+    const sorted = toShow.sort((a, b) => {
       if (sorting === 'Age') {
         const diff = rev * (calculateAge(a.birthDate) - calculateAge(b.birthDate));
         return diff >= 1 ? 1 : -1;
@@ -93,30 +73,28 @@ class Suggestions extends Component {
         const diff = rev * (getDistance(a.geo, v.geo) - getDistance(b.geo, v.geo));
         return diff >= 1 ? 1 : -1;
       }
-      else if (sorting === 'Tags in Common') {
+      else if (sorting === 'Tags') {
         const diff = rev * (CountCommonTags(a.tags, v.tags) - CountCommonTags(b.tags, v.tags));
-        return diff >= 1 ? 1 : -1;
+        return diff >= 1 ? -1 : 1;
       }
       else if (sorting === 'Popularity') {
         const diff = rev * (CalculatePopularity(a) - CalculatePopularity(b));
-        return diff >= 1 ? 1 : -1;
+        return diff >= 1 ? -1 : 1;
       }
-      else if (sorting === 'Matching Score') {
+      else if (sorting === 'Matching') {
         const diff = rev * (GetMatchingScore(a, v) - GetMatchingScore(b, v));
-        return diff >= 1 ? 1 : -1;
+        return diff >= 1 ? -1 : 1;
       }
       return 0;
     });
-    console.log('SORTED', sorted);
-    this.setState({ suggestions: sorted, sorting, rev });
+    this.setState({ toShow: sorted, sorting, rev });
   }
 
   filter = (e) => {
     e.preventDefault();
-    console.log('TWSR', e.target.id);
     const newsorting = e.target.id;
     const { sorting, rev } = this.state;
-    const type = ['Age', 'Distance', 'Tags in Common', 'Popularity', 'Matching Score'];
+    const type = ['Age', 'Distance', 'Tags', 'Popularity', 'Matching'];
     if (type.includes(newsorting)) {
       if (newsorting === sorting && rev === -1) this.sortBy(newsorting, 1);
       else if (newsorting === sorting && rev === 1) this.sortBy(newsorting, -1);
@@ -124,17 +102,54 @@ class Suggestions extends Component {
     }
   }
 
-  advancedFilter = () => {
-    console.log('here');
+  isInRange = (target, filter) => {
+    const { visitor } = this.state;
+    const age = calculateAge(target.birthDate);
+    const distance = getDistance(target.geo, visitor.geo);
+    const tags = CountCommonTags(target.tags, visitor.tags);
+    const popularity = CalculatePopularity(target);
+    const matching = GetMatchingScore(target, visitor);
+    console.log('FOR', target.username);
+    console.log('DISTANCE', distance);
+    console.log('FILTER', filter);
+    console.log('TARGET', target);
+    if ((age >= filter.Age.min && age <= filter.Age.max) || filter.Age.max === 100) {
+      if (distance >= filter.Distance.min * 1000 && (distance <= filter.Distance.max * 1000 || filter.Distance.max === 100)) {
+        if (tags >= filter.Tags.min && tags <= filter.Tags.max) {
+          if (popularity >= filter.Popularity.min && (popularity <= filter.Popularity.max || filter.Popularity.max === 20)) {
+            if (matching >= filter.Matching.min && (matching <= filter.Matching.max || filter.Matching === 20)) {
+              return target;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  advancedFilter = (filter) => {
+    const { Age, Distance, Matching, Popularity, Tags } = filter;
+    const advancedFilter = { Age, Distance, Matching, Popularity, Tags };
+    const { suggestions } = this.state;
+    const array = suggestions.map(user => (
+      this.isInRange(user, advancedFilter)
+    ));
+    const output = array.filter(n => (n !== undefined && n !== null));
+    console.log('OUTPUT', output);
+    this.setState({ toShow: output });
+  }
+
+  cancelFilter = () => {
+    const { suggestions } = this.state;
+    this.setState({ toShow: suggestions });
   }
 
   render() {
     const { isLogged } = this.props;
     if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
-    const { suggestions, visitor } = this.state;
-    const sorting = SortingButton(this.filter);
-    const output = suggestions.map(user => (
+    const { toShow, visitor } = this.state;
+    const output = toShow.map(user => (
       <OneBasicProfilCard
         isProfilePage={false}
         key={user.username}
@@ -146,8 +161,8 @@ class Suggestions extends Component {
   ));
     return (
       <div>
-        <AdvancedFilterSelector filter={this.advancedFilter} />
-        {sorting}
+        <AdvancedFilterSelector filter={this.advancedFilter} cancel={this.cancelFilter} />
+        <SortingSelector filter={this.filter} />
         <div style={this.style.container}>
           {output}
         </div>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import Tooltip from 'rc-tooltip';
+import Drawer from 'material-ui/Drawer';
+import Button from 'react-bootstrap/lib/Button';
 import 'rc-slider/assets/index.css';
 
 const Handle = Slider.Handle;
@@ -21,7 +23,7 @@ const handle = (props) => {
 };
 
 
-const style = { width: '400px', margin: '50px' };
+const style = { width: '360px', padding: '20px' };
 
 const AgeMarks = {
   18: 18,
@@ -78,9 +80,8 @@ const Age = {
   max: 100,
   marks: AgeMarks,
   id: 'Age',
-  defaultValue: [18, 30],
+  defaultValue: [18, 100],
   text: 'Age',
-  save:
 };
 
 const Distance = {
@@ -88,7 +89,7 @@ const Distance = {
   max: 100,
   marks: DistanceMarks,
   id: 'Distance',
-  defaultValue: [0, 5],
+  defaultValue: [0, 100],
   text: 'Distance',
 };
 
@@ -97,7 +98,7 @@ const Tags = {
   max: 6,
   marks: TagsMarks,
   id: 'Tags',
-  defaultValue: [0, 3],
+  defaultValue: [0, 6],
   text: 'Tags in Common',
 };
 
@@ -106,52 +107,138 @@ const Popularity = {
   max: 20,
   marks: PopularityMarks,
   id: 'Popularity',
-  defaultValue: [0, 10],
+  defaultValue: [0, 20],
   text: 'Popularity',
 };
 
-const Match = {
+const Matching = {
   min: 0,
   max: 20,
   marks: MatchingMarks,
   id: 'Matching',
-  defaultValue: [0, 10],
+  defaultValue: [0, 20],
   text: 'Matching Score',
 };
 
+
 class AdvancedFilterSelector extends Component {
 
-  saveChange = (el) => {
-    console.log('Rwly', el);
+  constructor(props) {
+    super(props);
+    console.log('CONSTRUCT', props);
+    this.state = {
+      open: false,
+      Age: { min: Age.defaultValue[0], max: Age.defaultValue[1] },
+      Distance: { min: Distance.defaultValue[0], max: Distance.defaultValue[1] },
+      Tags: { min: Tags.defaultValue[0], max: Tags.defaultValue[1] },
+      Popularity: { min: Popularity.defaultValue[0], max: Popularity.defaultValue[1] },
+      Matching: { min: Matching.defaultValue[0], max: Matching.defaultValue[1] },
+      filter: props.filter,
+    };
   }
 
-  AgeChange = (el) => {
-
+  ChangeState(field, min, max) {
+    this.setState({ [field]: { min, max } });
   }
 
-  DistanceChange = (el) => {
-
+  AgeChange = (e) => {
+    this.ChangeState('Age', e[0], e[1]);
   }
 
-  test = (e) => {
-    console.log('test', e);
+  DistanceChange = (e) => {
+    this.ChangeState('Distance', e[0], e[1]);
   }
 
-  render() {
-    const type = [Age, Distance, Tags, Popularity, Match];
-    const FilterSelector = type.map(el => (
+  TagsChange = (e) => {
+    this.ChangeState('Tags', e[0], e[1]);
+  }
+
+  PopularityChange = (e) => {
+    this.ChangeState('Popularity', e[0], e[1]);
+  }
+
+  MatchingChange = (e) => {
+    this.ChangeState('Matching', e[0], e[1]);
+  }
+
+  functionArray = (id) => {
+    if (id === 'Age') return this.AgeChange;
+    else if (id === 'Distance') return this.DistanceChange;
+    else if (id === 'Tags') return this.TagsChange;
+    else if (id === 'Popularity') return this.PopularityChange;
+    else if (id === 'Matching') return this.MatchingChange;
+    return this.MatchChange;
+  }
+
+  Filter = (el) => {
+    const stateSaver = this.functionArray(el.id);
+    return (
       <div key={el.id} style={style}>
         <span>{el.text}</span>
         <Slider.Range
           min={el.min}
           max={el.max}
           marks={el.marks}
-          onChange={el.save}
+          onChange={stateSaver}
           defaultValue={el.defaultValue}
           handle={handle}
         />
-      </div>));
-    return <div>{FilterSelector}</div>;
+      </div>);
+  }
+
+  handleToggle = () => this.setState({ open: !this.state.open });
+
+  handleSave = (e) => {
+    e.preventDefault();
+    this.handleToggle();
+    this.props.filter(this.state);
+  }
+
+  render() {
+    const type = [Age, Distance, Tags, Popularity, Matching];
+    const FilterSelector = type.map(el => (this.Filter(el)));
+    return (
+      <div>
+        <div style={{ margin: 'auto', width: '50%' }}>Filter by:
+          <Button
+            onClick={this.handleToggle}
+            style={{ margin: '3px' }}
+            bsStyle="default"
+          >
+            Filter
+          </Button>
+          <Button
+            onClick={this.props.cancel}
+            style={{ margin: '3px' }}
+            bsStyle="default"
+          >
+            Cancel Filter
+          </Button>
+        </div>
+        <Drawer width="50%" open={this.state.open}>
+          <div style={{ margin: 'auto', width: '90%' }}>
+            <p style={style} >Advanced Search</p>
+            {FilterSelector}
+            <div style={{ marginTop: '20px' }}>
+              <Button
+                onClick={this.handleSave}
+                style={{ margin: '3px' }}
+                bsStyle="default"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={this.handleToggle}
+                style={{ margin: '3px' }}
+                bsStyle="default"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </Drawer>
+      </div>
+    );
   }
 }
 

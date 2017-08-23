@@ -33,6 +33,7 @@ const routes = (app, upload) => {
   app.get('/api/chat/getAllMessage', Chat.getAllConversations);
   app.get('/api/chat/getMessage/:target', Chat.getMessages);
   app.post('/api/chat/newMessage', Chat.inputMessage);
+  app.get('/api/chat/getNewMessageCount', Chat.getNewMessageCount);
 
   app.get('*', (req, res) => {
     res.send({ error: 'not found', message: 'this request cannot go throught' });

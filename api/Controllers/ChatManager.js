@@ -1,10 +1,15 @@
-import { getChat, getConversations, pushNewMessage } from '../DbAction/DbChat.js';
+import {
+   getChat,
+   getConversations,
+   pushNewMessage,
+   getMessageCount,
+   resetMessageCount,
+} from '../DbAction/DbChat.js';
 import * as db from '../DbAction/DbAction.js';
 
 export const inputMessage = async (req, res) => {
   const { username } = req.headers;
   const { target, input } = req.body;
-  console.log('kfjkdjg', target);
   await pushNewMessage(username, target, input);
   return res.send({ error: '' });
 };
@@ -22,15 +27,20 @@ export const getAllConversations = async (req, res) => {
     }
     return 'blocked';
   });
-  console.log('TO ARRAY', conversations);
   return res.send({ error: '', conversations });
 };
 
 export const getMessages = async (req, res) => {
   const { username } = req.headers;
   const { target } = req.params;
-  console.log('Get Messages', username, target);
   const message = await getChat(username, target);
-  console.log('getMessages', message);
+  resetMessageCount(username, target);
   return res.send({ error: '', message });
+};
+
+export const getNewMessageCount = async (req, res) => {
+  const { username } = req.headers;
+  const messageCount = await getMessageCount(username);
+  if (messageCount === null) return res.send({ error: 'MessageCount', message: 'No conversations' });
+  return res.send({ error: '', messageCount });
 };
