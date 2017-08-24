@@ -72,10 +72,12 @@ export const resetMessageCount = async (reader, target) => {
   const chat = await getChat(reader, target);
   const id = chat._id;
   const field = chat.user1 === reader ? 'newMessage1' : 'newMessage2';
-  await Mongo.db.collection('chat').updateOne(
+  const erased = chat[field];
+  Mongo.db.collection('chat').updateOne(
     { _id: id },
     { $set: { [field]: 0 } },
   );
+  return erased;
 };
 
 export const createConversation = async (user1, user2) => {

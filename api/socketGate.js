@@ -99,11 +99,6 @@ const socketGate = users => (socket) => {
       }
     });
   });
-
-  socket.on('resetMessageCount', (target) => {
-    console.log(`${username} will reset message count on ${target}`);
-    socket.emit('resetMessageCount');
-  });
 };
 
 export default socketGate;

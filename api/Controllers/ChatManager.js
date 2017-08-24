@@ -33,9 +33,9 @@ export const getAllConversations = async (req, res) => {
 export const getMessages = async (req, res) => {
   const { username } = req.headers;
   const { target } = req.params;
-  const message = await getChat(username, target);
+  const chat = await getChat(username, target);
   resetMessageCount(username, target);
-  return res.send({ error: '', message });
+  return res.send({ error: '', message: chat });
 };
 
 export const getNewMessageCount = async (req, res) => {
@@ -43,4 +43,15 @@ export const getNewMessageCount = async (req, res) => {
   const messageCount = await getMessageCount(username);
   if (messageCount === null) return res.send({ error: 'MessageCount', message: 'No conversations' });
   return res.send({ error: '', messageCount });
+};
+
+export const updateMessageCount = async (req, res) => {
+  const { username } = req.headers;
+  const { target } = req.params;
+  const chat = await getChat(username, target);
+  if (!chat) {
+    return res.send({ error: 'updateMessageCount', message: 'No conversations' });
+  }
+  const erased = await resetMessageCount(username, target);
+  return res.send({ error: '', erased });
 };
