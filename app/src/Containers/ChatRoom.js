@@ -46,7 +46,6 @@ class Chat extends Component {
   componentWillMount() {
     if (!this.state.mounted) {
       global.socket.emit('isUserLogged', this.target);
-      global.socket.emit('resetMessageCount', this.target);
     }
     global.socket.on(`userIsLogged/${this.target}`, (statement) => {
       if (!this.state.mounted) {
@@ -84,8 +83,9 @@ class Chat extends Component {
 
   handleNewMessage = (newMessage) => {
     const { message } = this.state;
-    if (!message || message === undefined) this.setState({ message: { conversation: [newMessage] } });
-    else {
+    if (!message || message === undefined) {
+      this.setState({ message: { conversation: [newMessage] } });
+    } else {
       message.conversation.push(newMessage);
       this.setState({ message });
       this.scrollToBottom();
@@ -128,7 +128,6 @@ class Chat extends Component {
   )
 
   formatMessage = (message) => {
-    console.log('IN FORMAT', message);
     if (!message || message === undefined) return <p>No messages</p>;
     const { conversation } = message;
     if (!conversation || conversation === undefined) return <p>No messages</p>;

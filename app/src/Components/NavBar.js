@@ -17,6 +17,7 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     const { username, isLogged, profilePicturePath } = props;
+    this.pathname = this.props.location.pathname;
     this.state = {
       username,
       isLogged,
@@ -31,41 +32,37 @@ class NavBar extends Component {
       this.initSocket();
       secureAxios(`/users/getfavoritepicture/${username}`, 'GET')
         .then(({ data }) => {
-          if (!data.error) {
-            const { profilePicturePath } = data;
-            this.setState({ profilePicturePath });
-          } else if (this.props.location !== '/myprofile') {
+          if (data.error && this.props.location.pathname !== '/myprofile') {
             this.props.history.push('/myprofile');
             const title = 'You have to upload a picture to enjoy our website';
             this.props.dispatch(Notifications.error({ title }));
+          } else {
+            const { profilePicturePath } = data;
+            this.setState({ profilePicturePath });
+            this.getMessageCount();
+            const target = this.pathname.split('/').pop();
+            if (this.pathname.includes('/profile')) {
+              global.socket.emit('visit', target);
+            }
+            if (this.pathname.includes('/chat/')) {
+              this.updateMessageCount(target);
+            }
           }
-          this.getNewMessageCount();
         });
-      const { pathname } = this.props.location;
-      this.pathname = pathname;
-      const target = pathname.split('/').pop();
-      if (pathname.includes('/profile')) {
-        global.socket.emit('visit', target);
-      }
-      if (pathname.includes('/chat/')) {
-        global.socket.emit('resetMessageCount', target);
-      }
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { username, isLogged, profilePicturePath } = nextProps;
-    this.setState({
-      username, isLogged, profilePicturePath,
-    });
-    const { pathname } = nextProps.location;
-    this.pathname = pathname;
-    const target = pathname.split('/').pop();
-    if (pathname.includes('/profile')) {
-      global.socket.emit('visit', target);
-    }
-    if (pathname.includes('/chat/')) {
-      global.socket.emit('resetMessageCount', target);
+  componentDidUpdate(prevProps) {
+    const oldPathname = prevProps.location.pathname;
+    const newPathname = this.props.location.pathname;
+    if (newPathname !== oldPathname) {
+      this.pathname = this.props.location.pathname;
+      this.target = this.pathname.split('/').pop();
+      if (this.pathname.includes('/profile')) {
+        global.socket.emit('visit', this.target);
+      } else if (this.pathname.includes('/chat/')) {
+        this.updateMessageCount(this.target);
+      }
     }
   }
 
@@ -82,13 +79,27 @@ class NavBar extends Component {
     global.socket.off(`message/${this.state.username}`);
   }
 
-  getNewMessageCount = () => {
+  getMessageCount = () => {
     secureAxios('/chat/getNewMessageCount', 'GET')
       .then(({ data }) => {
         if (!data.error) {
-          console.log('GET newMessageCount');
           const { messageCount } = data;
           this.setState({ messageCount });
+        } else {
+          console.log(data.error);
+        }
+      });
+  }
+
+  updateMessageCount = (target) => {
+    secureAxios(`/chat/updateMessageCount/${target}`, 'GET')
+      .then(({ data }) => {
+        if (data.error) console.log(data.error);
+        else {
+          const { erased } = data;
+          const { messageCount } = this.state;
+          const newMessageCount = messageCount - erased;
+          this.setState({ messageCount: newMessageCount });
         }
       });
   }
@@ -104,15 +115,12 @@ class NavBar extends Component {
     global.socket.on('unmatch', (visitor) => { this.props.dispatch(Notifications.error({ title: `You cannot chat with ${visitor} anymore =/` })); });
     global.socket.on('block', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has blocked you !` })); });
     global.socket.on('unblock', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` })); });
-    global.socket.on('resetMessageCount', () => { this.getNewMessageCount(); });
     global.socket.on(`messageCount/${this.state.username}`, (target) => {
-      console.log('Message received');
       this.handleNewMessage(target);
     });
   }
 
   handleNewMessage = (target) => {
-    console.log('IN HANDLE NEW MESSAGE', this.pathname);
     if (!this.pathname.includes(`/chat/${target}`)) {
       const { messageCount } = this.state;
       const newMessageCount = messageCount + 1;

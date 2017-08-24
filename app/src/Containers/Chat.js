@@ -29,7 +29,6 @@ class Chat extends Component {
           this.setState({ mounted: true });
           console.log(data.error);
         } else {
-          console.log('resp getAllMessage', data);
           const { conversations } = data;
           this.setState({ conversations, mounted: true });
         }
