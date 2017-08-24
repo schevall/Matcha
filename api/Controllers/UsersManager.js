@@ -36,7 +36,6 @@ const updateGeneral = async (username, payload) => {
 };
 
 const controlPasswordChange = async (username, payload) => {
-  console.log(payload);
   const { password, password2, oldpassword } = payload;
   const userpassword = await db.getUserpassword(username);
   if (!User.comparePassword(oldpassword, userpassword)) return ({ error: 'passwordchange', message: 'The old password is wrong !' });
@@ -53,7 +52,6 @@ const changePassword = (username, payload) => {
 
 const controlEmailChange = async (username, payload) => {
   const { email, password } = payload;
-  console.log('in constrol email, payload', payload);
   const userpassword = await db.getUserpassword(username);
   if (!User.comparePassword(password, userpassword)) return ({ error: 'emailchange', message: 'The password is not correct !' });
   const error = verifemail(email);
@@ -80,52 +78,34 @@ const changeEmail = async (username, payload, res) => {
 export const updateGateway = async (req, res) => {
   const { username } = req.headers;
   const { field } = req.params;
-  console.log('UPDATE GATEWAY', username, field);
-  switch (field) {
-    case 'generalinfo': {
-      const { userInfo } = await updateGeneral(username, req.body);
-      res.send({ error: '', userInfo });
-      break;
+  if (field === 'generalinfo') {
+    const { userInfo } = await updateGeneral(username, req.body);
+    return res.send({ error: '', userInfo });
+  } else if (field === 'password') {
+    const verif = await controlPasswordChange(username, req.body);
+    if (verif) {
+      return res.send({ error: verif.error, message: verif.message });
+    } else {
+      changePassword(username, req.body);
+      return res.send({ error: '' });
     }
-    case 'password': {
-      const verif = await controlPasswordChange(username, req.body);
-      if (verif) {
-        res.send({ error: verif.error, message: verif.message });
-      } else {
-        changePassword(username, req.body);
-        res.send({ error: '' });
-      }
-      break;
+  } else if (field === 'email') {
+    const verif = await controlEmailChange(username, req.body);
+    if (verif) {
+      return res.send({ error: verif.error, message: verif.message });
     }
-    case 'email': {
-      const verif = await controlEmailChange(username, req.body);
-      if (verif) {
-        res.send({ error: verif.error, message: verif.message });
-      } else {
-        changeEmail(username, req.body, res);
-      }
-      break;
-    }
-    case 'tags': {
-      const { newtags } = req.body;
-      Object.keys(newtags).forEach((key) => {
-        newtags[key].key = key;
-      });
-      await db.setter(username, 'tags', newtags);
-      const userInfo = await db.getUserdb(username);
-      const { tags } = userInfo;
-      res.send({ error: '', tags });
-      break;
-    }
-    case 'geo': {
-      const { geo } = req.body;
-      if (!geo) return res.send({ error: 'no geo' });
-      console.log('in update GEO', geo);
-      db.setter(username, 'geo', geo);
-      res.send({ error: '' });
-      break;
-    }
-    default:
+    changeEmail(username, req.body, res);
+    return res.send({ error: '' });
+  } else if (field === 'tags') {
+    const { tags } = req.body;
+    console.log('IN UPDATE TAGS', tags);
+    db.setter(username, 'tags', tags);
+    return res.send({ error: '' });
+  } else if (field === 'geo') {
+    const { geo } = req.body;
+    if (!geo) return res.send({ error: 'no geo' });
+    db.setter(username, 'geo', geo);
+    return res.send({ error: '' });
   }
 };
 
@@ -142,12 +122,13 @@ export const getActivity = async (req, res) => {
   const activity = await db.getter(username, ['activity']);
   const oldactivity = await db.getter(username, ['oldactivity']);
   await db.setter(username, 'activity', []);
-  console.log('about to push', activity);
-  console.log('About to push', Object.values(activity));
   await db.oldActivityPusher(username, Object.values(activity[0].activity));
-  console.log('before sending', activity[0]);
-  console.log('before sending', oldactivity[0]);
   return res.send({ error: '', activity: activity[0], oldactivity: oldactivity[0] });
+};
+
+export const getTagList = async (req, res) => {
+  const tagList = await db.DbgetTagsList();
+  return res.send({ error: '', tagList });
 };
 
 export const logout = (req, res) => {

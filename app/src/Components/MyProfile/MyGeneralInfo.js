@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MyTag from './MyTag.js';
+import Tags from '../../Containers/Tags.js';
 import MyGeo from './MyGeo.js';
 
 export default class MyGeneralInfo extends Component {
@@ -74,8 +74,7 @@ export default class MyGeneralInfo extends Component {
         </div>
         <button type="submit" onClick={this.handleSubmit}>Save Change</button>
         <div> <br />
-          <p>Your tags :</p>
-          <MyTag tags={tags} handleOnSubmit={this.props.handleOnSubmitTags} />
+          <Tags tags={tags} handleOnSubmit={this.props.handleOnSubmitTags} />
         </div> <br />
         <MyGeo geo={geo} />
       </div>);

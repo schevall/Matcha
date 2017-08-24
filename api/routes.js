@@ -26,6 +26,7 @@ const routes = (app, upload) => {
   app.get('/api/users/getsuggestions/:visitor', getSuggestions);
   app.get('/api/users/getfavoritepicture/:username', Users.getFavPic);
   app.get('/api/users/getActivity/:username', Users.getActivity);
+  app.get('/api/users/getTagsList', Users.getTagList);
 
   app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
   app.post('/api/interactions/:action', Interactions.actionGateway);
@@ -35,6 +36,7 @@ const routes = (app, upload) => {
   app.post('/api/chat/newMessage', Chat.inputMessage);
   app.get('/api/chat/getNewMessageCount', Chat.getNewMessageCount);
   app.get('/api/chat/updateMessageCount/:target', Chat.updateMessageCount);
+
 
   app.get('*', (req, res) => {
     res.send({ error: 'not found', message: 'this request cannot go throught' });

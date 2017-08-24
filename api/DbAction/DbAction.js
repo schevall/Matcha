@@ -6,6 +6,12 @@ export const serveDb = async (username) => {
   return ({ usercollection, userdb });
 };
 
+export const DbgetTagsList = async () => {
+  const cursor = await Mongo.db.collection('tags').findOne({ tagList: 'tagList' });
+  const { tags } = cursor;
+  return tags;
+};
+
 export const checkUser = async (username) => {
   const { userdb } = await serveDb(username);
   if (!userdb) {
