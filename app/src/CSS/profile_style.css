@@ -2,30 +2,12 @@
   margin: 30px;
 }
 
-.profile_container, .profile_binfo_container, .profile_all_info_container, .bio_container, .gallery_container, .extended-info-container, .activation-container, .match-info-container {
-  padding: 20px;
+.border {
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
   background-color: #FCFCFC;
 }
 
-.profile_container_sub {
-  display: flex;
-}
-
-.extended-info-container {
-  margin-left: 20px;
-  width: 35%;
-}
-
-.match-info-container {
-  margin-left: 20px;
-  width: 35%;
-}
-
-.extended-info-container > form > div.container {
-  width: auto;
-}
 
 .profile_picture_container {
   margin: 10px;

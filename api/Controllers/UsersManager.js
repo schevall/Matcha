@@ -26,13 +26,21 @@ export const activation = async (req, res) => {
 
 const updateGeneral = async (username, payload) => {
   const userInfo = await db.getUserdb(username);
+  const reg = /^[a-zA-Z0-9]+$/;
+  const types = ['male', 'female', 'both'];
+  let modif = false;
+  if (!types.includes(payload.gender) || !types.includes(payload.orient)) {
+    return 'Wrong gender or orientation';
+  } else if (!payload.firstname.match(reg) || !payload.lastname.match(reg)) {
+    return 'First name and last name can only be alpha characters';
+  }
   Object.keys(payload).forEach((key) => {
     if (userInfo[key] !== payload[key]) {
-      userInfo[key] = payload[key];
       db.setter(username, key, payload[key]);
+      modif = true;
     }
   });
-  return { userInfo };
+  return modif ? null : 'No change detected';
 };
 
 const controlPasswordChange = async (username, payload) => {
@@ -51,54 +59,35 @@ const changePassword = (username, payload) => {
 };
 
 const controlEmailChange = async (username, payload) => {
-  const { email, password } = payload;
-  const userpassword = await db.getUserpassword(username);
-  if (!User.comparePassword(password, userpassword)) return ({ error: 'emailchange', message: 'The password is not correct !' });
+  const { email } = payload;
   const error = verifemail(email);
   if (error) return ({ error: 'emailchange', message: error.message });
   return null;
 };
 
-const changeEmail = async (username, payload, res) => {
-  const { email } = payload;
-  const activationkey = User.makeActivationkey(24);
-  const text = ftext(username, activationkey);
-  const html = fhtml(username, activationkey);
-  const sub = subject();
-  if (await mymailer(email, text, html, sub)) {
-    return res.send({ error: 'mail error' });
-  }
-  db.setter(username, 'email', email);
-  db.setter(username, 'activated', false);
-  db.setter(username, 'activationkey', activationkey);
-  return res.send({ error: '' });
-};
-
-
 export const updateGateway = async (req, res) => {
   const { username } = req.headers;
   const { field } = req.params;
   if (field === 'generalinfo') {
-    const { userInfo } = await updateGeneral(username, req.body);
-    return res.send({ error: '', userInfo });
+    const message = await updateGeneral(username, req.body);
+    if (message) res.send({ error: 'updateGeneral', message });
+    return res.send({ error: '' });
   } else if (field === 'password') {
     const verif = await controlPasswordChange(username, req.body);
     if (verif) {
       return res.send({ error: verif.error, message: verif.message });
-    } else {
-      changePassword(username, req.body);
-      return res.send({ error: '' });
     }
+    changePassword(username, req.body);
+    return res.send({ error: '' });
   } else if (field === 'email') {
     const verif = await controlEmailChange(username, req.body);
     if (verif) {
       return res.send({ error: verif.error, message: verif.message });
     }
-    changeEmail(username, req.body, res);
+    db.setter(username, 'email', req.body.email);
     return res.send({ error: '' });
   } else if (field === 'tags') {
     const { tags } = req.body;
-    console.log('IN UPDATE TAGS', tags);
     db.setter(username, 'tags', tags);
     return res.send({ error: '' });
   } else if (field === 'geo') {

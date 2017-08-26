@@ -7,7 +7,7 @@ import './CSS/profile_style.css';
 import PrivateRoute from './PrivateRoute.js';
 import NavBar from './Components/NavBar.js';
 import Suggestions from './Containers/Suggestions.js';
-import MyProfile from './Containers/MyProfile.js';
+import MyProfile from './MyProfile/Containers/MyProfile.js';
 import OneProfile from './Containers/OneProfile.js';
 import Activity from './Containers/Activity.js';
 import Chat from './Containers/Chat.js';

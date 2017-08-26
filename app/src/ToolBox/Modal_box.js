@@ -1,6 +1,7 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import { Button } from 'react-bootstrap';
 
 export default class ModalBox extends React.Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class ModalBox extends React.Component {
     const message = 'If you change your email you will be disconnected and a new activation key will be sent';
     return (
       <div>
-        <button type="submit" onClick={this.handleOpen}>{name}</button>
+        <Button style={{ marginLeft: '-10px' }} type="submit" onClick={this.handleOpen}>{name}</Button>
         <Dialog
           title={name}
           actions={actions}

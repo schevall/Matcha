@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import { WithContext as ReactTags } from 'react-tag-input';
-import './reactTags.css';
+import { Grid, Row, Col } from 'react-bootstrap'
+import '../CSS/reactTags.css';
 
 class MyTags extends React.Component {
 

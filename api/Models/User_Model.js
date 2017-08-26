@@ -7,8 +7,6 @@ class User {
   }
 
   static comparePassword(password, dbpassword) {
-    console.log('in comparePassword pass', password);
-    console.log('in comparePassword dbpass', dbpassword);
     return bcrypt.compareSync(password, dbpassword);
   }
 
