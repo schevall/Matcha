@@ -56,20 +56,22 @@ class ProtectedInfo extends Component {
 
   render() {
     const { email, errorOldpass, errorNewPass, errorEmail } = this.state;
+    const sizeField = [8, 8, 8];
+    const size = { sizeField };
     return (
-      <div>
+      <div style={{ padding: '20px' }}>
         <Form horizontal onChange={this.handleChange}>
-          <FormGroup>Private Informations</FormGroup>
-          <MyFormGroup id="oldpassword" type="password" placeholder="Old password" error={errorOldpass} />
-          <MyFormGroup id="password" type="password" placeholder="New password" error={errorNewPass} />
-          <MyFormGroup id="password2" type="password" placeholder="Retype the new password" />
+          <FormGroup>Security settings: Email and password</FormGroup>
+          <MyFormGroup id="oldpassword" type="password" placeholder="Old password" error={errorOldpass} size={size} />
+          <MyFormGroup id="password" type="password" placeholder="New password" error={errorNewPass} size={size} />
+          <MyFormGroup id="password2" type="password" placeholder="Retype the new password" size={size} />
           <FormGroup>
             <Col xs={4}><Button onClick={this.handleSubmitPassword}>Save Change</Button></Col>
           </FormGroup>
         </Form>
         <br />
         <Form horizontal onChange={this.handleChange}>
-          <MyFormGroup id="email" type="email" placeholder="Type your email" error={errorEmail} value={email} />
+          <MyFormGroup id="email" type="email" placeholder="Type your email" error={errorEmail} value={email} size={size} />
           <FormGroup>
             <Col xs={4}><Button onClick={this.handleSubmitEmail}>Save Change</Button></Col>
           </FormGroup>

@@ -57,7 +57,7 @@ export default class MyBio extends Component {
       message = `Characters left: ${count}`;
     }
     return (
-      <div className="bio_container">
+      <div style={{ padding: '20px' }}>
         <h3>Bio: </h3>
         <span>{message}</span>
         <TextField

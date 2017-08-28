@@ -27,10 +27,10 @@ const remove = async (req, res) => {
     return res.send({ error: 'removePicture', message: 'You can\'t delete yout profile picture !' });
   }
   const doc = await db.removePicture(username, fileName);
-  const { picturesPath, profilePicturePath } = doc;
+  const { picturesPath } = doc;
   fs.unlinkSync(pathToErase);
 
-  return res.send({ error: '', picturesPath, profilePicturePath });
+  return res.send({ error: '', picturesPath });
 };
 
 const favorite = async (req, res) => {
@@ -71,10 +71,9 @@ const upload = async (req, res) => {
   await usercollection.updateOne(
     { username },
     { $push: { picturesPath: newname } });
-  const picturesNb = userdb.picturesPath.length + 1;
   const picturesPath = userdb.picturesPath;
   picturesPath.push(newname);
-  return res.send({ error: '', picturesPath, picturesNb });
+  return res.send({ error: '', picturesPath });
 };
 
 export { nbVerif, upload, remove, favorite };

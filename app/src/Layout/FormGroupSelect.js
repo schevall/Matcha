@@ -1,11 +1,16 @@
 import React from 'react';
 import { Col, FormGroup, FormControl, HelpBlock } from 'react-bootstrap';
 
-const MyFormGroup = (props) => {
-  const { text, value, id, type, placeholder, message, error, size } = props;
+const MySelectFormGroup = (props) => {
+  const { text, value, id, options, message, error, size } = props;
   const { sizeField, sizeText } = size;
   const margin = message ? '0px' : '15px';
   const valid = error ? 'error' : null;
+  const optionsDisplay = options.map(el => (
+    <option key={el.value} value={el.value}>
+      {el.text}
+    </option>
+  ));
   return (
     <div>
       <FormGroup style={{ marginBottom: margin }} validationState={valid}>
@@ -20,10 +25,11 @@ const MyFormGroup = (props) => {
         <Col sm={sizeField[0]} md={sizeField[1]} lg={sizeField[2]}>
           <FormControl
             id={id}
-            type={type}
-            placeholder={placeholder}
+            componentClass="select"
             defaultValue={value}
-          />
+          >
+            {optionsDisplay}
+          </FormControl>
         </Col>
         }
       </FormGroup>
@@ -37,4 +43,4 @@ const MyFormGroup = (props) => {
   );
 };
 
-export default MyFormGroup;
+export default MySelectFormGroup;

@@ -129,7 +129,8 @@ class NavBar extends Component {
   }
 
   render() {
-    const { isLogged, username, profilePicturePath } = this.state;
+    const { isLogged, username } = this.state;
+    const { profilePicturePath } = this.props;
     if (!isLogged || !username) {
       return null;
     }

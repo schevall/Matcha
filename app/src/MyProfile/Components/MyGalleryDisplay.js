@@ -1,26 +1,7 @@
 import React, { Component } from 'react';
+import MyUploadPicture from '../Components/MyUploadPicture.js';
 
 export default class MyGalleryDisplay extends Component {
-
-  constructor(props) {
-    super(props);
-    const { username, picturesNb, picturesPath, profilePicturePath } = props;
-    this.state = {
-      username,
-      picturesNb,
-      picturesPath,
-      profilePicturePath,
-    };
-  }
-
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      username: nextProps.username,
-      picturesNb: nextProps.picturesNb,
-      picturesPath: nextProps.picturesPath,
-    });
-  }
 
   handleClick = (event) => {
     event.preventDefault();
@@ -35,7 +16,7 @@ export default class MyGalleryDisplay extends Component {
   }
 
   render() {
-    const { picturesPath, username, picturesNb } = this.state;
+    const { picturesPath, username, picturesNb } = this.props;
     if (picturesNb === 0 || picturesNb === 'undefined') {
       return null;
     }
@@ -57,6 +38,14 @@ export default class MyGalleryDisplay extends Component {
       </div>
     ));
 
-    return <div className="all-additional-pictures">{ finalSrc }</div>;
+    return (
+      <div>
+        {finalSrc}
+        <MyUploadPicture
+          picturesNb={picturesNb}
+          handleonImageDrop={this.props.handleonImageDrop}
+        />
+      </div>
+    );
   }
 }

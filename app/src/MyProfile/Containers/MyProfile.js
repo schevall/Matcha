@@ -12,7 +12,6 @@ import MyGeneralInfo from '../Components/MyGeneralInfo.js';
 import MyBasicProfilCard from '../Components/MyBasicProfilCard.js';
 import MyProtectedInfo from '../Components/MyProtectedInfo.js';
 import MyBio from '../Components/MyBio.js';
-import MyUploadPicture from '../Components/MyUploadPicture.js';
 import MyGalleryDisplay from '../Components/MyGalleryDisplay.js';
 
 import { logout, handleNewFavPic } from '../../Actions/Login/loginBound.js';
@@ -98,34 +97,34 @@ class MyProfile extends Component {
   }
 
   SetFavorite = (fileName) => {
+    console.log('fav', fileName);
     secureAxios('/users/favoritepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) console.log(data.error);
         else {
           const { profilePicturePath } = data;
-          const { userInfo } = this.state;
-          userInfo.profilePicturePath = profilePicturePath;
-          this.setState({ userInfo });
-          this.props.dispatch(handleNewFavPic(profilePicturePath, this.state.userInfo.username));
+          this.setState({ profilePicturePath });
+          console.log('ABOUT TO DISPATH', profilePicturePath);
+          this.props.dispatch(handleNewFavPic(profilePicturePath, this.state.username));
         }
       });
   }
 
   RemovePicture = (fileName) => {
+    console.log('remo', fileName);
     secureAxios('/users/removepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) {
           this.props.dispatch(Notifications.error({ title: data.message }));
         } else {
-          const { userInfo } = this.state;
-          userInfo.picturesPath = data.picturesPath;
-          userInfo.profilePicturePath = data.profilePicturePath;
-          this.setState({ userInfo });
+          const { picturesPath } = data;
+          this.setState({ picturesPath });
         }
       });
   }
 
   ImageUpload = (file) => {
+    console.log('in imge upload', file);
     const url = '/users/upload';
     const formData = new FormData();
     formData.append('imageUploaded', file);
@@ -134,11 +133,8 @@ class MyProfile extends Component {
         if (data.error) {
           this.setState({ errorUpload: data.message });
         } else {
-          const { picturesNb, picturesPath } = data;
-          const { userInfo } = this.state;
-          userInfo.picturesPath = picturesPath;
-          userInfo.picturesNb = picturesNb;
-          this.setState({ userInfo });
+          const { picturesPath } = data;
+          this.setState({ picturesPath });
         }
       });
   }
@@ -151,56 +147,49 @@ class MyProfile extends Component {
     const picturesNb = picturesPath.length;
     const userInfo = this.state;
     return (
-      <div className="profile_page_container">
-        <div className="container-fluid">
-          <Row className="justify-content-center">
-            <Col sm={12} md={4} lg={3} className="border">
-              <MyBasicProfilCard userInfo={userInfo} />
-            </Col>
-            <Col sm={12} md={4} lg={3} className="border">
-              <MyGeneralInfo
-                userInfo={userInfo}
-                handleOnChange={this.generalInfoState}
-                handleOnSubmit={this.generalInfoSave}
-              />
-            </Col>
-            <Col sm={12} md={4} lg={3} className="border" >
-              <MyProtectedInfo
-                handlePasswordModif={this.ModifyPassword}
-                handleEmailModif={this.ModifyEmail}
-                email={userInfo.email}
-              />
-            </Col>
-          </Row>
-          <Row className="justify-content-center">
-            <Col sm={12} md={12} lg={9} className="border">
-              <MyBio handleBioModif={this.ModifyBio} bio={userInfo.bio} />
-            </Col>
-          </Row>
-          <Row className="justify-content-center">
-            <Col sm={12} md={12} lg={9} className="border">
-              Gallery
-              <Row>
-                <Col sm={9} md={9} lg={7}>
-                  <MyGalleryDisplay
-                    picturesPath={picturesPath}
-                    picturesNb={picturesNb}
-                    username={username}
-                    handleRemove={this.props.handleRemove}
-                    handleFavorite={this.props.handleFavorite}
-                  />
-                </Col>
-                <Col sm={3} md={3} lg={2}>
-                  <MyUploadPicture
-                    picturesNb={picturesNb}
-                    handleonImageDrop={this.handleonImageDrop}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </div>
-      </div>
+      <Grid fluid>
+        <Row>
+          <Col xs={12} sm={4} md={4} lg={3} lgOffset={1} className="border ml-xl-auto">
+            <MyBasicProfilCard userInfo={userInfo} />
+          </Col>
+          <Col xs={12} sm={4} md={4} lg={3} className="border">
+            <MyGeneralInfo
+              userInfo={userInfo}
+              handleOnChange={this.generalInfoState}
+              handleOnSubmit={this.generalInfoSave}
+            />
+          </Col>
+          <Col xs={12} sm={4} md={4} lg={3} className="border" >
+            <MyProtectedInfo
+              handlePasswordModif={this.ModifyPassword}
+              handleEmailModif={this.ModifyEmail}
+              email={userInfo.email}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+            <MyBio handleBioModif={this.ModifyBio} bio={userInfo.bio} />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+            Gallery
+          </Col>
+        </Row>
+        <Row >
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+            <MyGalleryDisplay
+              picturesPath={picturesPath}
+              picturesNb={picturesNb}
+              username={username}
+              handleRemove={this.RemovePicture}
+              handleFavorite={this.SetFavorite}
+              handleonImageDrop={this.ImageUpload}
+            />
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }
