@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/lib/Button';
+import { Row, Col } from 'react-bootstrap';
 
 export default class Interactions extends Component {
 
@@ -8,9 +9,6 @@ export default class Interactions extends Component {
     const { actions } = props;
     this.state = {
       actions,
-    };
-    this.style = {
-      margin: '3px',
     };
   }
 
@@ -27,13 +25,14 @@ export default class Interactions extends Component {
     this.props.handleActions(button, action);
   }
 
-  ButtonMaker = (id, text, bsStyle) => {
+  ButtonMaker = (id, text, bsStyle, active = true) => {
     const button = (
       <Button
-        onClick={this.ActionsSending}
         id={id}
-        style={this.style}
+        style={{ width: '64px', marginLeft: '3px' }}
+        onClick={this.ActionsSending}
         bsStyle={bsStyle}
+        disabled={!active}
       >
         {text}
       </Button>
@@ -52,7 +51,7 @@ export default class Interactions extends Component {
     if (canchat && canchat !== 'disabled') {
       return this.ButtonMaker('chat', 'Chat', 'success');
     }
-    return null;
+    return this.ButtonMaker('chat', 'Chat', 'success', false);
   }
 
   render() {
@@ -63,12 +62,12 @@ export default class Interactions extends Component {
     const reportButton = canreport ? this.ButtonMaker('report', 'Report', 'danger') : <Button style={this.style} bsStyle="danger">Reported</Button>;
 
     return (
-      <div className="profile_action_container">
+      <Row style={{ marginTop: '10px' }}>
         {likeButton}
         {chatButton}
         {blockButton}
         {reportButton}
-      </div>
+      </Row>
     );
   }
 }

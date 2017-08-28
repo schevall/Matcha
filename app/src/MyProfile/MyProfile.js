@@ -6,15 +6,15 @@ import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import secureAxios from '../../secureAxios.js';
+import secureAxios from '../secureAxios.js';
 
-import MyGeneralInfo from '../Components/MyGeneralInfo.js';
-import MyBasicProfilCard from '../Components/MyBasicProfilCard.js';
-import MyProtectedInfo from '../Components/MyProtectedInfo.js';
-import MyBio from '../Components/MyBio.js';
-import MyGalleryDisplay from '../Components/MyGalleryDisplay.js';
+import MyGeneralInfo from './Components/MyGeneralInfo.js';
+import MyBasicProfilCard from './Components/MyBasicProfilCard.js';
+import MyProtectedInfo from './Components/MyProtectedInfo.js';
+import MyBio from './Components/MyBio.js';
+import MyGalleryDisplay from './Components/MyGalleryDisplay.js';
 
-import { logout, handleNewFavPic } from '../../Actions/Login/loginBound.js';
+import { logout, handleNewFavPic } from '../Actions/Login/loginBound.js';
 
 class MyProfile extends Component {
 
@@ -84,7 +84,7 @@ class MyProfile extends Component {
   }
 
   ModifyBio = (newbio) => {
-    secureAxios('/users/update/generalinfo', 'POST', { newbio })
+    secureAxios('/users/update/bio', 'POST', { newbio })
     .then(({ data }) => {
       if (data.error) {
         this.props.dispatch(Notifications.error({ title: data.message }));

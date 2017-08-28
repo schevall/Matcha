@@ -6,12 +6,12 @@ import './CSS/profile_style.css';
 
 import PrivateRoute from './PrivateRoute.js';
 import NavBar from './Components/NavBar.js';
-import Suggestions from './Containers/Suggestions.js';
-import MyProfile from './MyProfile/Containers/MyProfile.js';
-import OneProfile from './Containers/OneProfile.js';
+import Suggestions from './Suggestions/Suggestions.js';
+import MyProfile from './MyProfile/MyProfile.js';
+import OneProfile from './OneProfile/OneProfile.js';
 import Activity from './Containers/Activity.js';
-import Chat from './Containers/Chat.js';
-import ChatRoom from './Containers/ChatRoom.js';
+import Chat from './Chat/Chat.js';
+import ChatRoom from './Chat/ChatRoom.js';
 
 const App = props => (
   <div>

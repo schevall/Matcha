@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap'
-import secureAxios from '../../secureAxios.js';
-import MyTags from '../Components/MyTags.js';
+import { Row } from 'react-bootstrap'
+import secureAxios from '../secureAxios.js';
+import MyTags from './Components/MyTags.js';
 
 class Tags extends Component {
 

@@ -95,7 +95,12 @@ export const updateGateway = async (req, res) => {
     if (!geo) return res.send({ error: 'no geo' });
     db.setter(username, 'geo', geo);
     return res.send({ error: '' });
+  } else if (field === 'bio') {
+    const { newbio } = req.body;
+    db.setter(username, 'bio', newbio);
+    return res.send({ error: '', bio: newbio });
   }
+  return res.send({ error: 'updateGeneral', message: 'nothing to do' });
 };
 
 export const getFavPic = async (req, res) => {

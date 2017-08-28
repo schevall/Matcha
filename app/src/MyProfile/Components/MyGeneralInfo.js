@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { Button, Col, Form, FormGroup, FormControl } from 'react-bootstrap';
-import Tags from '../Containers/Tags.js';
+import { Button, Col, Form, FormGroup } from 'react-bootstrap';
+import Tags from '../Tags.js';
 import MyGeo from '../../Geolocation/Containers/MyGeo.js';
 import MyFormGroup from '../../Layout/FormGroup.js';
 import MySelectFormGroup from '../../Layout/FormGroupSelect.js';

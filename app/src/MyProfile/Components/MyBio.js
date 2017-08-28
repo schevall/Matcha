@@ -20,12 +20,6 @@ export default class MyBio extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { bio } = nextProps;
-    const length = bio.length;
-    this.setState({ bio, length, cansubmit: false });
-  }
-
   handleChange = (e) => {
     e.preventDefault();
     const bio = e.target.value;
@@ -33,15 +27,15 @@ export default class MyBio extends Component {
     if (length <= 320) {
       this.setState({ bio, length, cansubmit: true });
     } else {
-      this.setState({ bio, length, cansubmit: false });
+      this.setState({ cansubmit: false });
     }
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { bio, length } = this.state;
+    const { bio } = this.state;
     if (bio.length <= 320) {
-      this.setState({ bio, length, cansubmit: false });
+      this.setState({ cansubmit: false });
       this.props.handleBioModif(bio);
     }
   }

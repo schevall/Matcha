@@ -26,10 +26,10 @@ export default class MyBasicProfilCard extends Component {
   ConnectionDisplay = (logged, lastConnection) => {
     const connectionTime = D.getDiffDate(lastConnection);
     if (logged) {
-      const connectionTitle = (<span><img src="/static/icons/Online.png" alt="" />Online</span>)
+      const connectionTitle = (<span><img src="/static/icons/Online.png" alt="" />Online</span>);
       return { connectionTitle, connectionTime };
     }
-    const connectionTitle = (<span><img src="/static/icons/Offline.png" alt="" />Offline</span>)
+    const connectionTitle = (<span><img src="/static/icons/Offline.png" alt="" />Offline</span>);
     return { connectionTitle, connectionTime };
   };
 
@@ -43,7 +43,7 @@ export default class MyBasicProfilCard extends Component {
     const userStyle = username.charAt(0).toUpperCase() + username.slice(1);
     return (
       <Grid fluid style={{ padding: '20px' }}>
-        <Row><Col xs={12}style={this.styles.username}>{userStyle}</Col></Row>
+        <Row><Col xs={12} style={this.styles.username}>{userStyle}</Col></Row>
         <Row><Col xs={6}>{connectionTitle}</Col><Col xs={6}>{connectionTime}</Col></Row>
         <Row><Col xs={6}>Age</Col><Col xs={6}>{age}</Col></Row>
         <Row><Col xs={6}>Popularity</Col><Col xs={6}>{popularity}</Col></Row>
