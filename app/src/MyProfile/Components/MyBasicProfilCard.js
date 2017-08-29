@@ -18,7 +18,7 @@ export default class MyBasicProfilCard extends Component {
       const info = '';
       return { path, info };
     }
-    const path = '/static/icons/ic_face_black_36dp_2x.png';
+    const path = '../../icons/ic_face_black_36dp_2x.png';
     const info = 'Add a profile picture !';
     return { path, info };
   };
@@ -26,10 +26,10 @@ export default class MyBasicProfilCard extends Component {
   ConnectionDisplay = (logged, lastConnection) => {
     const connectionTime = D.getDiffDate(lastConnection);
     if (logged) {
-      const connectionTitle = (<span><img src="/static/icons/Online.png" alt="" />Online</span>);
+      const connectionTitle = (<div><span style={{ color: 'green' }} className="glyphicon glyphicon-off" /><span> Online</span></div>);
       return { connectionTitle, connectionTime };
     }
-    const connectionTitle = (<span><img src="/static/icons/Offline.png" alt="" />Offline</span>);
+    const connectionTitle = (<div><span style={{ color: 'red' }} className="glyphicon glyphicon-off" /><span> Offline</span></div>);
     return { connectionTitle, connectionTime };
   };
 

@@ -84,10 +84,10 @@ class OneBasicProfilCard extends Component {
   ConnectionDisplay = (logged, lastConnection) => {
     const connectionTime = D.getDiffDate(lastConnection);
     if (logged) {
-      const connectionTitle = (<span><img src="/static/icons/Online.png" alt="" />Online</span>);
+      const connectionTitle = (<div><span style={{ color: 'green' }} className="glyphicon glyphicon-off" /><span> Online</span></div>);
       return { connectionTitle, connectionTime };
     }
-    const connectionTitle = (<span><img src="/static/icons/Offline.png" alt="" />Offline</span>);
+    const connectionTitle = (<div><span style={{ color: 'red' }} className="glyphicon glyphicon-off" /><span> Offline</span></div>);
     return { connectionTitle, connectionTime };
   };
 

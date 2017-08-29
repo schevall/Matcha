@@ -11,7 +11,7 @@ const makeModel = ({ username, birthDate, gender, orient, tags, bio, geo }) => (
     password: '$2a$10$sgKhWENdZurYDYeUHRJ2Bu56Pzqur46OH4N/oB0l9Q6akJ.S/H2OW',
     email: 'sim.chvll@gmail.com',
     activationkey: '',
-    lastConnection: '',
+    lastConnection: Date.now(),
     picturesPath: [],
     profilePicturePath: '',
     orient,
@@ -42,7 +42,7 @@ const users = [
     orient: 'male',
     tags: ['dragon', 'incest', 'blond'],
     bio: '',
-    geo: '45.8833,3.2667',
+    geo: '45.8,3.26',
   },
   {
     username: 'Sansa',
@@ -51,7 +51,7 @@ const users = [
     orient: 'male',
     tags: ['north', 'redhead', 'winter'],
     bio: '',
-    geo: '44.8833,0.2667',
+    geo: '45.83,3.2',
   },
   {
     username: 'Arya',
@@ -60,7 +60,7 @@ const users = [
     orient: 'male',
     tags: ['north', 'winter', 'fighter'],
     bio: '',
-    geo: '49.8833,1.2667',
+    geo: '45.81,3.28',
   },
   {
     username: 'Cersei',
@@ -69,7 +69,7 @@ const users = [
     orient: 'male',
     tags: ['rich', 'summer', 'incest', 'blond'],
     bio: '',
-    geo: '41.8833,5.2667',
+    geo: '45.89,3.20',
   },
   {
     username: 'Tyrion',
@@ -78,7 +78,7 @@ const users = [
     orient: 'female',
     tags: ['rich', 'imp', 'blond'],
     bio: '',
-    geo: '45.8833,3.2667',
+    geo: '45.85,3.22',
   },
   {
     username: 'Jaimy',
@@ -87,7 +87,7 @@ const users = [
     orient: 'female',
     tags: ['fighter', 'incest', 'blond', 'rich'],
     bio: '',
-    geo: '41.80,5.20',
+    geo: '45.86,3.24',
   },
   {
     username: 'John',
@@ -96,7 +96,7 @@ const users = [
     orient: 'female',
     tags: ['fighter', 'incest', 'north'],
     bio: '',
-    geo: '42.80,3.20',
+    geo: '45.88,3.22',
   },
   {
     username: 'Drogo',
@@ -105,51 +105,43 @@ const users = [
     orient: 'female',
     tags: ['fighter', 'savage', 'poney'],
     bio: '',
-    geo: '8.80,21.20',
+    geo: '45.84,3.26',
   },
 ];
 
-const upload = async (req, res) => {
-  const { file } = req;
-  const { username } = req.headers;
-  const usercollection = await Mongo.db.collection('users');
-  const userdb = await usercollection.findOne({ username });
-
-  if (!userdb) {
-    fs.unlinkSync(file);
-    return res.send({ error: 'upload error', message: 'User not found in db' });
+const deleteFolderRecursive = (path) => {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach((file) => {
+      const curPath = `${path}/${file}`;
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
   }
-  const UserDirFullPath = path.join(path.normalize(`${__dirname}/..`), `uploads/${username}`);
-  if (!fs.existsSync(UserDirFullPath)) {
-    fs.mkdirSync(UserDirFullPath);
-  }
-  const time = new Date().getTime() / 1000;
-  const newname = `${time}_${username}.jpeg`;
-  const oldpath = path.join(path.normalize(`${__dirname}/..`), `${file.destination}/`, `${file.filename}`);
-
-  await sharp(oldpath).resize(200, 200).toFile(`./uploads/${username}/${newname}`);
-  fs.unlinkSync(oldpath);
-
-  await usercollection.updateOne(
-    { username },
-    { $push: { picturesPath: newname } });
-  const picturesPath = userdb.picturesPath;
-  picturesPath.push(newname);
-  return res.send({ error: '', picturesPath });
 };
 
 const init = async (req, res) => {
   await Mongo.db.collection('users').deleteMany({});
+  deleteFolderRecursive('./uploads');
+  fs.mkdirSync('./uploads');
+  const array = [];
   for (const user of users) {
     const model = makeModel(user);
     const { username } = model;
-    const oldpath = `../Characters/${username}.png`;
+    console.log('IN FOR username', username);
+    const oldpath = `./Characters/${username}.png`;
     const time = new Date().getTime() / 1000;
     const newname = `${time}_${username}.jpeg`;
+    fs.mkdirSync(`./uploads/${username}`);
     model.profilePicturePath = newname;
+    model.picturesPath.push(newname);
     sharp(oldpath).resize(200, 200).toFile(`./uploads/${username}/${newname}`);
-    Mongo.db.collection('users').insertOne(model);
+    array.push(model);
   }
+  Mongo.db.collection('users').insertMany(array);
   return res.send({ error: '' });
 };
 
