@@ -5,10 +5,11 @@ import './CSS/style.css';
 import './CSS/profile_style.css';
 
 import PrivateRoute from './PrivateRoute.js';
-import NotificationsSystem from './Components/NotificationSystem.js';
-import SignInContainer from './Containers/SignInContainer.js';
-import SignUpContainer from './Containers/SignUpContainer.js';
-import Activation from './Containers/Activation.js';
+import NotificationsSystem from './Navbar/NotificationSystem.js';
+import SignInContainer from './Sign/SignIn.js';
+import SignUpContainer from './Sign/SignUp.js';
+import Activation from './Sign/Activation.js';
+import Init from './init.js';
 import App from './App.js';
 
 
@@ -20,6 +21,7 @@ const MyRouter = () => (
         <Route exact path="/signup" component={SignUpContainer} />
         <Route exact path="/signin" component={SignInContainer} />
         <Route exact path="/activation" component={Activation} />
+        <Route exact path="/init" component={Init} />
         <PrivateRoute path="*" component={App} />
       </Switch>
     </div>

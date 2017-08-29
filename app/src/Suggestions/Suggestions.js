@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 import secureAxios from '../secureAxios.js';
 import OneBasicProfilCard from '../OneProfile/Components/OneBasicProfilCard.js';
+import AdvancedFilterSelector from './AdvancedFilter.js';
+import SortingSelector from './SortingSelector.js';
 import { GetMatchingScore } from '../ToolBox/MatchingTool.js';
 import { calculateAge } from '../ToolBox/DateTools.js';
 import { getDistance, CountCommonTags, CalculatePopularity } from '../ToolBox/InteractionsTools.js';
-import AdvancedFilterSelector from './AdvancedFilter.js';
-import SortingSelector from './SortingSelector.js';
 
 class Suggestions extends Component {
 
@@ -30,6 +28,10 @@ class Suggestions extends Component {
     this.style = {
       card: {
         margin: '5px',
+      },
+      col: {
+        marginRight: '10px',
+        marginTop: '10px',
       },
     };
   }
@@ -129,7 +131,6 @@ class Suggestions extends Component {
       this.isInRange(user, advancedFilter)
     ));
     const output = array.filter(n => (n !== undefined && n !== null));
-    console.log('OUTPUT', output);
     this.setState({ toShow: output });
   }
 
@@ -139,12 +140,10 @@ class Suggestions extends Component {
   }
 
   render() {
-    const { isLogged } = this.props;
-    if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
     const { toShow, visitor } = this.state;
     const output = toShow.map(user => (
-      <Col key={user.username} className="border">
+      <Col key={user.username} className="border" style={this.style.col}>
         <OneBasicProfilCard
           isProfilePage={false}
           key={user.username}
@@ -159,21 +158,15 @@ class Suggestions extends Component {
       <Grid fluid>
         <AdvancedFilterSelector filter={this.advancedFilter} cancel={this.cancelFilter} />
         <SortingSelector filter={this.filter} />
-        <Row>{output}</Row>
+        <Row className="justify-content-center">{output}</Row>
       </Grid>
     );
   }
 }
 
-Suggestions.PropTypes = {
-  isLogged: PropTypes.bool,
-  username: PropTypes.string,
-};
-
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { username },
 }) => ({
-  isLogged,
   username,
 });
 

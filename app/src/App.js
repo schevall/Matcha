@@ -5,11 +5,11 @@ import './CSS/style.css';
 import './CSS/profile_style.css';
 
 import PrivateRoute from './PrivateRoute.js';
-import NavBar from './Components/NavBar.js';
+import NavBar from './Navbar/NavBar.js';
 import Suggestions from './Suggestions/Suggestions.js';
 import MyProfile from './MyProfile/MyProfile.js';
 import OneProfile from './OneProfile/OneProfile.js';
-import Activity from './Containers/Activity.js';
+import Activity from './Activity/Activity.js';
 import Chat from './Chat/Chat.js';
 import ChatRoom from './Chat/ChatRoom.js';
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row } from 'react-bootstrap'
+import { Row } from 'react-bootstrap';
 import secureAxios from '../secureAxios.js';
 import MyTags from './Components/MyTags.js';
 
@@ -33,7 +33,6 @@ class Tags extends Component {
   saveTags = () => {
     const { tags } = this.state;
     const payload = { tags };
-    console.log('IN SAVETAGS', tags);
     secureAxios('/users/update/tags', 'POST', payload)
       .then(({ data }) => {
         if (data.error) console.log(data.error);

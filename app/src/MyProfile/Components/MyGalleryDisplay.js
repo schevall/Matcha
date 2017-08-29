@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { Row } from 'react-bootstrap';
 import MyUploadPicture from '../Components/MyUploadPicture.js';
 
-export default class MyGalleryDisplay extends Component {
+class MyGalleryDisplay extends Component {
 
   handleClick = (event) => {
     event.preventDefault();
@@ -15,37 +16,42 @@ export default class MyGalleryDisplay extends Component {
     return false;
   }
 
+  formatGallery = (username, picturesPath) => {
+    if (picturesPath === undefined || !picturesPath.length) return null;
+    const output = picturesPath.map((src) => {
+      const path = `/static/${username}/${src}`;
+      return (
+        <div key={src} id={src} className="gallery_pictures_container" >
+          <img
+            className=""
+            src={path}
+            alt=""
+            height="200"
+          />
+          <button className="favorite_button" onClick={this.handleClick}>
+            <i className="material-icons orange600">star_border</i>
+          </button>
+          <button className="delete_button" onClick={this.handleClick}>
+            <i className="material-icons">delete</i>
+          </button>
+        </div>);
+    });
+    return output;
+  }
+
   render() {
     const { picturesPath, username, picturesNb } = this.props;
-    if (picturesNb === 0 || picturesNb === 'undefined') {
-      return null;
-    }
-    const staticSrc = picturesPath.map(src => ({ folder: `/static/${username}/${src}`, filename: src }));
-    const finalSrc = staticSrc.map(src => (
-      <div key={src.filename} id={src.filename} className="gallery_pictures_container" >
-        <img
-          className=""
-          src={src.folder}
-          alt=""
-          height="200"
-        />
-        <button className="favorite_button" onClick={this.handleClick}>
-          <i className="material-icons orange600">star_border</i>
-        </button>
-        <button className="delete_button" onClick={this.handleClick}>
-          <i className="material-icons">delete</i>
-        </button>
-      </div>
-    ));
-
+    const Gallery = this.formatGallery(username, picturesPath);
     return (
-      <div>
-        {finalSrc}
+      <Row>
+        {Gallery}
         <MyUploadPicture
           picturesNb={picturesNb}
           handleonImageDrop={this.props.handleonImageDrop}
         />
-      </div>
+      </Row>
     );
   }
 }
+
+export default MyGalleryDisplay;

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import secureAxios from '../secureAxios.js';
-import ConversationCard from '../Components/ConversationCard.js';
+import ConversationCard from './Components/ConversationCard.js';
 
 class Chat extends Component {
 
@@ -45,7 +43,8 @@ class Chat extends Component {
         const newMessage = el[field];
         const pic = el.user1 !== this.state.username ? el.picUser1 : el.picUser2;
         const path = `/static/${other}/${pic}`;
-        return <ConversationCard newMessage={newMessage} target={other} path={path} />;
+        return (
+          <ConversationCard newMessage={newMessage} target={other} path={path} />);
       }
     }));
     return output;
@@ -53,8 +52,6 @@ class Chat extends Component {
 
 
   render() {
-    const { isLogged } = this.props;
-    if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return (<CircularProgress />);
     const { conversations } = this.state;
     const output = this.formatConversation(conversations);
@@ -66,14 +63,10 @@ class Chat extends Component {
   }
 }
 
-Chat.PropTypes = {
-  isLogged: PropTypes.bool,
-};
-
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { username },
 }) => ({
-  isLogged,
   username,
 });
+
 export default connect(mapStateToProps)(Chat);

@@ -1,6 +1,6 @@
 import signin from './Controllers/Signin_strat.js';
 import signup from './Controllers/Signup_strat.js';
-import showusers from './Getter/User_list.js';
+import init from './Controllers/init.js';
 import authControl from './Controllers/authControl.js';
 import * as Pictures from './Controllers/PictureManager.js';
 import * as Users from './Controllers/UsersManager.js';
@@ -10,7 +10,7 @@ import getSuggestions from './Controllers/Suggestions.js';
 
 const routes = (app, upload) => {
   // public routes
-  app.get('/api/users', showusers);
+  app.get('/api/init', init);
   app.post('/api/signup', signup);
   app.post('/api/activation', Users.activation);
   app.post('/api/signin', signin);

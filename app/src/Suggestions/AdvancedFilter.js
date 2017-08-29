@@ -199,9 +199,10 @@ class AdvancedFilterSelector extends Component {
     const type = [Age, Distance, Tags, Popularity, Matching];
     const FilterSelector = type.map(el => (this.Filter(el)));
     return (
-      <Grid fluid>
-        <Row>
-          <Col>Filter by:
+      <Grid>
+        <Row >
+          <Col xs={12} md={2}>Filter by:</Col>
+          <div>
             <Button
               onClick={this.handleToggle}
               style={{ margin: '3px' }}
@@ -209,8 +210,8 @@ class AdvancedFilterSelector extends Component {
             >
               Filter
             </Button>
-          </Col>
-          <Col>
+          </div>
+          <div>
             <Button
               onClick={this.props.cancel}
               style={{ margin: '3px' }}
@@ -218,7 +219,7 @@ class AdvancedFilterSelector extends Component {
             >
               Cancel Filter
             </Button>
-          </Col>
+          </div>
         </Row>
         <Row>
           <Drawer width="50%" open={this.state.open}>

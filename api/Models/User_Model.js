@@ -24,13 +24,13 @@ class User {
     const newpassword = this.makeHash(password);
     const activationkey = this.makeActivationkey(24);
     return ({
-      activated: false,
+      activated: true,
       username,
       birthDate,
       gender,
       password: newpassword,
       email,
-      activationkey,
+      activationkey: '',
       lastConnection: '',
       picturesPath: [],
       profilePicturePath: '',

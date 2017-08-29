@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Notifications from 'react-notification-system-redux';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import secureAxios from '../secureAxios.js';
-
+import { handleNewFavPic } from '../Actions/Login/loginBound.js';
 import MyGeneralInfo from './Components/MyGeneralInfo.js';
 import MyBasicProfilCard from './Components/MyBasicProfilCard.js';
 import MyProtectedInfo from './Components/MyProtectedInfo.js';
 import MyBio from './Components/MyBio.js';
 import MyGalleryDisplay from './Components/MyGalleryDisplay.js';
-
-import { logout, handleNewFavPic } from '../Actions/Login/loginBound.js';
 
 class MyProfile extends Component {
 
@@ -97,21 +93,18 @@ class MyProfile extends Component {
   }
 
   SetFavorite = (fileName) => {
-    console.log('fav', fileName);
     secureAxios('/users/favoritepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) console.log(data.error);
         else {
           const { profilePicturePath } = data;
           this.setState({ profilePicturePath });
-          console.log('ABOUT TO DISPATH', profilePicturePath);
           this.props.dispatch(handleNewFavPic(profilePicturePath, this.state.username));
         }
       });
   }
 
   RemovePicture = (fileName) => {
-    console.log('remo', fileName);
     secureAxios('/users/removepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) {
@@ -124,7 +117,6 @@ class MyProfile extends Component {
   }
 
   ImageUpload = (file) => {
-    console.log('in imge upload', file);
     const url = '/users/upload';
     const formData = new FormData();
     formData.append('imageUploaded', file);
@@ -140,8 +132,6 @@ class MyProfile extends Component {
   }
 
   render() {
-    const { isLogged } = this.props;
-    if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.mounted) return <CircularProgress />;
     const { picturesPath, username } = this.state;
     const picturesNb = picturesPath.length;
@@ -194,17 +184,4 @@ class MyProfile extends Component {
   }
 }
 
-MyProfile.PropTypes = {
-  isLogged: PropTypes.bool,
-  notifications: PropTypes.Object,
-};
-
-const mapStateToProps = ({
-  loginReducer: { isLogged },
-  notifications,
-}) => ({
-  isLogged,
-  notifications,
-});
-
-export default connect(mapStateToProps)(MyProfile);
+export default connect()(MyProfile);

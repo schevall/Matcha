@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Avatar from 'material-ui/Avatar';
 
 
-import LinkProfile from '../ToolBox/LinkProfile.js';
+import LinkProfile from '../../ToolBox/LinkProfile.js';
 
 class ConversationCard extends Component {
 
@@ -51,8 +49,10 @@ class ConversationCard extends Component {
     if (!this.state.mounted) {
       global.socket.emit('isUserLogged', this.target);
     }
+    global.socket.on(`message/${this.target}`, () => {
+      this.setState({ newMessage: this.state.newMessage + 1 });
+    });
     global.socket.on(`userIsLogged/${this.target}`, (statement) => {
-      console.log(`RECEPTION ON ${this.target}`);
       if (!this.state.mounted) {
         this.setState({ isTargetLogged: statement, mounted: true });
       }
@@ -62,6 +62,7 @@ class ConversationCard extends Component {
   componentWillUnmount = () => {
     global.socket.off('isUserLogged');
     global.socket.off(`userIsLogged/${this.target}`);
+    global.socket.off(`message/${this.target}`);
   }
 
   ConnectionDisplay = (logged) => {

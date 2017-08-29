@@ -7,7 +7,7 @@ export default class SortingSelector extends Component {
   render() {
     const type = ['Age', 'Distance', 'Tags', 'Popularity', 'Matching'];
     const Buttons = type.map(el => (
-      <Col>
+      <div key={el}>
         <Button
           onClick={this.props.filter}
           id={el}
@@ -17,12 +17,12 @@ export default class SortingSelector extends Component {
         >
           {el}
         </Button>
-      </Col>
+      </div>
     ));
     const Container = (
-      <Grid fluid>
+      <Grid>
         <Row>
-          <Col>Sort by:</Col>
+          <Col xs={12} md={2}>Sort by:</Col>
           { Buttons }
         </Row>
       </Grid>
