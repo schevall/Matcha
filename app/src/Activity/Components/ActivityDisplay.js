@@ -108,20 +108,32 @@ class ActivityDisplay extends Component {
     }
     if (open) {
       return (
-        <Grid fluid>
-          <button onClick={this.handleClick}>
-             Show recent activity
-          </button>
-          {oldActivityData}
+        <Grid style={{ width: '80vw' }}>
+          <Row>
+            <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
+              <Row>
+                <button onClick={this.handleClick}>
+                  Show recent activity
+                </button>
+              </Row>
+              {oldActivityData}
+            </Col>
+          </Row>
         </Grid>
       );
     }
     return (
-      <Grid fluid>
-        <button onClick={this.handleClick}>
-           Show old activity
-        </button>
-        {activityData}
+      <Grid style={{ width: '80vw' }}>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
+            <Row>
+              <button onClick={this.handleClick}>
+                Show old activity
+              </button>
+            </Row>
+            {activityData}
+          </Col>
+        </Row>
       </Grid>
     );
   }

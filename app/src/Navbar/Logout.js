@@ -13,7 +13,7 @@ class Logout extends Component {
   render() {
     // console.log('in lougout this props = ', this.props);
     return (
-      <Link to="/signin" className="nav-item glyphicon glyphicon-log-out" onClick={this.onLogout} />
+      <Link to="/signin" style={this.props.style} className="nav-item glyphicon glyphicon-log-out" onClick={this.onLogout} />
     );
   }
 }

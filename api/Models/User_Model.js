@@ -20,25 +20,25 @@ class User {
     return out;
   }
 
-  static create(username, email, password, birthDate, gender) {
+  static create(username, email, password, birthDate, gender, firstname, lastname, geo) {
     const newpassword = this.makeHash(password);
     const activationkey = this.makeActivationkey(24);
     return ({
-      activated: true,
+      activated: false,
       username,
       birthDate,
       gender,
       password: newpassword,
       email,
-      activationkey: '',
+      activationkey,
       lastConnection: '',
       picturesPath: [],
       profilePicturePath: '',
       orient: 'both',
       popularity: 0,
-      firstname: '',
-      lastname: '',
-      geo: '',
+      firstname,
+      lastname,
+      geo,
       tags: [],
       likedby: [],
       liketo: [],

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Avatar from 'material-ui/Avatar';
+import ConnectionDisplay from '../../ToolBox/ConnectionDisplay.js';
 
 
 import LinkProfile from '../../ToolBox/LinkProfile.js';
@@ -65,20 +66,12 @@ class ConversationCard extends Component {
     global.socket.off(`message/${this.target}`);
   }
 
-  ConnectionDisplay = (logged) => {
-    if (logged) {
-      return (<div className="col flex-middle"><img src="/static/icons/Online.png" alt="" />Online</div>);
-    }
-    return (<div className="col flex-middle"><img src="/static/icons/Offline.png" alt="" />Offline</div>);
-  };
-
-
   render() {
     const { mounted } = this.state;
     if (!mounted) return <CircularProgress />;
     const { isTargetLogged } = this.state;
     const { path, target } = this.props;
-    const connection = this.ConnectionDisplay(isTargetLogged);
+    const { connectionTitle } = ConnectionDisplay(isTargetLogged);
     const toProfile = LinkProfile(this.styles.link, target, 'toProfile');
     const toChat = <Link style={this.styles.link} to={`/chat/${target}`}>To Chat</Link>;
     const { newMessage } = this.state;
@@ -90,7 +83,7 @@ class ConversationCard extends Component {
             <div className="row">{target}</div>
             <div className="row">
               <div className="col"><Avatar src={path} /></div>
-              {connection}
+              {connectionTitle}
             </div>
             <div className="row">{toProfile}</div>
             <div className="row">

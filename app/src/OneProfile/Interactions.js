@@ -27,24 +27,26 @@ export default class Interactions extends Component {
 
   ButtonMaker = (id, text, bsStyle, active = true) => {
     const button = (
-      <Button
-        id={id}
-        style={{ width: '64px', marginLeft: '3px' }}
-        onClick={this.ActionsSending}
-        bsStyle={bsStyle}
-        disabled={!active}
-      >
-        {text}
-      </Button>
+      <Col xs={3}>
+        <Button
+          id={id}
+          style={{ width: '64px', marginLeft: '3px' }}
+          onClick={this.ActionsSending}
+          bsStyle={bsStyle}
+          disabled={!active}
+        >
+          {text}
+        </Button>
+      </Col>
     );
     return button;
   }
 
-  LikeButtonMaker = (canlike) => {
+  LikeButtonMaker = (canlike, activ = true) => {
     if (canlike) {
-      return this.ButtonMaker('like', 'Like', 'info');
+      return this.ButtonMaker('like', 'Like', 'info', activ);
     }
-    return this.ButtonMaker('unlike', 'Unlike', 'info');
+    return this.ButtonMaker('unlike', 'Unlike', 'info', activ);
   }
 
   ChatButtonMaker = (canchat) => {
@@ -56,10 +58,10 @@ export default class Interactions extends Component {
 
   render() {
     const { canlike, canchat, canblock, canreport } = this.state.actions;
-    const likeButton = canlike === 'disabled' ? null : this.LikeButtonMaker(canlike);
+    const likeButton = canlike === 'disabled' ? this.LikeButtonMaker(canlike, false) : this.LikeButtonMaker(canlike);
     const chatButton = this.ChatButtonMaker(canchat);
     const blockButton = canblock ? this.ButtonMaker('block', 'Block', 'warning') : this.ButtonMaker('unblock', 'Unblock', 'warning');
-    const reportButton = canreport ? this.ButtonMaker('report', 'Report', 'danger') : <Button style={this.style} bsStyle="danger">Reported</Button>;
+    const reportButton = canreport ? this.ButtonMaker('report', 'Report', 'danger') : this.ButtonMaker('report', 'Report', 'danger', false);
 
     return (
       <Row style={{ marginTop: '10px' }}>

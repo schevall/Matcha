@@ -37,6 +37,13 @@ class OneBasicProfilCard extends Component {
         color: 'inherit',
         textDecoration: 'none',
       },
+      picture: {
+        margin: 'auto',
+      },
+      pictureContainer: {
+        marginTop: '25px',
+        marginBottom: '25px',
+      },
     };
     if (isProfilePage) this.styles.link.pointerEvents = 'none';
   }
@@ -181,9 +188,11 @@ class OneBasicProfilCard extends Component {
         <Row><Col xs={6}>Tag in common</Col><Col xs={6}>{commonTags}</Col></Row>
         <Row><Col xs={6}>Distance</Col><Col xs={6}>{text}</Col></Row>
         <Row><Col xs={6}>Matching</Col><Col xs={6}>{matchingScore}</Col></Row>
-        <Row><Col xs={12} xsOffset={1} style={{ marginTop: '10px' }}>
-          <img src={path} alt="" />
-        </Col></Row>
+        <Row style={this.styles.pictureContainer} className="justify-content-center">
+          <Col style={this.styles.picture}>
+            <img src={path} alt="" />
+          </Col>
+        </Row>
         {!button ? null :
         <Interactions
           actions={actions}

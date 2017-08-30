@@ -14,6 +14,8 @@ class SignUpContainer extends Component {
     password2: 'Patata11',
     email: 'sim.chvll@gmail.com',
     birthDate: (new Date('October 13, 1988')),
+    firstname: 'Sim',
+    lastname: 'Pouet',
     gender: 1,
     genderValue: '',
     errorUsername: '',
@@ -27,7 +29,7 @@ class SignUpContainer extends Component {
 
   requestSignup = (event) => {
     event.preventDefault();
-    const { username, password, password2, email, birthDate, genderValue } = this.state;
+    const { username, password, password2, email, birthDate, genderValue, firstname, lastname } = this.state;
     this.setState({
       errorUsername: '',
       errorPassword: '',
@@ -43,9 +45,13 @@ class SignUpContainer extends Component {
       email,
       birthDate,
       genderValue,
+      firstname,
+      lastname,
     })
     .then(({ data }) => {
-      if (data.verif.success === false) {
+      if (data.error === 'mail error') {
+        Notifications.error({ title: 'Something went wrong with your email' });
+      } else if (data.verif.success === false) {
         data.verif.output.forEach((item) => {
           if (item) this.setState({ [item.error]: item.message });
         });
@@ -114,7 +120,7 @@ class SignUpContainer extends Component {
     const { step } = this.state;
     return (
       <div className="signup_container">
-        <h3>Welcome</h3>
+        <h3>Subcribe to Matcha</h3>
         <Link to="/signin">To Signin</Link>
         <br />
         <Link to="/activation">To Activation</Link>
@@ -126,6 +132,8 @@ class SignUpContainer extends Component {
           email={this.state.email}
           birthDate={this.state.birthDate}
           gender={this.state.gender}
+          firstname={this.state.firstname}
+          lastname={this.state.lastname}
           errorUsername={this.state.errorUsername}
           errorPassword={this.state.errorPassword}
           errorPassword2={this.state.errorPassword2}

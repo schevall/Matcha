@@ -10,6 +10,13 @@ export default class MyBasicProfilCard extends Component {
       fontWeight: 700,
       fontSize: '25px',
     },
+    picture: {
+      margin: 'auto',
+    },
+    pictureContainer: {
+      marginTop: '25px',
+      marginBottom: '25px',
+    },
   };
 
   ProfilePictureDisplay = (username, profilePicturePath) => {
@@ -49,10 +56,12 @@ export default class MyBasicProfilCard extends Component {
         <Row><Col xs={6}>Popularity</Col><Col xs={6}>{popularity}</Col></Row>
         <Row><Col xs={6}>Gender</Col><Col xs={6}>{gender}</Col></Row>
         <Row><Col xs={6}>Look For</Col><Col xs={6}>{orient}</Col></Row>
-        <div className="profile_picture_container" >
-          <img src={path} alt="" />
-          <span>{info}</span>
-        </div>
+        <Row style={this.styles.pictureContainer} className="justify-content-center">
+          <Col style={this.styles.picture}>
+            <img src={path} alt="" />
+            <span>{info}</span>
+          </Col>
+        </Row>
       </Grid>
     );
   }

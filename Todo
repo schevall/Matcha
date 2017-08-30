@@ -1,0 +1,6 @@
+Rajouter le nom et premon au signup
+reinitialisation du mdp
+check geoloc au signup
+rajouter un filtre sur les tags 'nominatif'
+utilisateur bloque ne doit plus generer de notifications et apparaitre en recherche
+faire que le logout deconnecte le socket cote serveur

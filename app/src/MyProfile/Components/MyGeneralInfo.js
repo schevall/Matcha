@@ -52,6 +52,7 @@ export default class MyGeneralInfo extends Component {
           </FormGroup>
         </Form>
         <Tags tags={tags} />
+        <br />
         <MyGeo geo={geo} />
       </div>);
   }

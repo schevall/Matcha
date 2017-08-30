@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Avatar from 'material-ui/Avatar';
+import { Grid, Row, Col } from 'react-bootstrap';
 
 import secureAxios from '../secureAxios.js';
 import { getDiffDate } from '../ToolBox/DateTools.js';
+import ConnectionDisplay from '../ToolBox/ConnectionDisplay.js';
 
 class Chat extends Component {
 
@@ -14,27 +16,12 @@ class Chat extends Component {
     super(props);
     const { username } = props;
     this.styles = {
-      chat_room_container: {
-        backgroundColor: 'white',
-        height: '60vh',
-        overflow: 'auto',
-        scrollBottom: '55vh',
-      },
-      input: {
-        margin: 'inherit',
-        marginTop: '10px',
-        backgroundColor: 'white',
-      },
       selfRow: {
         padding: '4px',
       },
       otherRow: {
         padding: '4px',
         backgroundColor: '#a4c1bd',
-      },
-      chat_avatar: {
-        paddingTop: '5px',
-        paddingBottom: '20px',
       },
     };
     this.username = username;
@@ -117,14 +104,13 @@ class Chat extends Component {
   }
 
   formatRow = (style, key, date, author, text) => (
-    <div style={style} className="row" key={key}>
-      <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1">{author}</div>
-      <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">{text}</div>
-      <div className="col-md-1 offset-md-1" />
-      <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+    <Row style={style} key={key}>
+      <div className="col-xs-2">{author}</div>
+      <div className="col-xs-7">{text}</div>
+      <div className="col-xs-3">
         <span className="pull-right">{date}</span>
       </div>
-    </div>
+    </Row>
   )
 
   formatMessage = (message) => {
@@ -142,15 +128,8 @@ class Chat extends Component {
     return output;
   }
 
-  ConnectionDisplay = (logged) => {
-    if (logged) {
-      return (<div className="col flex-middle"><img src="/static/icons/Online.png" alt="" />Online</div>);
-    }
-    return (<div className="col flex-middle"><img src="/static/icons/Offline.png" alt="" />Offline</div>);
-  };
-
   scrollToBottom = () => {
-    this.node.scrollIntoView();
+    if (this.node) this.node.scrollIntoView();
   }
 
 
@@ -160,29 +139,40 @@ class Chat extends Component {
     if (!this.state.loaded || !this.state.mounted) return (<CircularProgress />);
     const { message, input, isTargetLogged } = this.state;
     const history = this.formatMessage(message);
-    const connection = this.ConnectionDisplay(isTargetLogged);
+    const { connectionTitle } = ConnectionDisplay(isTargetLogged);
     const path = `/static/${this.target}/${this.state.pic}`;
+    const toProfile = `/profile/${this.target}`;
     return (
-      <div>
-        <div style={this.styles.chat_avatar} className="container-fluid">
-          <div className="row">
-            <div className="col"><Avatar src={path} /></div>
-            {connection}
-          </div>
-        </div>
-        <div id="scroll" className="container-fluid" style={this.styles.chat_room_container}>
-          {history}
-          <div ref={node => (this.node = node)} />
-        </div>
-        <form onSubmit={this.handleSubmit}>
-          <div className="input-group">
-            <input id="chat_input" autoFocus onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
-            <span className="input-group-btn">
-              <button type="submit" className="btn btn-default" >Send!</button>
-            </span>
-          </div>
-        </form>
-      </div>
+      <Grid style={{ width: '80vw' }}>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2}>
+            <Row style={{ margin: '10px' }}>
+              <Link to={toProfile}>
+                <Avatar src={path} />
+              </Link>
+              { connectionTitle }
+            </Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border" style={{ height: '75vh', overflow: 'scroll' }}>
+            {history}
+            <div ref={node => (this.node = node)} />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2}>
+            <form onSubmit={this.handleSubmit}>
+              <div className="input-group">
+                <input id="chat_input" autoFocus onChange={this.handleChange} type="text" className="form-control" placeholder="Type something" />
+                <span className="input-group-btn">
+                  <button type="submit" className="btn btn-default" >Send!</button>
+                </span>
+              </div>
+            </form>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

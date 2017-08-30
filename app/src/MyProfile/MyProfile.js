@@ -137,9 +137,9 @@ class MyProfile extends Component {
     const picturesNb = picturesPath.length;
     const userInfo = this.state;
     return (
-      <Grid fluid>
+      <Grid style={{ width: '80vw' }}>
         <Row>
-          <Col xs={12} sm={4} md={4} lg={3} lgOffset={1} className="border ml-xl-auto">
+          <Col xs={12} sm={4} md={4} lg={3} lgOffset={2} className="border">
             <MyBasicProfilCard userInfo={userInfo} />
           </Col>
           <Col xs={12} sm={4} md={4} lg={3} className="border">
@@ -158,17 +158,17 @@ class MyProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             <MyBio handleBioModif={this.ModifyBio} bio={userInfo.bio} />
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             Gallery
           </Col>
         </Row>
         <Row >
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             <MyGalleryDisplay
               picturesPath={picturesPath}
               picturesNb={picturesNb}

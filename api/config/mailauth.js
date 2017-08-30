@@ -1,5 +1,5 @@
 const mailAuth = {
-  user: 'Matcha42@laposte.net',
+  user: 'Matcha42',
   pass: 'Matcha11',
 };
 

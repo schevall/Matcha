@@ -51,9 +51,9 @@ class OneProfile extends Component {
     else if (this.state.target === 'notfound') return <div>Oups, this user does not exist</div>;
     const { target, visitor } = this.state;
     return (
-      <Grid fluid>
+      <Grid style={{ width: '80vw' }}>
         <Row>
-          <Col xs={12} sm={4} md={4} lg={3} lgOffset={1} className="border ml-xl-auto">
+          <Col xs={12} sm={4} md={4} lg={3} lgOffset={2} className="border">
             <OneBasicProfilCard visitor={visitor} button target={target} />
           </Col>
           <Col xs={12} sm={4} md={4} lg={3} className="border">
@@ -66,17 +66,17 @@ class OneProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
             <OneBio bio={target.bio} />
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
             Gallery
           </Col>
         </Row>
         <Row >
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={1} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
             <OneGalleryDisplay
               picturesPath={target.picturesPath}
               picturesNb={target.picturesPath.length}

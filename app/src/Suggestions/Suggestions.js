@@ -155,10 +155,14 @@ class Suggestions extends Component {
       </Col>
   ));
     return (
-      <Grid fluid>
-        <AdvancedFilterSelector filter={this.advancedFilter} cancel={this.cancelFilter} />
-        <SortingSelector filter={this.filter} />
-        <Row className="justify-content-center">{output}</Row>
+      <Grid style={{ width: '80vw' }}>
+        <Row >
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2}>
+            <AdvancedFilterSelector filter={this.advancedFilter} cancel={this.cancelFilter} />
+            <SortingSelector filter={this.filter} />
+            <Row className="justify-content-center">{output}</Row>
+          </Col>
+        </Row>
       </Grid>
     );
   }

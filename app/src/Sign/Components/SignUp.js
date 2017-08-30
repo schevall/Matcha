@@ -9,9 +9,8 @@ const style = {
   margin: 12,
 };
 
-const SignUpComponent = props =>
-
-  (<form onSubmit={props.handleSubmit}>
+const SignUpComponent = props => (
+  <form onSubmit={props.handleSubmit}>
     <TextField
       style={style}
       name="username"
@@ -20,6 +19,26 @@ const SignUpComponent = props =>
       value={props.username}
       onChange={props.handleChange}
       errorText={props.errorUsername}
+      required
+    />
+    <TextField
+      style={style}
+      name="firstname"
+      hintText="First Name"
+      floatingLabelText="First Name"
+      value={props.firstname}
+      onChange={props.handleChange}
+      errorText={props.errorFirstname}
+      required
+    />
+    <TextField
+      style={style}
+      name="lastname"
+      hintText="Last Name"
+      floatingLabelText="Last Name"
+      value={props.lastname}
+      onChange={props.handleChange}
+      errorText={props.errorLastname}
       required
     />
     <TextField
@@ -84,6 +103,7 @@ const SignUpComponent = props =>
       label="SIGN UP"
       primary
     />
-  </form>);
+  </form>
+);
 
 export default SignUpComponent;

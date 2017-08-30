@@ -15,14 +15,6 @@ class Activity extends Component {
       username,
       mounted: null,
     };
-    this.style = {
-      container: {
-        display: 'block',
-      },
-      card: {
-        margin: '5px',
-      },
-    };
   }
 
   componentDidMount() {
@@ -43,11 +35,7 @@ class Activity extends Component {
   render() {
     if (!this.state.mounted) return (<CircularProgress />);
     const { activity, oldactivity } = this.state;
-    return (
-      <div className="activity_container" style={this.style.container}>
-        <ActivityDisplay activity={activity} oldactivity={oldactivity} />
-      </div>
-    );
+    return <ActivityDisplay activity={activity} oldactivity={oldactivity} />;
   }
 }
 

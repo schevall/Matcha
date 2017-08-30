@@ -2,7 +2,7 @@ import fs from 'fs';
 import sharp from 'sharp';
 import Mongo from '../config/MongoConnection';
 
-const makeModel = ({ username, birthDate, gender, orient, tags, bio, geo }) => (
+const makeModel = ({ username, birthDate, gender, orient, tags, bio, geo, likedby = [], liketo = [] }) => (
   {
     activated: true,
     username,
@@ -20,8 +20,8 @@ const makeModel = ({ username, birthDate, gender, orient, tags, bio, geo }) => (
     lastname: '',
     geo,
     tags,
-    likedby: [],
-    liketo: [],
+    likedby,
+    liketo,
     blockedby: [],
     blockedto: [],
     reportedby: [],
@@ -41,6 +41,8 @@ const users = [
     gender: 'female',
     orient: 'male',
     tags: ['dragon', 'incest', 'blond'],
+    likedby: ['John', 'Jaimy', 'Tyrion', 'Drogo'],
+    liketo: ['John'],
     bio: '',
     geo: '45.8,3.26',
   },
@@ -50,6 +52,8 @@ const users = [
     gender: 'female',
     orient: 'male',
     tags: ['north', 'redhead', 'winter'],
+    likedby: ['Tyrion'],
+    liketo: ['Jaimy', 'Drogo'],
     bio: '',
     geo: '45.83,3.2',
   },
@@ -59,6 +63,7 @@ const users = [
     gender: 'female',
     orient: 'male',
     tags: ['north', 'winter', 'fighter'],
+    likedby: ['Jaimy'],
     bio: '',
     geo: '45.81,3.28',
   },
@@ -68,6 +73,8 @@ const users = [
     gender: 'female',
     orient: 'male',
     tags: ['rich', 'summer', 'incest', 'blond'],
+    likedby: ['Jaimy'],
+    liketo: ['John', 'Jaimy', 'Drogo'],
     bio: '',
     geo: '45.89,3.20',
   },
@@ -77,6 +84,7 @@ const users = [
     gender: 'male',
     orient: 'female',
     tags: ['rich', 'imp', 'blond'],
+    liketo: ['Daenerys', 'Sansa'],
     bio: '',
     geo: '45.85,3.22',
   },
@@ -86,6 +94,8 @@ const users = [
     gender: 'male',
     orient: 'female',
     tags: ['fighter', 'incest', 'blond', 'rich'],
+    likedby: ['Cersei', 'Sansa'],
+    liketo: ['Cersei', 'Daenerys', 'Arya'],
     bio: '',
     geo: '45.86,3.24',
   },
@@ -95,6 +105,8 @@ const users = [
     gender: 'male',
     orient: 'female',
     tags: ['fighter', 'incest', 'north'],
+    likedby: ['Daenerys', 'Cersei'],
+    liketo: ['Daenerys'],
     bio: '',
     geo: '45.88,3.22',
   },
@@ -104,6 +116,7 @@ const users = [
     gender: 'male',
     orient: 'female',
     tags: ['fighter', 'savage', 'poney'],
+    likedby: ['Cersei', 'Sansa'],
     bio: '',
     geo: '45.84,3.26',
   },
@@ -128,10 +141,10 @@ const init = async (req, res) => {
   deleteFolderRecursive('./uploads');
   fs.mkdirSync('./uploads');
   const array = [];
+  const tags = [];
   for (const user of users) {
     const model = makeModel(user);
     const { username } = model;
-    console.log('IN FOR username', username);
     const oldpath = `./Characters/${username}.png`;
     const time = new Date().getTime() / 1000;
     const newname = `${time}_${username}.jpeg`;
@@ -140,9 +153,18 @@ const init = async (req, res) => {
     model.picturesPath.push(newname);
     sharp(oldpath).resize(200, 200).toFile(`./uploads/${username}/${newname}`);
     array.push(model);
+    model.tags.forEach((tag) => {
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+      }
+    });
   }
-  Mongo.db.collection('users').insertMany(array);
-  return res.send({ error: '' });
+  const userResult = await Mongo.db.collection('users').insertMany(array);
+  const tagResult = await Mongo.db.collection('tags').updateOne({ tagList: 'tagList' }, { $set: { tags } });
+  if (userResult.result.ok && tagResult.result.ok) {
+    return res.send({ error: '' });
+  }
+  return res.send({ error: 'oups' });
 };
 
 export default init;
