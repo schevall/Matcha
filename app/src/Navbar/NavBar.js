@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import Notifications from 'react-notification-system-redux';
-import Badge from 'material-ui/Badge';
 import Avatar from 'material-ui/Avatar';
-import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 
@@ -17,13 +15,13 @@ class NavBar extends Component {
 
   constructor(props) {
     super(props);
-    const { username, isLogged, profilePicturePath } = props;
+    const { username, isLogged } = props;
     this.pathname = this.props.location.pathname;
     this.state = {
       username,
       isLogged,
-      profilePicturePath,
       messageCount: 0,
+      mounted: false,
     };
     this.style = {
       icons: { color: '#4b4c3f', fontSize: 25, textAlign: 'center' },
@@ -34,18 +32,15 @@ class NavBar extends Component {
     const { username, isLogged } = this.state;
     if (username && isLogged) {
       this.initSocket();
-      secureAxios(`/users/getfavoritepicture/${username}`, 'GET')
+      secureAxios('/users/initNavbar', 'GET')
         .then(({ data }) => {
-          if (data.error && this.props.location.pathname !== '/myprofile') {
-            this.props.history.push('/myprofile');
-            const title = 'You have to upload a picture to enjoy our website';
-            this.props.dispatch(Notifications.error({ title }));
+          if (data.error) {
+            console.log(data.error);
           } else {
-            const { profilePicturePath } = data;
-            this.setState({ profilePicturePath });
-            this.getMessageCount();
+            const { messageCount, blockedby, blockedto } = data;
+            this.setState({ messageCount, blockedby, blockedto, mounted: true });
             const target = this.pathname.split('/').pop();
-            if (this.pathname.includes('/profile')) {
+            if (this.pathname.includes('/profile') && !blockedby.includes(target)) {
               global.socket.emit('visit', target);
             }
             if (this.pathname.includes('/chat/')) {
@@ -59,10 +54,11 @@ class NavBar extends Component {
   componentDidUpdate(prevProps) {
     const oldPathname = prevProps.location.pathname;
     const newPathname = this.props.location.pathname;
+    const { blockedby } = this.state;
     if (newPathname !== oldPathname) {
       this.pathname = this.props.location.pathname;
       const target = this.pathname.split('/').pop();
-      if (this.pathname.includes('/profile')) {
+      if (this.pathname.includes('/profile') && !blockedby.includes(target)) {
         global.socket.emit('visit', target);
       } else if (this.pathname.includes('/chat/')) {
         this.updateMessageCount(target);
@@ -71,6 +67,7 @@ class NavBar extends Component {
   }
 
   componentWillUnmount() {
+    global.socket.emit('disconnect');
     global.socket.off('connect');
     global.socket.off('visit');
     global.socket.off('like');
@@ -82,16 +79,19 @@ class NavBar extends Component {
     global.socket.off('messageCount');
   }
 
-  getMessageCount = () => {
-    secureAxios('/chat/getNewMessageCount', 'GET')
-      .then(({ data }) => {
-        if (!data.error) {
-          const { messageCount } = data;
-          this.setState({ messageCount });
-        } else {
-          console.log(data.error);
-        }
-      });
+  handleBlock = (target, action) => {
+    if (action === 'block') {
+      const { blockedby } = this.state;
+      blockedby.push(target);
+      this.setState({ blockedby });
+    } else if (action === 'unblock') {
+      const { blockedby } = this.state;
+      if (blockedby.includes(target)) {
+        const index = blockedby.indexOf(target);
+        blockedby.splice(index, 1);
+      }
+      this.setState({ blockedby });
+    }
   }
 
   updateMessageCount = (target) => {
@@ -116,8 +116,14 @@ class NavBar extends Component {
     global.socket.on('unlike', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has unliked your profile !` })); });
     global.socket.on('match', (visitor) => { this.props.dispatch(Notifications.success({ title: `You may now chat with ${visitor} !!!` })); });
     global.socket.on('unmatch', (visitor) => { this.props.dispatch(Notifications.error({ title: `You cannot chat with ${visitor} anymore =/` })); });
-    global.socket.on('block', (visitor) => { this.props.dispatch(Notifications.error({ title: `${visitor} has blocked you !` })); });
-    global.socket.on('unblock', (visitor) => { this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` })); });
+    global.socket.on('block', (visitor) => {
+      this.handleBlock(visitor, 'block');
+      this.props.dispatch(Notifications.error({ title: `${visitor} has blocked you !` }));
+    });
+    global.socket.on('unblock', (visitor) => {
+      this.handleBlock(visitor, 'unblock');
+      this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` }));
+    });
     global.socket.on('messageCount', (target) => {
       this.handleNewMessage(target);
     });
@@ -132,16 +138,14 @@ class NavBar extends Component {
   }
 
   render() {
-    const { isLogged, username } = this.state;
+    const { isLogged, username, mounted } = this.state;
     const { profilePicturePath } = this.props;
-    if (!isLogged || !username) {
+    if (!isLogged || !username || !mounted) {
       return null;
     }
-    let avatar = <CircularProgress />;
-    if (profilePicturePath) {
-      const path = `/static/${username}/${profilePicturePath}`;
-      avatar = <Link to="/myprofile"><Avatar src={path} /></Link>;
-    }
+    const path = `/static/${username}/${profilePicturePath}`;
+    const avatar = profilePicturePath ? <Link to="/myprofile"><Avatar src={path} /></Link>
+    : <Link style={{ fontSize: 35, color: 'black' }} className="glyphicon glyphicon-exclamation-sign" to="/myprofile" />;
     const { messageCount } = this.state;
     return (
       <Grid style={{ width: '80vw' }}>

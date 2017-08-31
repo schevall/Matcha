@@ -14,12 +14,14 @@ const routes = (app, upload) => {
   app.post('/api/signup', signup);
   app.post('/api/activation', Users.activation);
   app.post('/api/signin', signin);
+  app.post('/api/resetPassword', Users.resetPassword);
 
   app.use('/api', authControl);
 
   app.post('/api/users/upload', Pictures.nbVerif, upload.single('imageUploaded'), Pictures.upload);
   app.post('/api/users/removepicture', Pictures.remove);
   app.post('/api/users/favoritepicture', Pictures.favorite);
+
   app.post('/api/users/update/:field', Users.updateGateway);
   app.get('/api/users/initprofile', Users.initprofile);
   app.get('/api/users/logout', Users.logout);
@@ -27,6 +29,7 @@ const routes = (app, upload) => {
   app.get('/api/users/getfavoritepicture/:username', Users.getFavPic);
   app.get('/api/users/getActivity/:username', Users.getActivity);
   app.get('/api/users/getTagsList', Users.getTagList);
+  app.get('/api/users/initNavbar', Users.initNavbar);
 
   app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
   app.post('/api/interactions/:action', Interactions.actionGateway);

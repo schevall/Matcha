@@ -66,17 +66,17 @@ class OneProfile extends Component {
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             <OneBio bio={target.bio} />
           </Col>
         </Row>
         <Row>
-          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             Gallery
           </Col>
         </Row>
         <Row >
-          <Col xs={12} sm={12} md={12} lg={9} xl={8} lgOffset={2} className="border">
+          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
             <OneGalleryDisplay
               picturesPath={target.picturesPath}
               picturesNb={target.picturesPath.length}

@@ -19,17 +19,6 @@ export default class MyBasicProfilCard extends Component {
     },
   };
 
-  ProfilePictureDisplay = (username, profilePicturePath) => {
-    if (profilePicturePath) {
-      const path = `/static/${username}/${profilePicturePath}`;
-      const info = '';
-      return { path, info };
-    }
-    const path = '../../icons/ic_face_black_36dp_2x.png';
-    const info = 'Add a profile picture !';
-    return { path, info };
-  };
-
   ConnectionDisplay = (logged, lastConnection) => {
     const connectionTime = D.getDiffDate(lastConnection);
     if (logged) {
@@ -43,7 +32,7 @@ export default class MyBasicProfilCard extends Component {
   render() {
     const { lastConnection, profilePicturePath, username,
             orient, gender, birthDate } = this.props.userInfo;
-    const { path, info } = this.ProfilePictureDisplay(username, profilePicturePath);
+    const path = profilePicturePath ? `/static/${username}/${profilePicturePath}` : null;
     const { connectionTitle, connectionTime } = this.ConnectionDisplay(true, lastConnection);
     const age = D.calculateAge(birthDate);
     const popularity = CalculatePopularity(this.props.userInfo);
@@ -57,10 +46,10 @@ export default class MyBasicProfilCard extends Component {
         <Row><Col xs={6}>Gender</Col><Col xs={6}>{gender}</Col></Row>
         <Row><Col xs={6}>Look For</Col><Col xs={6}>{orient}</Col></Row>
         <Row style={this.styles.pictureContainer} className="justify-content-center">
-          <Col style={this.styles.picture}>
-            <img src={path} alt="" />
-            <span>{info}</span>
-          </Col>
+          { path ?
+            <Col style={this.styles.picture}><img src={path} alt="" /></Col>
+          : <div><p style={{ fontSize: 100 }} className="glyphicon glyphicon-exclamation-sign" /><p> Add a Profile picture to enjoy Matcha !</p></div>
+          }
         </Row>
       </Grid>
     );

@@ -33,6 +33,9 @@ export const getAllConversations = async (req, res) => {
 export const getMessages = async (req, res) => {
   const { username } = req.headers;
   const { target } = req.params;
+  const output = await db.getter(username, ['blockedby']);
+  const { blockedby } = output[0];
+  if (blockedby.includes(target)) return res.send({ error: 'blocked' });
   const chat = await getChat(username, target);
   resetMessageCount(username, target);
   return res.send({ error: '', message: chat });

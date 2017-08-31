@@ -9,15 +9,15 @@ import SignupComponent from './Components/SignUp.js';
 class SignUpContainer extends Component {
 
   state = {
-    username: 'schevall',
+    username: 'LittleFinger',
     password: 'Patata11',
     password2: 'Patata11',
     email: 'sim.chvll@gmail.com',
-    birthDate: (new Date('October 13, 1988')),
-    firstname: 'Sim',
-    lastname: 'Pouet',
-    gender: 1,
-    genderValue: '',
+    birthDate: (new Date('October 13, 1970')),
+    firstname: 'Petyr',
+    lastname: 'Baelish',
+    gender: 'male',
+    genderValue: 1,
     errorUsername: '',
     errorPassword: '',
     errorPassword2: '',
@@ -29,7 +29,7 @@ class SignUpContainer extends Component {
 
   requestSignup = (event) => {
     event.preventDefault();
-    const { username, password, password2, email, birthDate, genderValue, firstname, lastname } = this.state;
+    const { username, password, password2, email, birthDate, gender, firstname, lastname } = this.state;
     this.setState({
       errorUsername: '',
       errorPassword: '',
@@ -44,7 +44,7 @@ class SignUpContainer extends Component {
       password2,
       email,
       birthDate,
-      genderValue,
+      gender,
       firstname,
       lastname,
     })
@@ -98,10 +98,12 @@ class SignUpContainer extends Component {
   }
 
   handleGenderChange = (event, index, value) => {
-    const genderList = ['Male', 'Female'];
+    console.log('handle gender change', `index = ${index}, value = ${value}`);
+    const genderList = ['male', 'female'];
+    console.log('Futur gender', genderList[index]);
     this.setState({
-      gender: value,
-      genderValue: genderList[index],
+      gender: genderList[index],
+      genderValue: value,
     });
   }
 
@@ -131,7 +133,7 @@ class SignUpContainer extends Component {
           password2={this.state.password2}
           email={this.state.email}
           birthDate={this.state.birthDate}
-          gender={this.state.gender}
+          genderValue={this.state.genderValue}
           firstname={this.state.firstname}
           lastname={this.state.lastname}
           errorUsername={this.state.errorUsername}

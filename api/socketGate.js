@@ -1,10 +1,21 @@
+const findUser = (users, username) => {
+  let found = false;
+  for (let i = 0; i < users.length; i += 1) {
+    if (users[i].socketUser === username) {
+      found = true;
+      break;
+    }
+  }
+  return found;
+};
+
 const socketGate = users => (socket) => {
   const { username } = socket.decoded_token;
   const socketId = socket.id;
   if (!username) console.log('Trouble maker', socket.decoded_token);
   console.log(`user connected : ${username}, id : ${socketId}`);
   console.log('current array', users);
-  if (username) {
+  if (!findUser(users, username)) {
     users.push({ socketUser: username, socketId });
   }
   console.log('next array', users);

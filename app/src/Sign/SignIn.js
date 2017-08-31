@@ -62,6 +62,7 @@ class SignInContainer extends Component {
           handleChange={this.saveState}
           handleSubmit={this.requestLogin}
         />
+        <Link to="/newpassord">Password forgotten ?</Link>
       </div>)
     );
   }

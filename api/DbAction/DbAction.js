@@ -41,10 +41,8 @@ export const setter = async (username, field, value) => {
 
 export const getter = async (username, fields) => {
   const { userdb } = await serveDb(username);
-  console.log('in getter', fields);
   const output = [];
-  for (let i = 0; fields[i]; i += 1) {
-    console.log('in for', [fields[i]], userdb[fields[i]]);
+  for (let i = 0; i < fields.length; i += 1) {
     output.push({ [fields[i]]: userdb[fields[i]] });
   }
   return output;

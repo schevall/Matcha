@@ -77,7 +77,7 @@ const SignUpComponent = props => (
       style={style}
       name="gender"
       floatingLabelText="Gender"
-      value={props.gender}
+      value={props.genderValue}
       onChange={props.handleGenderChange}
       required
     >

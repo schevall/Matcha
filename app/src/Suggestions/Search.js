@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, Form, FormGroup, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Button } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import Drawer from 'material-ui/Drawer';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import MyFormGroup from '../Layout/FormGroup.js';
+import TagSelector from './TagSelector.js';
 
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -114,10 +114,9 @@ class AdvancedFilterSelector extends Component {
 
   constructor(props) {
     super(props);
-    console.log('CONSTRUCT', props);
     this.state = {
       open: false,
-      searchTag: '',
+      searchTag: [],
       Age: { min: Age.defaultValue[0], max: Age.defaultValue[1] },
       Distance: { min: Distance.defaultValue[0], max: Distance.defaultValue[1] },
       Tags: { min: Tags.defaultValue[0], max: Tags.defaultValue[1] },
@@ -180,32 +179,28 @@ class AdvancedFilterSelector extends Component {
   handleSave = (e) => {
     e.preventDefault();
     this.handleToggle();
-    this.props.filter(this.state);
+    this.props.search(this.state);
   }
 
-  updateTags = (e) => {
-    e.preventDefault();
-    this.setState({ searchTag: e.target.value });
+  updateTags = (searchTag) => {
+    this.setState({ searchTag });
   }
 
   render() {
     const type = [Age, Distance, Tags, Popularity, Matching];
     const FilterSelector = type.map(el => (this.Filter(el)));
-    const sizeField = [12, 8, 6];
-    const sizeText = [12, 4, 6];
-    const size = { sizeField, sizeText };
     const { searchTag } = this.state;
     return (
       <Grid>
         <Row >
-          <Col xs={12} md={2}>Filter by:</Col>
+          <Col xs={12} md={2}>Search by:</Col>
           <div>
             <Button
               onClick={this.handleToggle}
               style={{ margin: '3px' }}
               bsStyle="default"
             >
-              Filter
+              Search
             </Button>
           </div>
           <div>
@@ -214,7 +209,7 @@ class AdvancedFilterSelector extends Component {
               style={{ margin: '3px' }}
               bsStyle="default"
             >
-              Cancel Filter
+              Cancel Search
             </Button>
           </div>
         </Row>
@@ -222,17 +217,15 @@ class AdvancedFilterSelector extends Component {
           <Drawer
             width="90%"
             docked={false}
+            openSecondary
             open={this.state.open}
             onRequestChange={open => this.setState({ open })}
           >
             <div style={{ margin: 'auto' }} className="container">
-              <p style={style} >Filter result</p>
+              <p style={style} >Advanced Search</p>
               {FilterSelector}
               <div style={{ margin: '15px 20px' }}>
-                <Form horizontal onChange={this.updateTags}>
-                  <FormGroup>Search by tags</FormGroup>
-                  <MyFormGroup id="searchTag" type="text" placeholder="tags" value={searchTag} size={size} />
-                </Form>
+                <TagSelector handleUpdate={this.updateTags} tags={searchTag} />
               </div>
               <div style={{ marginTop: '20px' }}>
                 <Button

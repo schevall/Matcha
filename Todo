@@ -1,6 +1,7 @@
-Rajouter le nom et premon au signup
-reinitialisation du mdp
-check geoloc au signup
-rajouter un filtre sur les tags 'nominatif'
-utilisateur bloque ne doit plus generer de notifications et apparaitre en recherche
-faire que le logout deconnecte le socket cote serveur
+utilisateur bloque ne doit plus generer de notifications et apparaitre en recherche =>>> verif profonde a faire
+limiter le nombre de resultat de la suggestion
+filtre sur tag multipe
+finir le one profile matching information : montrer s'il y a match like etc
+faire un putain de compte sur l'activite as les messageCount
+verifier compat firefox
+verifier mobile

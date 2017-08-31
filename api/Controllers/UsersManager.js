@@ -1,8 +1,9 @@
 import * as db from '../DbAction/DbAction.js';
+import { getMessageCount } from '../DbAction/DbChat.js';
 import User from '../Models/User_Model.js';
 import { verifpasswd, verifemail } from './Verif_User_Input_Tools.js';
 import mymailer from '../mail_ressources/mymailer.js';
-import { ftext, fhtml, subject } from '../mail_ressources/changeEmail_message.js';
+import { ftext, fhtml, subject } from '../mail_ressources/reset_message.js';
 
 export const initprofile = async (req, res) => {
   const { username } = req.headers;
@@ -22,6 +23,25 @@ export const activation = async (req, res) => {
   await db.setter(username, 'activationkey', null);
   await db.setter(username, 'activated', true);
   return res.send({ error: '', activated: true, username });
+};
+
+export const resetPassword = async (req, res) => {
+  const { email, username } = req.body;
+  const userdb = await db.getUserdb(username);
+  if (!userdb) {
+    return res.send({ error: 'resetPassword', message: 'This user does not exist' });
+  }
+  if (userdb.email !== email) {
+    return res.send({ error: 'resetPassword', message: `The email we have for (${username}) does not match with ${email}` });
+  }
+  const newPassword = User.makeActivationkey(8);
+  const hashedPassword = User.makeHash(newPassword);
+  db.setter(username, 'password', hashedPassword);
+  const text = ftext(username, newPassword);
+  const html = fhtml(username, newPassword);
+  const sub = subject();
+  mymailer(email, text, html, sub);
+  return res.send({ error: '' });
 };
 
 const updateGeneral = async (username, payload) => {
@@ -109,6 +129,15 @@ export const getFavPic = async (req, res) => {
   const { profilePicturePath } = output[0];
   if (!profilePicturePath) return res.send({ error: 'no fav pic' });
   return res.send({ error: '', profilePicturePath });
+};
+
+export const initNavbar = async (req, res) => {
+  const { username } = req.headers;
+  const output = await db.getter(username, ['blockedto', 'blockedby']);
+  const { blockedto } = output[0];
+  const { blockedby } = output[1];
+  const messageCount = await getMessageCount(username);
+  return res.send({ error: '', messageCount, blockedto, blockedby });
 };
 
 export const getActivity = async (req, res) => {

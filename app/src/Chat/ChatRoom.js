@@ -27,7 +27,7 @@ class Chat extends Component {
     this.username = username;
     const { pathname } = props.location;
     this.target = pathname.substr(pathname.lastIndexOf('/') + 1);
-    this.state = { loaded: false, mounted: false, input: '' };
+    this.state = { loaded: false, mounted: false, input: '', canchat: true };
   }
 
   componentWillMount() {
@@ -42,6 +42,9 @@ class Chat extends Component {
     global.socket.on(`message/${this.target}`, (newMessage) => {
       this.handleNewMessage(newMessage);
     });
+    global.socket.on(`block/${this.target}`, () => {
+      this.setState({ canchat: false });
+    });
   }
 
   componentDidMount = () => {
@@ -50,7 +53,7 @@ class Chat extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          this.setState({ loaded: true });
+          this.setState({ loaded: true, canchat: false });
           console.log(data.error);
         } else {
           const { message } = data;
@@ -66,6 +69,7 @@ class Chat extends Component {
     global.socket.off('isUserLogged');
     global.socket.off(`userIsLogged/${this.target}`);
     global.socket.off(`message/${this.target}`);
+    global.socket.off(`block/${this.target}`);
   }
 
   handleNewMessage = (newMessage) => {
@@ -104,12 +108,12 @@ class Chat extends Component {
   }
 
   formatRow = (style, key, date, author, text) => (
-    <Row style={style} key={key}>
-      <div className="col-xs-2">{author}</div>
-      <div className="col-xs-7">{text}</div>
-      <div className="col-xs-3">
-        <span className="pull-right">{date}</span>
-      </div>
+    <Row style={style} key={key} className="border">
+      <Col className="col-xs-6 col-sm-3 col-md-2 col-lg-1">{author}</Col>
+      <Col className="col-xs-6 col-sm-3 col-sm-push-6 col-md-push-8 col-md-2 col-lg-push-10 col-lg-1">
+        {date}
+      </Col>
+      <Col className="col-xs-12 col-sm-6 col-sm-pull-3 col-md-pull-2 col-md-8 col-lg-pull-1 col-lg-10" style={{ wordBreak: 'break-all' }}>{text}</Col>
     </Row>
   )
 
@@ -134,10 +138,9 @@ class Chat extends Component {
 
 
   render() {
-    const { isLogged } = this.props;
-    if (!isLogged) return (<Redirect to="/signin" />);
     if (!this.state.loaded || !this.state.mounted) return (<CircularProgress />);
-    const { message, input, isTargetLogged } = this.state;
+    const { message, input, isTargetLogged, canchat } = this.state;
+    if (!canchat) return <div>Oups, it seems that {this.target} has blocked you</div>;
     const history = this.formatMessage(message);
     const { connectionTitle } = ConnectionDisplay(isTargetLogged);
     const path = `/static/${this.target}/${this.state.pic}`;
@@ -177,14 +180,9 @@ class Chat extends Component {
   }
 }
 
-Chat.PropTypes = {
-  isLogged: PropTypes.bool,
-};
-
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { username },
 }) => ({
-  isLogged,
   username,
 });
 export default connect(mapStateToProps)(Chat);

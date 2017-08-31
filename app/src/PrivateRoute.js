@@ -4,49 +4,48 @@ import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import { logout } from './Actions/Login/loginBound.js';
 
-const CheckExpToken = (isLogged, rest) => {
-  let title = null;
+const CheckExpToken = (isLogged, profilePicturePath, rest) => {
   if (!isLogged) {
-    title = 'Please login to access our website';
-    rest.dispatch(logout(title));
-    return false;
+    rest.dispatch(logout('Please login to access our website'));
+    return '/signin';
   }
   const token = localStorage.getItem('access_token');
   if (!token || token === 'undefined') {
-    title = 'No token provided, to connect, please sign in';
-    rest.dispatch(logout(title));
-    return false;
+    rest.dispatch(logout('No token provided, to connect, please sign in'));
+    return '/signin';
   }
   try {
     const decode = jwtDecode(token);
     if (Date.now() / 1000 > decode.exp) {
-      title = 'Your session has expired, please reconnect';
-      rest.dispatch(logout(title));
-      return false;
+      rest.dispatch(logout('Your session has expired, please reconnect'));
+      return '/signin';
     }
-    return true;
+    if (!profilePicturePath && rest.location.pathname !== '/myprofile') {
+      return '/myprofile';
+    }
+    return 'follow';
   } catch (e) {
-    title = 'Your session has expired, please reconnect';
-    rest.dispatch(logout(title));
-    return false;
+    rest.dispatch(logout('Your session has expired, please reconnect'));
+    return '/signin';
   }
 };
 
-const PrivateRoute = ({ component: Component, isLogged, ...rest }) => (
+const PrivateRoute = ({ component: Component, isLogged, profilePicturePath, ...rest }) => (
   <Route
     {...rest}
-    render={props => (
-      CheckExpToken(isLogged, rest) ? (
-        <Component {...props} />
-        ) : (
-          <Redirect to="/signin" />
-        ))}
+    render={(props) => {
+      const path = CheckExpToken(isLogged, profilePicturePath, rest);
+      return (path === 'follow' ? (<Component {...props} />)
+                                : (<Redirect to={path} />
+        ));
+    }}
   />
 );
 
 const mapStateToProps = ({
-  loginReducer: { isLogged, username },
+  loginReducer: { isLogged, username, profilePicturePath },
 }) => ({
+  profilePicturePath,
   isLogged,
   username,
 });

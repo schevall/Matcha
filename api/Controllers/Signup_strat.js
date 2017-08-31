@@ -11,7 +11,7 @@ const signup = async (req, res) => {
     return res.send({ verif });
   }
 
-  const { username, email, password, genderValue, birthDate, firstname, lastname } = req.body;
+  const { username, email, password, gender, birthDate, firstname, lastname } = req.body;
   const usersCollection = await Mongo.db.collection('users');
   const user = await usersCollection.findOne({ username });
 
@@ -25,21 +25,17 @@ const signup = async (req, res) => {
     };
     return res.send({ verif });
   }
-  const geo = await ipInfo((err, cLoc) => {
-    if (err) {
-      console.log('ipInfo pb =', err);
-      return '0,0';
-    }
-    return cLoc.loc;
+  ipInfo((err, cLoc) => {
+    const geo = err ? '48.8833,2.2667' : cLoc.loc;
+    const newUser = User.create(username, email, password, birthDate, gender, firstname, lastname, geo);
+    // const { activationkey } = newUser;
+    // const text = ftext(username, activationkey);
+    // const html = fhtml(username, activationkey);
+    // const sub = subject();
+    // mymailer(email, text, html, sub);
+    usersCollection.insertOne(newUser);
+    return res.send({ verif });
   });
-  const newUser = User.create(username, email, password, birthDate, genderValue, firstname, lastname, geo);
-  const { activationkey } = newUser;
-  const text = ftext(username, activationkey);
-  const html = fhtml(username, activationkey);
-  const sub = subject();
-  mymailer(email, text, html, sub);
-  await usersCollection.insertOne(newUser);
-  return res.send({ verif });
 };
 
 export default signup;
