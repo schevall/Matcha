@@ -1,5 +1,15 @@
 import geolib from 'geolib';
 
+export const canInteract = (target, visitor) => {
+  if ((target.gender !== visitor.orient) && visitor.orient !== 'both') {
+    return false;
+  }
+  if ((visitor.gender !== target.orient) && target.orient !== 'both') {
+    return false;
+  }
+  return true;
+};
+
 export const hasLiked = (target, visitor) => {
   const { liketo } = visitor;
   return liketo.includes(target.username);
@@ -33,13 +43,11 @@ export const canSee = (visitor, target) => {
   return true;
 };
 
-export const CountCommonTags = (visitorTags, targetTags) => {
-  const target = targetTags.map(el => el.label);
-  const visitor = visitorTags.map(el => el.label);
-  if (!target || !visitor) return 0;
+export const CountCommonTags = (targetTags, visitorTags) => {
+  if (!targetTags || !visitorTags) return 0;
   let count = 0;
-  target.forEach((el) => {
-    if (visitor.includes(el)) {
+  targetTags.forEach((el) => {
+    if (visitorTags.includes(el)) {
       count += 1;
     }
   });

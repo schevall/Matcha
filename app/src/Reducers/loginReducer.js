@@ -10,8 +10,6 @@ const initial = {
 };
 
 function loginReducer(state = initial, action) {
-  // console.log('in loginreducer, action = ', action);
-  // console.log('return in login reducer state = ', state);
   switch (action.type) {
     case T.LOGIN_REQUEST:
       return { ...state,
@@ -19,6 +17,7 @@ function loginReducer(state = initial, action) {
         isLogged: false,
         token: '',
         username: '',
+        profilePicturePath: '',
         data: action.data,
       };
     case T.LOGIN_FAILURE:
@@ -27,6 +26,7 @@ function loginReducer(state = initial, action) {
         isLogged: false,
         token: '',
         username: '',
+        profilePicturePath: '',
         data: null,
       };
     case T.LOGIN_SUCCESS:
@@ -53,6 +53,7 @@ function loginReducer(state = initial, action) {
         isLogged: false,
         username: '',
         token: '',
+        profilePicturePath: '',
         data: null,
       };
     default:

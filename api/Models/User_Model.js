@@ -35,10 +35,10 @@ class User {
       picturesPath: [],
       profilePicturePath: '',
       orient: 'both',
-      popularity: 0,
       firstname,
       lastname,
       geo,
+      popularity: 0,
       tags: [],
       likedby: [],
       liketo: [],
@@ -46,10 +46,8 @@ class User {
       blockedto: [],
       reportedby: [],
       reportedto: [],
-      notification: [],
       activity: [],
       oldactivity: [],
-      conversations: null,
       bio: '',
     });
   }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, Form, FormGroup, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Button } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import Drawer from 'material-ui/Drawer';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import MyFormGroup from '../Layout/FormGroup.js';
+import TagSelector from './TagSelector.js';
 
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -110,20 +110,18 @@ const Matching = {
 };
 
 
-class AdvancedFilterSelector extends Component {
+class Filter extends Component {
 
   constructor(props) {
     super(props);
-    console.log('CONSTRUCT', props);
     this.state = {
       open: false,
-      searchTag: '',
+      searchTag: [],
       Age: { min: Age.defaultValue[0], max: Age.defaultValue[1] },
       Distance: { min: Distance.defaultValue[0], max: Distance.defaultValue[1] },
       Tags: { min: Tags.defaultValue[0], max: Tags.defaultValue[1] },
       Popularity: { min: Popularity.defaultValue[0], max: Popularity.defaultValue[1] },
       Matching: { min: Matching.defaultValue[0], max: Matching.defaultValue[1] },
-      filter: props.filter,
     };
   }
 
@@ -183,17 +181,13 @@ class AdvancedFilterSelector extends Component {
     this.props.filter(this.state);
   }
 
-  updateTags = (e) => {
-    e.preventDefault();
-    this.setState({ searchTag: e.target.value });
+  updateTags = (searchTag) => {
+    this.setState({ searchTag });
   }
 
   render() {
     const type = [Age, Distance, Tags, Popularity, Matching];
     const FilterSelector = type.map(el => (this.Filter(el)));
-    const sizeField = [12, 8, 6];
-    const sizeText = [12, 4, 6];
-    const size = { sizeField, sizeText };
     const { searchTag } = this.state;
     return (
       <Grid>
@@ -229,10 +223,9 @@ class AdvancedFilterSelector extends Component {
               <p style={style} >Filter result</p>
               {FilterSelector}
               <div style={{ margin: '15px 20px' }}>
-                <Form horizontal onChange={this.updateTags}>
-                  <FormGroup>Search by tags</FormGroup>
-                  <MyFormGroup id="searchTag" type="text" placeholder="tags" value={searchTag} size={size} />
-                </Form>
+                <div style={{ margin: '15px 20px' }}>
+                  <TagSelector handleUpdate={this.updateTags} tags={searchTag} />
+                </div>
               </div>
               <div style={{ marginTop: '20px' }}>
                 <Button
@@ -258,4 +251,4 @@ class AdvancedFilterSelector extends Component {
   }
 }
 
-export default AdvancedFilterSelector;
+export default Filter;

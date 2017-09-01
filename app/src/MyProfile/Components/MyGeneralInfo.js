@@ -17,10 +17,10 @@ export default class MyGeneralInfo extends Component {
     e.preventDefault();
     const field = e.target.id;
     const value = e.target.value;
+    console.log(`handle change ${field} ${value}`);
     this.setState({ errorLast: '', errorFirst: '' });
-    if (value.length < 25) {
-      this.props.handleOnChange(field, value);
-    } else {
+    this.props.handleOnChange(field, value);
+    if (value.length > 25) {
       const errorfield = `error${field}`;
       this.setState({ [errorfield]: 'Max Char 25' });
     }
@@ -33,7 +33,7 @@ export default class MyGeneralInfo extends Component {
 
   render() {
     const { firstname, lastname, gender, orient, tags, geo } = this.props.userInfo;
-    const { errorLast, errorFirst } = this.state;
+    const { errorlastname, errorfirstname } = this.state;
     const sizeField = [12, 8, 6];
     const sizeText = [12, 4, 6];
     const size = { sizeField, sizeText };
@@ -43,8 +43,8 @@ export default class MyGeneralInfo extends Component {
       <div style={{ padding: '20px' }}>
         <Form horizontal onChange={this.handleChange}>
           <FormGroup>General Informations</FormGroup>
-          <MyFormGroup id="firstname" type="text" text="First Name" placeholder="First name" value={firstname} error={errorFirst} size={size} />
-          <MyFormGroup id="lastname" type="text" text="Last Name" placeholder="Last name" value={lastname} error={errorLast} size={size} />
+          <MyFormGroup id="firstname" type="text" text="First Name" placeholder="First name" value={firstname} error={errorfirstname} size={size} />
+          <MyFormGroup id="lastname" type="text" text="Last Name" placeholder="Last name" value={lastname} error={errorlastname} size={size} />
           <MySelectFormGroup id="gender" text="Gender" value={gender} options={optionsGender} size={size} />
           <MySelectFormGroup id="orient" text="Orient" value={orient} options={optionsOrient} size={size} />
           <FormGroup>

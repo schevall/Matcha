@@ -3,13 +3,13 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import Button from 'react-bootstrap/lib/Button';
 
 
-export default class SortingSelector extends Component {
+export default class Sorting extends Component {
   render() {
     const type = ['Age', 'Distance', 'Tags', 'Popularity', 'Matching'];
     const Buttons = type.map(el => (
       <div key={el}>
         <Button
-          onClick={this.props.filter}
+          onClick={this.props.sort}
           id={el}
           key={el}
           style={{ margin: '3px' }}

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Avatar from 'material-ui/Avatar';
 import { Grid, Row, Col } from 'react-bootstrap';
@@ -96,12 +95,11 @@ class Chat extends Component {
     const target = this.target;
     const newMessage = { author: this.username, date: Date.now(), message: input };
     this.handleNewMessage(newMessage);
-    global.socket.emit('message', target, input);
     e.target.firstChild.firstChild.value = '';
-    const payload = { target, input };
-    secureAxios('/chat/newMessage', 'POST', payload)
+    secureAxios('/chat/newMessage', 'POST', { target, input })
       .then(({ data }) => {
         this.setState({ input: '' });
+        global.socket.emit('message', target, input);
         if (data.error) console.log(data.error);
         this.scrollToBottom();
       });

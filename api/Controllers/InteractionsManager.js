@@ -2,14 +2,12 @@ import * as db from '../DbAction/DbAction.js';
 import { createConversation } from '../DbAction/DbChat.js';
 
 export const pushActivity = async (target, author, event) => {
-  console.log('PUSH ACTIVITY', target, author, event);
   const activity = { author, event, date: Date.now() };
   await db.pusher(target, 'activity', activity);
 };
 
 export const like = async (req, res) => {
   const { visitor, target } = req.body;
-  console.log('in likes', visitor, target);
   const visitorDb = await db.getUserdb(visitor);
   const visitorLiketo = visitorDb.liketo;
   const targetDb = await db.getUserdb(target);
@@ -17,6 +15,7 @@ export const like = async (req, res) => {
   if (visitorLiketo.includes(target)) {
     return res.send({ error: 'like', message: `You allready like ${target} !` });
   }
+  await db.updatePopularity(target, 1);
   await pushActivity(target, visitor, 'like');
   await db.pusher(visitor, 'liketo', target);
   await db.pusher(target, 'likedby', visitor);
@@ -33,13 +32,12 @@ export const like = async (req, res) => {
 
 export const unlike = async (req, res) => {
   const { visitor, target } = req.body;
-  console.log('in unlike', visitor, target);
   const visitorDb = await db.getUserdb(visitor);
   const visitorLiketo = visitorDb.liketo;
-
   if (!visitorLiketo.includes(target)) {
     return res.send({ error: 'like', message: 'You can only unlike people you already like !' });
   }
+  await db.updatePopularity(target, -1);
   await pushActivity(target, visitor, 'unlike');
   await db.puller(visitor, 'liketo', target);
   await db.puller(target, 'likedby', visitor);
@@ -69,7 +67,6 @@ export const visitProfile = async (req, res) => {
       return res.send({ error: 'block' });
     }
   }
-  console.log('IUSER', username);
   await pushActivity(targeted, username, 'visit');
   return res.send({ error: '', target, visitor });
 };
@@ -77,7 +74,6 @@ export const visitProfile = async (req, res) => {
 
 export const block = async (req, res) => {
   const { visitor, target } = req.body;
-  console.log('in block', visitor, target);
   const visitorDb = await db.getUserdb(visitor);
   const targetDb = await db.getUserdb(target);
   const visitorBlockedto = visitorDb.blockedto;
@@ -85,6 +81,7 @@ export const block = async (req, res) => {
   if (visitorBlockedto.includes(target)) {
     return res.send({ error: 'block', message: 'You cannot double block someone !' });
   }
+  await db.updatePopularity(target, -1);
   await pushActivity(target, visitor, 'block');
   db.puller(visitor, 'liketo', target);
   if (visitorDb.likedby.includes(target)) db.puller(visitor, 'likedby', target);
@@ -98,13 +95,13 @@ export const block = async (req, res) => {
 
 export const unblock = async (req, res) => {
   const { visitor, target } = req.body;
-  console.log('in unblock', visitor, target);
   const visitorDb = await db.getUserdb(visitor);
   const visitorBlockedto = visitorDb.blockedto;
 
   if (!visitorBlockedto.includes(target)) {
     return res.send({ error: 'unblock', message: 'You cannot unblock someone you did not block !' });
   }
+  await db.updatePopularity(target, 1);
   await pushActivity(target, visitor, 'unblock');
   db.puller(visitor, 'blockedto', target);
   db.puller(target, 'blockedby', visitor);
@@ -128,7 +125,6 @@ export const report = async (req, res) => {
 
 export const actionGateway = (req, res) => {
   const { action } = req.body;
-  console.log('gateway action', action);
   if (action === 'like') return like(req, res);
   else if (action === 'unlike') return unlike(req, res);
   else if (action === 'block') return block(req, res);

@@ -14,7 +14,6 @@ export function loginBound(input) {
           dispatch(A.loginFailure());
           dispatch(SigninErrorSending(data));
         } else {
-          console.log('log success resp', data);
           localStorage.setItem('access_token', data.token);
           localStorage.setItem('username', data.username);
           localStorage.setItem('profilePicturePath', data.profilePicturePath);
@@ -40,16 +39,13 @@ export function logout(title) {
     secureAxios('/users/logout', 'GET')
       .then(({ data }) => {
         if (data.error) {
-          localStorage.setItem('access_token', '');
-          localStorage.setItem('username', '');
           dispatch(Notifications.error({ title: data.message }));
         } else {
-          localStorage.setItem('access_token', '');
-          localStorage.setItem('username', '');
-          localStorage.setItem('profilePicturePath', '');
-          console.log('LOUGOUT RESP', title);
           dispatch(Notifications.success({ title }));
         }
+        localStorage.setItem('access_token', '');
+        localStorage.setItem('username', '');
+        localStorage.setItem('profilePicturePath', '');
       });
   };
 }

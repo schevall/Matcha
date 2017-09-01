@@ -1,70 +1,48 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
+import { GetMatchingScore } from '../../ToolBox/MatchingTool.js';
+import { getDistance, CountCommonTags, canInteract } from '../../ToolBox/InteractionsTools.js';
 
 export default class OneMatchInfo extends Component {
 
-  constructor(props) {
-    super(props);
-    const { visitor, target } = props;
-    this.state = {
-      visitor,
-      target,
-    };
-    this.styles = {
-      table: {
-        width: '100%',
-      },
-    };
-  }
-
-  getCompat = (visitor, target) => {
-    const targetOrient = target.orient;
-    const targetGender = target.gender;
-    const visitorOrient = visitor.orient;
-    const visitorGender = visitor.gender;
-    let error = '';
-    if (targetOrient !== visitorGender && targetOrient !== 'both') error = true;
-    if (visitorOrient !== targetGender && visitorOrient !== 'both') error = true;
-    return (!error ? 'Possible' : 'Impossible');
+  style = {
+    table: {
+      width: '100%',
+    },
   }
 
   getIsLiked = (visitor, target) => {
-    // const likesTarget = target.liketo;
-    // const { username } = visitor;
-  };
-
-  Row1 = (key, text, info) => {
-    return (
-      <Row key={key}>
-        <Col key={key + 1} xs={6}>{text}</Col>
-        <Col key={key + 2} xsOffset={3} xs={2}>{info}</Col>
-      </Row>);
+    if (visitor.likedby.includes(target.username)) {
+      return true;
+    }
+    return false;
   };
 
   MatchCalcultor = (visitor, target) => {
-    const compat = this.getCompat(visitor, target);
-    const liked = this.getIsLiked(visitor, target);
-    const visits = 10;
-    const common = 5;
-    const score = 8;
-    return { compat, liked, visits, common, score };
+    const compat = canInteract(visitor, target) ? 'Possible' : 'Impossible';
+    const liked = this.getIsLiked(visitor, target) ? 'Yes' : 'No';
+    const common = CountCommonTags(target.tags, visitor.tags);
+    const score = GetMatchingScore(target, visitor);
+    return { compat, liked, common, score };
   }
   render() {
-    const { visitor, target } = this.state;
-    const { compat, liked, visits, common, score } = this.MatchCalcultor(visitor, target);
+    const { visitor, target } = this.props;
+    const { compat, liked, common, score } = this.MatchCalcultor(visitor, target);
     const tab = [
-      { key: 0, text: 'Compatibility :', info: compat },
-      { key: 3, text: 'Has liked you :', info: liked },
-      { key: 6, text: 'Has visited you :', info: visits },
-      { key: 9, text: 'Common Tags', info: common },
-      { key: 12, text: 'Matching Score', info: score },
+      { text: 'Compatibility :', info: compat },
+      { text: 'Has liked you :', info: liked },
+      { text: 'Common Tags', info: common },
+      { text: 'Matching Score', info: score },
     ];
     const display = tab.map(data => (
-      this.Row1(data.key, data.text, data.info)
+      <Row key={data.text}>
+        <Col xs={8}>{data.text}</Col>
+        <Col xs={4}>{data.info}</Col>
+      </Row>
     ));
     return (
       <div className="match-info-container">
-        <Grid style={this.styles.table} fluid>
+        <Grid style={this.style.table} fluid>
           <Row><Col>Matching Informations</Col></Row><br />
           {display}
         </Grid>

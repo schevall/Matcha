@@ -38,7 +38,6 @@ const getMatch = (username, gender, orient) => {
 const getSuggestions = async (req, res) => {
   const { visitor } = req.params;
   const { usercollection, userdb } = await db.serveDb(visitor);
-  console.log('USer db', userdb);
   userdb.email = '';
   const userGender = userdb.gender;
   const userOrient = userdb.orient;
@@ -51,8 +50,6 @@ const getSuggestions = async (req, res) => {
     ]);
   const users = await result.toArray();
   result.close();
-  console.log('in suggestion for', visitor);
-  console.log('result', users);
   return res.send({ error: '', suggestions: users, visitor: userdb });
 };
 

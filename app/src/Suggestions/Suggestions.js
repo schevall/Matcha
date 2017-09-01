@@ -4,10 +4,10 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 import secureAxios from '../secureAxios.js';
 import OneBasicProfilCard from '../OneProfile/Components/OneBasicProfilCard.js';
-import AdvancedFilterSelector from './AdvancedFilter.js';
-import SortingSelector from './SortingSelector.js';
+import Filter from './Filter.js';
+import Sorting from './Sorting.js';
 import Search from './Search.js';
-import { GetMatchingScore } from '../ToolBox/MatchingTool.js';
+import { GetMatchingScore, TagMatch } from '../ToolBox/MatchingTool.js';
 import { calculateAge } from '../ToolBox/DateTools.js';
 import { getDistance, CountCommonTags, CalculatePopularity } from '../ToolBox/InteractionsTools.js';
 
@@ -24,7 +24,9 @@ class Suggestions extends Component {
       rev: 1,
       advancedFilter: null,
       suggestions: null,
+      search: null,
       toShow: null,
+      status: 'suggestions',
     };
     this.style = {
       card: {
@@ -87,7 +89,7 @@ class Suggestions extends Component {
     this.setState({ toShow: sorted, sorting, rev });
   }
 
-  filter = (e) => {
+  sort = (e) => {
     e.preventDefault();
     const newsorting = e.target.id;
     const { sorting, rev } = this.state;
@@ -102,6 +104,7 @@ class Suggestions extends Component {
   isInRange = (target, filter) => {
     const { visitor } = this.state;
     const { Age, Distance, Tags, Popularity, Matching, searchTag } = filter;
+    console.log('IS in range', filter);
     const age = calculateAge(target.birthDate);
     const distance = getDistance(target.geo, visitor.geo);
     const communTag = CountCommonTags(target.tags, visitor.tags);
@@ -112,7 +115,7 @@ class Suggestions extends Component {
         if (communTag >= Tags.min && communTag <= Tags.max) {
           if (popularity >= Popularity.min && (popularity <= Popularity.max || Popularity.max === 20)) {
             if (matching >= Matching.min && (matching <= Matching.max || Matching === 20)) {
-              if (!searchTag || target.tags.includes(searchTag)) {
+              if (!searchTag || TagMatch(searchTag, target.tags)) {
                 return target;
               }
             }
@@ -123,7 +126,7 @@ class Suggestions extends Component {
     return null;
   }
 
-  advancedFilter = (filter) => {
+  filter = (filter) => {
     const { suggestions } = this.state;
     const array = suggestions.map(user => (
       this.isInRange(user, filter)
@@ -132,18 +135,26 @@ class Suggestions extends Component {
     this.setState({ toShow: output });
   }
 
-  cancelFilter = () => {
+  cancelParams = () => {
     const { suggestions } = this.state;
-    this.setState({ toShow: suggestions });
+    this.setState({ toShow: suggestions, status: 'suggestions' });
   }
 
-  search = (params) => {
-    console.log('params', params);
+  search = (searchParams) => {
+    console.log('params', searchParams);
+    secureAxios('/users/search', 'POST', { searchParams })
+      .then(({ data }) => {
+        if (data.error) console.log(data.error);
+        else {
+          const { search } = data;
+          this.setState({ toShow: search, search, status: 'search' });
+        }
+      });
   }
 
   render() {
     if (!this.state.mounted) return (<CircularProgress />);
-    const { toShow, visitor } = this.state;
+    const { toShow, visitor, status } = this.state;
     const output = toShow.map(user => (
       <Col key={user.username} className="border" style={this.style.col}>
         <OneBasicProfilCard
@@ -160,9 +171,15 @@ class Suggestions extends Component {
       <Grid style={{ width: '80vw' }}>
         <Row >
           <Col xs={12} sm={12} md={12} lg={9} lgOffset={2}>
-            <AdvancedFilterSelector filter={this.advancedFilter} cancel={this.cancelFilter} />
-            <Search search={this.search} />
-            <SortingSelector filter={this.filter} />
+            <Filter filter={this.filter} cancel={this.cancelParams} />
+            <Search search={this.search} cancel={this.cancelParams} />
+            <Sorting sort={this.sort} />
+            <Row className="justify-content-center">
+              { status === 'suggestions' ?
+                <h2>Suggestions Result</h2>
+                : <h2>Search Result</h2>
+              }
+            </Row>
             <Row className="justify-content-center">{output}</Row>
           </Col>
         </Row>

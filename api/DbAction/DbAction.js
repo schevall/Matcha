@@ -7,9 +7,9 @@ export const serveDb = async (username) => {
 };
 
 export const DbgetTagsList = async () => {
-  const cursor = await Mongo.db.collection('tags').findOne({ tagList: 'tagList' });
-  const { tags } = cursor;
-  return tags;
+  const cursor = await Mongo.db.collection('tags').findOne({});
+  const { tagList } = cursor;
+  return tagList;
 };
 
 export const checkUser = async (username) => {
@@ -59,6 +59,13 @@ export const pusher = async (username, field, value) => {
   await usercollection.updateOne(
     { username },
     { $addToSet: { [field]: value } });
+};
+
+export const updatePopularity = async (username, value) => {
+  const { usercollection } = await serveDb(username);
+  await usercollection.updateOne(
+    { username },
+    { $inc: { popularity: value } });
 };
 
 export const puller = async (username, field, value) => {

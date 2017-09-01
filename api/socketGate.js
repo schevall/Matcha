@@ -22,11 +22,8 @@ const socketGate = users => (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`user disconnected : ${username}, id : ${socketId}`);
-    let index = users.findIndex(user => (user.socketUser === username));
-    while (index !== -1) {
-      users.splice(index, 1);
-      index = users.findIndex(user => (user.socketUser === username));
-    }
+    const index = users.findIndex(user => (user.socketUser === username));
+    users.splice(index, 1);
   });
 
   socket.on('isUserLogged', (target) => {
@@ -106,7 +103,7 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         const newMessage = { author: username, date: Date.now(), message: input };
         socket.to(user.socketId).emit(`message/${username}`, newMessage);
-        socket.to(user.socketId).emit('messageCount', username);
+        socket.to(user.socketId).emit('message', username);
       }
     });
   });

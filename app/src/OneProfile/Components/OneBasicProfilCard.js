@@ -100,6 +100,7 @@ class OneBasicProfilCard extends Component {
 
   GetPossibleActions = (target, visitor) => {
     const actions = {};
+    actions.canInteract = I.canInteract(target, visitor);
     actions.canlike = !I.hasLiked(target, visitor);
     actions.canchat = I.isaMatch(target, visitor);
     actions.canblock = !I.hasBlocked(target, visitor);
@@ -171,7 +172,7 @@ class OneBasicProfilCard extends Component {
       connectionTitle } = this.ConnectionDisplay(isUserLogged, lastConnection);
     const age = D.calculateAge(birthDate);
     const toProfile = LinkProfile(this.styles.link, username);
-    const commonTags = I.CountCommonTags(this.state.visitor.tags, this.state.target.tags);
+    const commonTags = I.CountCommonTags(this.state.target.tags, this.state.visitor.tags);
     const distance = I.getDistance(this.state.visitor.geo, this.state.target.geo);
     const text = distance >= 1000 ? `${parseInt(distance / 1000, 10)} Km` : `${distance} meters`;
     const popularity = I.CalculatePopularity(this.state.target);
@@ -193,11 +194,9 @@ class OneBasicProfilCard extends Component {
             <img src={path} alt="" />
           </Col>
         </Row>
-        {!button ? null :
-        <Interactions
-          actions={actions}
-          handleActions={this.SendActions}
-        />}
+        { (!button || !actions.canInteract) ? null :
+        <Interactions actions={actions} handleActions={this.SendActions} />
+        }
       </Grid>
     );
   }

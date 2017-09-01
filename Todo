@@ -1,6 +1,7 @@
+rajour de popularite dans db, mesurer les implications
 utilisateur bloque ne doit plus generer de notifications et apparaitre en recherche =>>> verif profonde a faire
 limiter le nombre de resultat de la suggestion
-filtre sur tag multipe
+verif chat button, seems not working
 finir le one profile matching information : montrer s'il y a match like etc
 faire un putain de compte sur l'activite as les messageCount
 verifier compat firefox

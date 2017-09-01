@@ -17,6 +17,7 @@ class NavBar extends Component {
     super(props);
     const { username, isLogged } = props;
     this.pathname = this.props.location.pathname;
+    this.target = this.pathname.split('/').pop();
     this.state = {
       username,
       isLogged,
@@ -42,9 +43,8 @@ class NavBar extends Component {
             const target = this.pathname.split('/').pop();
             if (this.pathname.includes('/profile') && !blockedby.includes(target)) {
               global.socket.emit('visit', target);
-            }
-            if (this.pathname.includes('/chat/')) {
-              this.updateMessageCount(target);
+            } else if (this.pathname.includes(`/chat/${target}`)) {
+              this.updateMessageCount(target, 'deferred');
             }
           }
         });
@@ -58,16 +58,16 @@ class NavBar extends Component {
     if (newPathname !== oldPathname) {
       this.pathname = this.props.location.pathname;
       const target = this.pathname.split('/').pop();
+      this.target = target;
       if (this.pathname.includes('/profile') && !blockedby.includes(target)) {
         global.socket.emit('visit', target);
-      } else if (this.pathname.includes('/chat/')) {
-        this.updateMessageCount(target);
+      } else if (this.pathname.includes(`/chat/${target}`)) {
+        this.updateMessageCount(target, 'deferred');
       }
     }
   }
 
   componentWillUnmount() {
-    global.socket.emit('disconnect');
     global.socket.off('connect');
     global.socket.off('visit');
     global.socket.off('like');
@@ -76,7 +76,8 @@ class NavBar extends Component {
     global.socket.off('unmatch');
     global.socket.off('block');
     global.socket.off('unblock');
-    global.socket.off('messageCount');
+    global.socket.off('message');
+    global.socket.disconnect();
   }
 
   handleBlock = (target, action) => {
@@ -94,11 +95,11 @@ class NavBar extends Component {
     }
   }
 
-  updateMessageCount = (target) => {
+  updateMessageCount = (target, mode) => {
     secureAxios(`/chat/updateMessageCount/${target}`, 'GET')
       .then(({ data }) => {
         if (data.error) console.log(data.error);
-        else {
+        else if (mode === 'deferred') {
           const { erased } = data;
           const { messageCount } = this.state;
           const newMessageCount = messageCount - erased;
@@ -124,13 +125,15 @@ class NavBar extends Component {
       this.handleBlock(visitor, 'unblock');
       this.props.dispatch(Notifications.success({ title: `${visitor} has unblocked you !!!` }));
     });
-    global.socket.on('messageCount', (target) => {
+    global.socket.on('message', (target) => {
       this.handleNewMessage(target);
     });
   }
 
   handleNewMessage = (target) => {
-    if (!this.pathname.includes(`/chat/${target}`)) {
+    if (this.pathname.includes(`/chat/${target}`)) {
+      this.updateMessageCount(target, 'realTime');
+    } else {
       const { messageCount } = this.state;
       const newMessageCount = messageCount + 1;
       this.setState({ messageCount: newMessageCount });

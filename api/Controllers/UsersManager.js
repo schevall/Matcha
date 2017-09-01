@@ -46,13 +46,20 @@ export const resetPassword = async (req, res) => {
 
 const updateGeneral = async (username, payload) => {
   const userInfo = await db.getUserdb(username);
-  const reg = /^[a-zA-Z0-9]+$/;
+  const { firstname, lastname, gender, orient } = payload;
+  const reg = /^[a-zA-Z]+$/;
   const types = ['male', 'female', 'both'];
   let modif = false;
-  if (!types.includes(payload.gender) || !types.includes(payload.orient)) {
+  if (!types.includes(gender) || !types.includes(orient)) {
     return 'Wrong gender or orientation';
-  } else if (!payload.firstname.match(reg) || !payload.lastname.match(reg)) {
-    return 'First name and last name can only be alpha characters';
+  }
+  if (firstname) {
+    if (firstname.length > 25) return 'First name is too long';
+    if (!firstname.match(reg)) return 'First name can only be alpha characters';
+  }
+  if (lastname) {
+    if (lastname.length > 25) return 'Last name is too long';
+    if (!lastname.match(reg)) return 'Last name can only be alpha characters';
   }
   Object.keys(payload).forEach((key) => {
     if (userInfo[key] !== payload[key]) {

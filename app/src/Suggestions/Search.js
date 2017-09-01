@@ -122,7 +122,6 @@ class AdvancedFilterSelector extends Component {
       Tags: { min: Tags.defaultValue[0], max: Tags.defaultValue[1] },
       Popularity: { min: Popularity.defaultValue[0], max: Popularity.defaultValue[1] },
       Matching: { min: Matching.defaultValue[0], max: Matching.defaultValue[1] },
-      filter: props.filter,
     };
   }
 
