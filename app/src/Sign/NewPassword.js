@@ -52,7 +52,6 @@ class NewPassword extends Component {
   }
 
   render() {
-    console.log('This state', this.state);
     return (
       <div style={{ backgroundColor: 'white', padding: '20px' }} className="border">
         <Link to="/signin">To Signin</Link>

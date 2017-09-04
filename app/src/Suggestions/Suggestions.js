@@ -104,7 +104,6 @@ class Suggestions extends Component {
   isInRange = (target, filter) => {
     const { visitor } = this.state;
     const { Age, Distance, Tags, Popularity, Matching, searchTag } = filter;
-    console.log('IS in range', filter);
     const age = calculateAge(target.birthDate);
     const distance = getDistance(target.geo, visitor.geo);
     const communTag = CountCommonTags(target.tags, visitor.tags);
@@ -141,7 +140,6 @@ class Suggestions extends Component {
   }
 
   search = (searchParams) => {
-    console.log('params', searchParams);
     secureAxios('/users/search', 'POST', { searchParams })
       .then(({ data }) => {
         if (data.error) console.log(data.error);

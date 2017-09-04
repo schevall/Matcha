@@ -140,20 +140,35 @@ export const getFavPic = async (req, res) => {
 
 export const initNavbar = async (req, res) => {
   const { username } = req.headers;
-  const output = await db.getter(username, ['blockedto', 'blockedby']);
+  const output = await db.getter(username, ['blockedto', 'blockedby', 'activity']);
   const { blockedto } = output[0];
   const { blockedby } = output[1];
+  const { activity } = output[2];
   const messageCount = await getMessageCount(username);
-  return res.send({ error: '', messageCount, blockedto, blockedby });
+  const activityCount = activity.length;
+  return res.send({ error: '', messageCount, activityCount, blockedto, blockedby });
 };
 
 export const getActivity = async (req, res) => {
   const { username } = req.params;
   const activity = await db.getter(username, ['activity']);
   const oldactivity = await db.getter(username, ['oldactivity']);
-  await db.setter(username, 'activity', []);
-  await db.oldActivityPusher(username, Object.values(activity[0].activity));
   return res.send({ error: '', activity: activity[0], oldactivity: oldactivity[0] });
+};
+
+export const resetActivity = async (req) => {
+  const { username } = req.params;
+  const output = await db.getter(username, ['activity']);
+  const activity = output[0];
+  await db.setter(username, 'activity', []);
+  await db.oldActivityPusher(username, Object.values(activity));
+};
+
+export const getNewActivity = async (req, res) => {
+  const { username } = req.params;
+  const output = await db.getter(username, ['activity']);
+  const activity = output[0];
+  return res.send({ error: '', activity });
 };
 
 export const getTagList = async (req, res) => {

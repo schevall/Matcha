@@ -98,9 +98,7 @@ class SignUpContainer extends Component {
   }
 
   handleGenderChange = (event, index, value) => {
-    console.log('handle gender change', `index = ${index}, value = ${value}`);
     const genderList = ['male', 'female'];
-    console.log('Futur gender', genderList[index]);
     this.setState({
       gender: genderList[index],
       genderValue: value,

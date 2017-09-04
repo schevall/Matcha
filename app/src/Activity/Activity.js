@@ -13,14 +13,12 @@ class Activity extends Component {
     const { username } = props;
     this.state = {
       username,
-      mounted: null,
+      mounted: false,
     };
   }
 
-  componentDidMount() {
-    const { username } = this.state;
-    const url = `/users/getActivity/${username}`;
-    secureAxios(url, 'GET')
+  componentWillMount() {
+    secureAxios(`/users/getActivity/${this.state.username}`, 'GET')
       .then(({ data }) => {
         if (data.error) {
           console.log(data.error);
@@ -30,6 +28,22 @@ class Activity extends Component {
           this.setState({ mounted: true, activity, oldactivity });
         }
       });
+  }
+
+  componentDidMount() {
+    global.socket.on('updateActivity', (data) => {
+      if (this.state.mounted) {
+        const { activity } = this.state;
+        const object = { author: data.author, date: Date.now(), event: data.type };
+        activity.push(object);
+        this.setState({ activity });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    global.socket.off('updateActivity');
+    secureAxios(`/users/resetActivity/${this.state.username}`, 'GET');
   }
 
   render() {

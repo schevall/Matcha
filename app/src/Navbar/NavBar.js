@@ -22,6 +22,7 @@ class NavBar extends Component {
       username,
       isLogged,
       messageCount: 0,
+      activityCount: 0,
       mounted: false,
     };
     this.style = {
@@ -38,13 +39,15 @@ class NavBar extends Component {
           if (data.error) {
             console.log(data.error);
           } else {
-            const { messageCount, blockedby, blockedto } = data;
-            this.setState({ messageCount, blockedby, blockedto, mounted: true });
+            const { messageCount, blockedby, blockedto, activityCount } = data;
+            this.setState({ messageCount, activityCount, blockedby, blockedto, mounted: true });
             const target = this.pathname.split('/').pop();
             if (this.pathname.includes('/profile') && !blockedby.includes(target)) {
               global.socket.emit('visit', target);
             } else if (this.pathname.includes(`/chat/${target}`)) {
               this.updateMessageCount(target, 'deferred');
+            } else if (this.pathname.includes('/activity')) {
+              this.setState({ activityCount: 0 });
             }
           }
         });
@@ -63,6 +66,8 @@ class NavBar extends Component {
         global.socket.emit('visit', target);
       } else if (this.pathname.includes(`/chat/${target}`)) {
         this.updateMessageCount(target, 'deferred');
+      } else if (this.pathname.includes('/activity')) {
+        this.setState({ activityCount: 0 });
       }
     }
   }
@@ -77,6 +82,7 @@ class NavBar extends Component {
     global.socket.off('block');
     global.socket.off('unblock');
     global.socket.off('message');
+    global.socket.off('activity');
     global.socket.disconnect();
   }
 
@@ -128,6 +134,9 @@ class NavBar extends Component {
     global.socket.on('message', (target) => {
       this.handleNewMessage(target);
     });
+    global.socket.on('activity', () => {
+      this.handleNewActivity();
+    });
   }
 
   handleNewMessage = (target) => {
@@ -140,6 +149,14 @@ class NavBar extends Component {
     }
   }
 
+  handleNewActivity = () => {
+    if (!this.pathname.includes('/activity')) {
+      const { activityCount } = this.state;
+      const newActivityCount = activityCount + 1;
+      this.setState({ activityCount: newActivityCount });
+    }
+  }
+
   render() {
     const { isLogged, username, mounted } = this.state;
     const { profilePicturePath } = this.props;
@@ -149,7 +166,7 @@ class NavBar extends Component {
     const path = `/static/${username}/${profilePicturePath}`;
     const avatar = profilePicturePath ? <Link to="/myprofile"><Avatar src={path} /></Link>
     : <Link style={{ fontSize: 35, color: 'black' }} className="glyphicon glyphicon-exclamation-sign" to="/myprofile" />;
-    const { messageCount } = this.state;
+    const { messageCount, activityCount } = this.state;
     return (
       <Grid style={{ width: '80vw' }}>
         <Row >
@@ -163,6 +180,7 @@ class NavBar extends Component {
               </Col>
               <Col xs={2}>
                 <Link to="/activity" style={this.style.icons} className="glyphicon glyphicon-flag" />
+                <span className="badge badge-primary">{activityCount}</span>
               </Col>
               <Col xs={2}>
                 <Link to="/chat" style={this.style.icons} className="glyphicon glyphicon-comment" />

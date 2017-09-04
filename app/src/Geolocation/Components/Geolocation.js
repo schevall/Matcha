@@ -45,7 +45,6 @@ export default class Geolocate extends Component {
       if (this.isUnmounted) {
         return;
       }
-      console.log('Position', position);
       const { latitude, longitude } = position.coords;
       const geo = `${latitude},${longitude}`;
       GetAddress(geo).then((address) => {

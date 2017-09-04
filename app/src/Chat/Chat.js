@@ -46,8 +46,10 @@ class Chat extends Component {
         return (
           <ConversationCard newMessage={newMessage} target={other} path={path} />);
       }
+      return null;
     }));
-    return output;
+    const result = output.filter(n => (n !== undefined && n !== null));
+    return result;
   }
 
 

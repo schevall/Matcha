@@ -107,11 +107,11 @@ class Chat extends Component {
 
   formatRow = (style, key, date, author, text) => (
     <Row style={style} key={key} className="border">
-      <Col className="col-xs-6 col-sm-3 col-md-2 col-lg-1">{author}</Col>
-      <Col className="col-xs-6 col-sm-3 col-sm-push-6 col-md-push-8 col-md-2 col-lg-push-10 col-lg-1">
+      <Col className="col-xs-6 col-sm-3 col-md-2">{author}</Col>
+      <Col className="col-xs-6 col-sm-3 col-sm-push-6 col-md-push-8 col-md-2">
         {date}
       </Col>
-      <Col className="col-xs-12 col-sm-6 col-sm-pull-3 col-md-pull-2 col-md-8 col-lg-pull-1 col-lg-10" style={{ wordBreak: 'break-all' }}>{text}</Col>
+      <Col className="col-xs-12 col-sm-6 col-sm-pull-3 col-md-pull-2 col-md-8" style={{ wordBreak: 'break-all' }}>{text}</Col>
     </Row>
   )
 

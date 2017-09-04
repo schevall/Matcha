@@ -29,6 +29,7 @@ const routes = (app, upload) => {
   app.post('/api/users/search', search);
   app.get('/api/users/getfavoritepicture/:username', Users.getFavPic);
   app.get('/api/users/getActivity/:username', Users.getActivity);
+  app.get('/api/users/resetActivity/:username', Users.resetActivity);
   app.get('/api/users/initNavbar', Users.initNavbar);
   app.get('/api/users/getprofile/:targeted', Interactions.visitProfile);
 

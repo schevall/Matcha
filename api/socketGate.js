@@ -36,6 +36,8 @@ const socketGate = users => (socket) => {
     users.forEach((user) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit('visit', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'visit' });
       }
     });
   });
@@ -45,6 +47,8 @@ const socketGate = users => (socket) => {
     users.forEach((user) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit('like', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'like' });
       }
     });
   });
@@ -54,6 +58,8 @@ const socketGate = users => (socket) => {
     users.forEach((user) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit('unlike', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'unlike' });
       }
     });
   });
@@ -64,6 +70,8 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit(`match/${username}`);
         socket.to(user.socketId).emit('match', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'match' });
       }
     });
   });
@@ -74,6 +82,8 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit(`unmatch/${username}`);
         socket.to(user.socketId).emit('unmatch', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'unmatch' });
       }
     });
   });
@@ -83,6 +93,8 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit(`block/${username}`);
         socket.to(user.socketId).emit('block', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'block' });
       }
     });
   });
@@ -93,6 +105,8 @@ const socketGate = users => (socket) => {
       if (user.socketUser === target) {
         socket.to(user.socketId).emit(`unblock/${username}`);
         socket.to(user.socketId).emit('unblock', username);
+        socket.to(user.socketId).emit('activity');
+        socket.to(user.socketId).emit('updateActivity', { author: username, type: 'unblock' });
       }
     });
   });

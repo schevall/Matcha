@@ -17,7 +17,6 @@ export default class MyGeneralInfo extends Component {
     e.preventDefault();
     const field = e.target.id;
     const value = e.target.value;
-    console.log(`handle change ${field} ${value}`);
     this.setState({ errorLast: '', errorFirst: '' });
     this.props.handleOnChange(field, value);
     if (value.length > 25) {

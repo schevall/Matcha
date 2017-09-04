@@ -88,6 +88,7 @@ const users = [
     orient: 'female',
     tags: ['rich', 'imp', 'blond'],
     liketo: ['Daenerys', 'Sansa'],
+    popularity: 0,
     bio: '',
     geo: '45.85,3.22',
   },

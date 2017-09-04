@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/lib/Button';
 import { WithContext as ReactTags } from 'react-tag-input';
 import '../MyProfile/CSS/reactTags.css';
 

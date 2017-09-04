@@ -39,7 +39,6 @@ const filterSearch = ({ searchTag = [], Age, Distance, Tags, Popularity, Matchin
     const age = calculateAge(user.birthDate);
     const distance = getDistance(user.geo, initiator.geo);
     const communTag = CountCommonTags(user.tags, initiator.tags);
-    console.log(`communTag between ${initiator.username} and ${user.username}`, communTag);
     const popularity = user.popularity;
     const matching = GetMatchingScore(user, initiator);
     if ((age >= Age.min && age <= Age.max) || Age.max === 100) {
