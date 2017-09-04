@@ -26,7 +26,7 @@ class Chat extends Component {
     this.username = username;
     const { pathname } = props.location;
     this.target = pathname.substr(pathname.lastIndexOf('/') + 1);
-    this.state = { loaded: false, mounted: false, input: '', canchat: true };
+    this.state = { loaded: false, mounted: false, input: '', canchat: 'yes' };
   }
 
   componentWillMount() {
@@ -42,7 +42,11 @@ class Chat extends Component {
       this.handleNewMessage(newMessage);
     });
     global.socket.on(`block/${this.target}`, () => {
-      this.setState({ canchat: false });
+      this.setState({ canchat: 'block' });
+    });
+    global.socket.on(`unmatch/${this.target}`, () => {
+      console.log('UN MATCH RECEIVED');
+      this.setState({ canchat: 'nomatch' });
     });
   }
 
@@ -52,8 +56,7 @@ class Chat extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          this.setState({ loaded: true, canchat: false });
-          console.log(data.error);
+          this.setState({ loaded: true, canchat: data.error });
         } else {
           const { message } = data;
           const pic = message.user1 !== this.username ? message.picUser1 : message.picUser2;
@@ -69,6 +72,7 @@ class Chat extends Component {
     global.socket.off(`userIsLogged/${this.target}`);
     global.socket.off(`message/${this.target}`);
     global.socket.off(`block/${this.target}`);
+    global.socket.off(`unmatch/${this.target}`);
   }
 
   handleNewMessage = (newMessage) => {
@@ -138,7 +142,8 @@ class Chat extends Component {
   render() {
     if (!this.state.loaded || !this.state.mounted) return (<CircularProgress />);
     const { message, input, isTargetLogged, canchat } = this.state;
-    if (!canchat) return <div>Oups, it seems that {this.target} has blocked you</div>;
+    if (canchat === 'block') return <div>Oups, it seems that {this.target} has blocked you</div>;
+    if (canchat === 'nomatch') return <div>Oups, it seems that you cannot talk with {this.target} anymore</div>;
     const history = this.formatMessage(message);
     const { connectionTitle } = ConnectionDisplay(isTargetLogged);
     const path = `/static/${this.target}/${this.state.pic}`;

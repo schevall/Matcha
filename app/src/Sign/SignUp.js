@@ -9,13 +9,13 @@ import SignupComponent from './Components/SignUp.js';
 class SignUpContainer extends Component {
 
   state = {
-    username: 'LittleFinger',
-    password: 'Patata11',
-    password2: 'Patata11',
-    email: 'sim.chvll@gmail.com',
-    birthDate: (new Date('October 13, 1970')),
-    firstname: 'Petyr',
-    lastname: 'Baelish',
+    username: '',
+    password: '',
+    password2: '',
+    email: '',
+    birthDate: null,
+    firstname: '',
+    lastname: '',
     gender: 'male',
     genderValue: 1,
     errorUsername: '',

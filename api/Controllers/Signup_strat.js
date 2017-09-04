@@ -28,11 +28,11 @@ const signup = async (req, res) => {
   ipInfo((err, cLoc) => {
     const geo = err ? '48.8833,2.2667' : cLoc.loc;
     const newUser = User.create(username, email, password, birthDate, gender, firstname, lastname, geo);
-    // const { activationkey } = newUser;
-    // const text = ftext(username, activationkey);
-    // const html = fhtml(username, activationkey);
-    // const sub = subject();
-    // mymailer(email, text, html, sub);
+    const { activationkey } = newUser;
+    const text = ftext(username, activationkey);
+    const html = fhtml(username, activationkey);
+    const sub = subject();
+    mymailer(email, text, html, sub);
     usersCollection.insertOne(newUser);
     return res.send({ verif });
   });

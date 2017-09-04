@@ -11,7 +11,7 @@ class SignInContainer extends Component {
 
   state = {
     username: '',
-    password: 'Patata11',
+    password: '',
     errorUsername: '',
     errorPassword: '',
   }

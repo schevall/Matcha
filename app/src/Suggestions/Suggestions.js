@@ -48,20 +48,21 @@ class Suggestions extends Component {
           console.log(data.error);
         } else {
           const { suggestions, visitor } = data;
-          this.sortSuggestions(suggestions, visitor);
+          const sorted = this.sortWithMatchingScore(suggestions, visitor);
+          this.setState({ mounted: true, suggestions: sorted, toShow: sorted, visitor });
         }
       });
   }
 
-  sortSuggestions = (suggestions = [], visitor) => {
-    const sorted = suggestions.sort((a, b) => {
+  sortWithMatchingScore = (list = [], visitor) => {
+    const sorted = list.sort((a, b) => {
       const aPoints = GetMatchingScore(a, visitor);
       const bPoints = GetMatchingScore(b, visitor);
       if (aPoints < bPoints) return 1;
       if (aPoints > bPoints) return -1;
       return 0;
     });
-    this.setState({ mounted: true, suggestions: sorted, toShow: suggestions, visitor });
+    return sorted;
   }
 
   sortBy = (sorting, rev) => {
@@ -145,7 +146,8 @@ class Suggestions extends Component {
         if (data.error) console.log(data.error);
         else {
           const { search } = data;
-          this.setState({ toShow: search, search, status: 'search' });
+          const sorted = this.sortWithMatchingScore(search, this.state.visitor);
+          this.setState({ toShow: sorted, search: sorted, status: 'search' });
         }
       });
   }

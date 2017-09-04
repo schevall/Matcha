@@ -67,6 +67,9 @@ export const visitProfile = async (req, res) => {
       return res.send({ error: 'block' });
     }
   }
+  if (!target.profilePicturePath) {
+    return res.send({ error: 'nopic' });
+  }
   await pushActivity(targeted, username, 'visit');
   return res.send({ error: '', target, visitor });
 };

@@ -140,6 +140,8 @@ class NavBar extends Component {
   }
 
   handleNewMessage = (target) => {
+    console.log('NAV BAR HANDLE NEW MESSAGE target', target);
+    console.log('NAV BAR HANDLE NEW MESSAGE path', this.pathname);
     if (this.pathname.includes(`/chat/${target}`)) {
       this.updateMessageCount(target, 'realTime');
     } else {

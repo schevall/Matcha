@@ -40,9 +40,11 @@ class ProtectedInfo extends Component {
     } else {
       const payload = { password, password2, oldpassword };
       this.props.handlePasswordModif(payload);
-      this.setState({ oldpassword: '', password: '', password2: '' });
     }
-    return null;
+    this.setState({ oldpassword: '', password: '', password2: '' });
+    document.getElementById('oldpassword').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password2').value = '';
   }
 
   handleSubmitEmail = () => {

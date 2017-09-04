@@ -36,6 +36,9 @@ class OneProfile extends Component {
           if (data.error === 'block') {
             this.setState({ target: 'block', visitor: 'blocked' });
           }
+          if (data.error === 'nopic') {
+            this.setState({ target: 'nopic', visitor: 'unhappy' });
+          }
         } else {
           const { target, visitor, actions } = data;
           this.setState({
@@ -49,6 +52,7 @@ class OneProfile extends Component {
     if (!this.state.target || !this.state.visitor) return <CircularProgress />;
     else if (this.state.target === 'block') return <div>Oups, it seems that user has blocked you</div>;
     else if (this.state.target === 'notfound') return <div>Oups, this user does not exist</div>;
+    else if (this.state.target === 'nopic') return <div>Oups, this user has no picture, then you cannot interact with he/her</div>;
     const { target, visitor } = this.state;
     return (
       <Grid style={{ width: '80vw' }}>

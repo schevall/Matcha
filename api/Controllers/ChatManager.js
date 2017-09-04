@@ -17,12 +17,17 @@ export const inputMessage = async (req, res) => {
 export const getAllConversations = async (req, res) => {
   const { username } = req.headers;
   const output = await getConversations(username);
-  const userdb = await db.getUserdb(username);
-  const { blockedto, blockedby } = userdb;
+  const visitordb = await db.getUserdb(username);
+  console.log('conversations', output);
+  console.log('visitordb', visitordb);
   const conversations = output.map((el) => {
-    if (!blockedto.includes(el.user1) && !blockedto.includes(el.user1)) {
-      if (!blockedby.includes(el.user1) && !blockedby.includes(el.user1)) {
-        return el;
+    if (!visitordb.blockedto.includes(el.user1) && !visitordb.blockedto.includes(el.user2)) {
+      if (!visitordb.blockedby.includes(el.user1) && !visitordb.blockedby.includes(el.user2)) {
+        if (visitordb.liketo.includes(el.user1) || visitordb.liketo.includes(el.user2)) {
+          if (visitordb.likedby.includes(el.user1) || visitordb.likedby.includes(el.user2)) {
+            return el;
+          }
+        }
       }
     }
     return 'blocked';
@@ -33,9 +38,10 @@ export const getAllConversations = async (req, res) => {
 export const getMessages = async (req, res) => {
   const { username } = req.headers;
   const { target } = req.params;
-  const output = await db.getter(username, ['blockedby']);
-  const { blockedby } = output[0];
-  if (blockedby.includes(target)) return res.send({ error: 'blocked' });
+  const visitordb = await db.getUserdb(username);
+  const targetdb = await db.getUserdb(target);
+  if (visitordb.blockedby.includes(target)) return res.send({ error: 'blocked' });
+  if (!targetdb.liketo.includes(username) || !visitordb.liketo.includes(target)) return res.send({ error: 'nomatch' });
   const chat = await getChat(username, target);
   resetMessageCount(username, target);
   return res.send({ error: '', message: chat });

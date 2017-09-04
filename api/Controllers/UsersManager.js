@@ -156,12 +156,13 @@ export const getActivity = async (req, res) => {
   return res.send({ error: '', activity: activity[0], oldactivity: oldactivity[0] });
 };
 
-export const resetActivity = async (req) => {
+export const resetActivity = async (req, res) => {
   const { username } = req.params;
   const output = await db.getter(username, ['activity']);
   const activity = output[0];
   await db.setter(username, 'activity', []);
   await db.oldActivityPusher(username, Object.values(activity));
+  return res.send({ error: '' });
 };
 
 export const getNewActivity = async (req, res) => {
