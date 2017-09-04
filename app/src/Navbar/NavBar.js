@@ -10,6 +10,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 
 import secureAxios from '../secureAxios.js';
 import Logout from './Logout.js';
+import Footer from './Footer.js';
 
 class NavBar extends Component {
 
@@ -170,31 +171,34 @@ class NavBar extends Component {
     : <Link style={{ fontSize: 35, color: 'black' }} className="glyphicon glyphicon-exclamation-sign" to="/myprofile" />;
     const { messageCount, activityCount } = this.state;
     return (
-      <Grid style={{ width: '80vw' }}>
-        <Row >
-          <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
-            <Row style={{ padding: '10px' }}>
-              <Col xs={2} >
-                {avatar}
-              </Col>
-              <Col xs={2}>
-                <Link to="/" style={this.style.icons} className="glyphicon glyphicon-search" />
-              </Col>
-              <Col xs={2}>
-                <Link to="/activity" style={this.style.icons} className="glyphicon glyphicon-flag" />
-                <span className="badge badge-primary">{activityCount}</span>
-              </Col>
-              <Col xs={2}>
-                <Link to="/chat" style={this.style.icons} className="glyphicon glyphicon-comment" />
-                <span className="badge badge-primary">{messageCount}</span>
-              </Col>
-              <Col xs={2} lgOffset={2}>
-                <Logout style={this.style.icons} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Grid>
+      <div>
+        <Grid style={{ width: '80vw' }}>
+          <Row >
+            <Col xs={12} sm={12} md={12} lg={9} lgOffset={2} className="border">
+              <Row style={{ padding: '10px' }}>
+                <Col xs={2} >
+                  {avatar}
+                </Col>
+                <Col xs={2}>
+                  <Link to="/" style={this.style.icons} className="glyphicon glyphicon-search" />
+                </Col>
+                <Col xs={2}>
+                  <Link to="/activity" style={this.style.icons} className="glyphicon glyphicon-flag" />
+                  <span className="badge badge-primary">{activityCount}</span>
+                </Col>
+                <Col xs={2}>
+                  <Link to="/chat" style={this.style.icons} className="glyphicon glyphicon-comment" />
+                  <span className="badge badge-primary">{messageCount}</span>
+                </Col>
+                <Col xs={2} lgOffset={2}>
+                  <Logout style={this.style.icons} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Grid>
+        <Footer />
+      </div>
     );
   }
 }
