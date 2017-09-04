@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.16.1",
     "can-use-dom": "^0.1.0",
+    "eslint-plugin-flowtype": "^2.35.1",
     "geolib": "^2.0.23",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.4",
