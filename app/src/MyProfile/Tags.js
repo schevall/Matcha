@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Row } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import secureAxios from '../secureAxios.js';
 import MyTags from './Components/MyTags.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class Tags extends Component {
 
@@ -18,8 +20,13 @@ class Tags extends Component {
   componentWillMount() {
     secureAxios('/tags/getTagsList', 'GET')
       .then(({ data }) => {
-        if (data.error) console.log(data.error);
-        else {
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
+        } else {
           const { tagList } = data;
           this.setState({ tagList });
         }
@@ -35,8 +42,13 @@ class Tags extends Component {
     const payload = { tags };
     secureAxios('/users/update/tags', 'POST', payload)
       .then(({ data }) => {
-        if (data.error) console.log(data.error);
-        else {
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
+        } else {
           this.setState({ status: 'saved' });
         }
       });
@@ -59,4 +71,4 @@ class Tags extends Component {
   }
 }
 
-export default Tags;
+export default connect()(Tags);

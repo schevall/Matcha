@@ -16,7 +16,7 @@ import App from './App.js';
 
 const MyRouter = () => (
   <Router>
-    <div>
+    <div style={{ height: '100%' }} className="page-wrap">
       <NotificationsSystem />
       <Switch>
         <Route exact path="/signup" component={SignUpContainer} />

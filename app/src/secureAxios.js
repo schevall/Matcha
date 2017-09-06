@@ -9,13 +9,18 @@ const secureAxios = (destination, method, data = {}, headers = {}) => {
 
   if (!token || !username) {
     const message = 'No token or username in secureaxios!';
+    localStorage.clear();
     Promise.reject(new Error(message)).then(() => {
     }, () => {
-      console.log('error secureAxios', message);
+      console.log(message);
     });
   }
-
-  return axios(config).then(response => (response));
+  return axios(config).then((response) => {
+    if (response.data.error && response.data.error === 'authControl') {
+      localStorage.clear();
+    }
+    return response;
+  });
 };
 
 export default secureAxios;

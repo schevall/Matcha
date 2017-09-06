@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
+import { connect } from 'react-redux';
 import GeolocationModal from '../Components/GeolocationModal.js';
 import AddressModal from '../Components/AddressModal.js';
 import GetAddress from '../Components/GetAddress.js';
 import secureAxios from '../../secureAxios.js';
+import { logoutAuthError } from '../../Actions/Login/loginBound.js';
 
-export default class MyGeo extends Component {
+class MyGeo extends Component {
 
   constructor(props) {
     super(props);
@@ -29,7 +31,14 @@ export default class MyGeo extends Component {
   SaveAddress = (geo, address) => {
     this.setState({ address, geo });
     const payload = { geo };
-    secureAxios('/users/update/geo', 'POST', payload);
+    secureAxios('/users/update/geo', 'POST', payload)
+    .then(({ data }) => {
+      if (data.error) {
+        if (data.error === 'authControl') {
+          this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+        }
+      }
+    });
   }
 
   render() {
@@ -53,3 +62,5 @@ export default class MyGeo extends Component {
     );
   }
 }
+
+export default connect()(MyGeo);

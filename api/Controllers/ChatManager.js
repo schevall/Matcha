@@ -18,8 +18,6 @@ export const getAllConversations = async (req, res) => {
   const { username } = req.headers;
   const output = await getConversations(username);
   const visitordb = await db.getUserdb(username);
-  console.log('conversations', output);
-  console.log('visitordb', visitordb);
   const conversations = output.map((el) => {
     if (!visitordb.blockedto.includes(el.user1) && !visitordb.blockedto.includes(el.user2)) {
       if (!visitordb.blockedby.includes(el.user1) && !visitordb.blockedby.includes(el.user2)) {

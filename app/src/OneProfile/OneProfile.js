@@ -8,6 +8,7 @@ import OneMatchInfo from './Components/OneMatchInfo.js';
 import OneBasicProfilCard from './Components/OneBasicProfilCard.js';
 import OneBio from './Components/OneBio.js';
 import OneGalleryDisplay from './Components/OneGalleryDisplay.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class OneProfile extends Component {
 
@@ -30,6 +31,9 @@ class OneProfile extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          }
           if (data.error === 'notfound') {
             this.setState({ target: 'notfound', visitor: 'unhappy' });
           }

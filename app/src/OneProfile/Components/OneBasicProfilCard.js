@@ -10,6 +10,7 @@ import LinkProfile from '../../ToolBox/LinkProfile.js';
 import * as D from '../../ToolBox/DateTools.js';
 import * as I from '../../ToolBox/InteractionsTools.js';
 import { GetMatchingScore } from '../../ToolBox/MatchingTool.js';
+import { logoutAuthError } from '../../Actions/Login/loginBound.js';
 
 
 class OneBasicProfilCard extends Component {
@@ -134,7 +135,11 @@ class OneBasicProfilCard extends Component {
       secureAxios(`/interactions/${action}`, 'POST', payload)
         .then(({ data }) => {
           if (data.error) {
-            this.props.dispatch(Notifications.error({ title: data.message }));
+            if (data.error === 'authControl') {
+              this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+            } else {
+              this.props.dispatch(Notifications.error({ title: data.message }));
+            }
           } else {
             global.socket.emit(action, target);
             const { newactions, message } = data;

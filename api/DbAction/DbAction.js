@@ -96,10 +96,11 @@ export const removePicture = async (username, fileName) => {
 };
 
 
-export const oldActivityPusher = async (username, array) => {
+export const oldActivityPusher = async (username, array = []) => {
   const { usercollection } = await serveDb(username);
-  console.log('About to push', array);
-  await usercollection.updateOne(
+  if (array.length) {
+    await usercollection.updateOne(
     { username },
     { $pushAll: { oldactivity: array } });
+  }
 };

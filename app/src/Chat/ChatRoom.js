@@ -8,6 +8,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import secureAxios from '../secureAxios.js';
 import { getDiffDate } from '../ToolBox/DateTools.js';
 import ConnectionDisplay from '../ToolBox/ConnectionDisplay.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class Chat extends Component {
 
@@ -45,7 +46,6 @@ class Chat extends Component {
       this.setState({ canchat: 'block' });
     });
     global.socket.on(`unmatch/${this.target}`, () => {
-      console.log('UN MATCH RECEIVED');
       this.setState({ canchat: 'nomatch' });
     });
   }
@@ -56,7 +56,11 @@ class Chat extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          this.setState({ loaded: true, canchat: data.error });
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            this.setState({ loaded: true, canchat: data.error });
+          }
         } else {
           const { message } = data;
           const pic = message.user1 !== this.username ? message.picUser1 : message.picUser2;
@@ -102,10 +106,18 @@ class Chat extends Component {
     e.target.firstChild.firstChild.value = '';
     secureAxios('/chat/newMessage', 'POST', { target, input })
       .then(({ data }) => {
-        this.setState({ input: '' });
-        global.socket.emit('message', target, input);
-        if (data.error) console.log(data.error);
-        this.scrollToBottom();
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
+        } else {
+          this.setState({ input: '' });
+          global.socket.emit('message', target, input);
+          if (data.error) console.log(data.error);
+          this.scrollToBottom();
+        }
       });
   }
 

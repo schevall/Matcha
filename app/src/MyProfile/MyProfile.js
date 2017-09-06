@@ -5,7 +5,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import secureAxios from '../secureAxios.js';
-import { handleNewFavPic } from '../Actions/Login/loginBound.js';
+import { handleNewFavPic, logoutAuthError } from '../Actions/Login/loginBound.js';
 import MyGeneralInfo from './Components/MyGeneralInfo.js';
 import MyBasicProfilCard from './Components/MyBasicProfilCard.js';
 import MyProtectedInfo from './Components/MyProtectedInfo.js';
@@ -22,8 +22,13 @@ class MyProfile extends Component {
     const url = '/users/initprofile';
     secureAxios(url, 'GET')
       .then(({ data }) => {
-        if (data.error) console.log(data.error);
-        else {
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
+        } else {
           const {
             username, birthDate, gender, orient, email, lastConnection,
             picturesPath, profilePicturePath, firstname, lastname, geo,
@@ -48,7 +53,11 @@ class MyProfile extends Component {
     secureAxios('/users/update/generalinfo', 'POST', payload)
     .then(({ data }) => {
       if (data.error) {
-        this.props.dispatch(Notifications.error({ title: data.message }));
+        if (data.error === 'authControl') {
+          this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+        } else {
+          this.props.dispatch(Notifications.error({ title: data.message }));
+        }
       } else {
         this.props.dispatch(Notifications.success({ title: 'Your infos has been changed' }));
         this.setState({ firstname, lastname, gender, orient });
@@ -61,7 +70,11 @@ class MyProfile extends Component {
     secureAxios('/users/update/email', 'POST', payload)
     .then(({ data }) => {
       if (data.error) {
-        this.props.dispatch(Notifications.error({ title: data.message }));
+        if (data.error === 'authControl') {
+          this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+        } else {
+          this.props.dispatch(Notifications.error({ title: data.message }));
+        }
       } else {
         this.props.dispatch(Notifications.success({ title: 'Your email has been changed' }));
       }
@@ -72,7 +85,11 @@ class MyProfile extends Component {
     secureAxios('/users/update/password', 'POST', payload)
     .then(({ data }) => {
       if (data.error) {
-        this.props.dispatch(Notifications.error({ title: data.message }));
+        if (data.error === 'authControl') {
+          this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+        } else {
+          this.props.dispatch(Notifications.error({ title: data.message }));
+        }
       } else {
         this.props.dispatch(Notifications.success({ title: 'Your password has been changed' }));
       }
@@ -83,7 +100,11 @@ class MyProfile extends Component {
     secureAxios('/users/update/bio', 'POST', { newbio })
     .then(({ data }) => {
       if (data.error) {
-        this.props.dispatch(Notifications.error({ title: data.message }));
+        if (data.error === 'authControl') {
+          this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+        } else {
+          this.props.dispatch(Notifications.error({ title: data.message }));
+        }
       } else {
         const { bio } = data;
         this.props.dispatch(Notifications.success({ title: 'Your bio has been updated' }));
@@ -95,8 +116,13 @@ class MyProfile extends Component {
   SetFavorite = (fileName) => {
     secureAxios('/users/favoritepicture', 'POST', { fileName })
       .then(({ data }) => {
-        if (data.error) console.log(data.error);
-        else {
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            this.props.dispatch(Notifications.error({ title: data.message }));
+          }
+        } else {
           const { profilePicturePath } = data;
           this.setState({ profilePicturePath });
           this.props.dispatch(handleNewFavPic(profilePicturePath, this.state.username));
@@ -108,7 +134,11 @@ class MyProfile extends Component {
     secureAxios('/users/removepicture', 'POST', { fileName })
       .then(({ data }) => {
         if (data.error) {
-          this.props.dispatch(Notifications.error({ title: data.message }));
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            this.props.dispatch(Notifications.error({ title: data.message }));
+          }
         } else {
           const { picturesPath } = data;
           this.setState({ picturesPath });
@@ -123,7 +153,11 @@ class MyProfile extends Component {
     secureAxios(url, 'POST', formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
         if (data.error) {
-          this.setState({ errorUpload: data.message });
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            this.setState({ errorUpload: data.message });
+          }
         } else {
           const { picturesPath } = data;
           this.setState({ picturesPath });

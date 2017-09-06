@@ -47,12 +47,12 @@ class Activation extends Component {
         <br />
         <label htmlFor="activation">
           <span>Enter your username</span>
-          <input id="username" type="text" onChange={this.handleChange} />
+          <input id="username" required type="text" onChange={this.handleChange} />
         </label>
         <br />
         <label htmlFor="activation">
           <span>Enter your activation key</span>
-          <input id="activationkey" type="password" onChange={this.handleChange} />
+          <input id="activationkey" required type="password" onChange={this.handleChange} />
         </label>
         <button type="submit" onClick={this.sendKey}>Submit</button>
       </div>));

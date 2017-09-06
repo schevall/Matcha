@@ -4,15 +4,16 @@ const style = {
   backgroundColor: 'white',
   borderStyle: 'solid',
   borderWidth: '1px',
-  position: 'absolute',
-  width: '100%',
-  left: 0,
+  position: 'fixed',
+  height: '20px',
+  width: '80vw',
+  left: '10vw',
   bottom: 0,
   zIndex: 500,
 };
 
 const Footer = () => (
-  <div style={style}>
+  <div style={style} className="site-footer">
     <span>this is a footer</span>
   </div>
 );

@@ -26,6 +26,7 @@ export const like = async (req, res) => {
   }
   const newactions = { canlike: false, canchat: true };
   await pushActivity(target, visitor, 'match');
+  await pushActivity(visitor, target, 'match');
   await createConversation(visitor, target);
   return res.send({ error: '', newactions, message: `You have liked ${target} and it's a Match, Congrats !!!` });
 };
@@ -48,6 +49,7 @@ export const unlike = async (req, res) => {
     return res.send({ error: '', newactions, message: `You have unliked ${target} !` });
   }
   await pushActivity(target, visitor, 'unmatch');
+  await pushActivity(visitor, target, 'unmatch');
   const newactions = { canlike: true, canchat: false };
   return res.send({ error: '', newactions, message: `You have unliked ${target}, then the match is canceled` });
 };
@@ -78,7 +80,6 @@ export const visitProfile = async (req, res) => {
 export const block = async (req, res) => {
   const { visitor, target } = req.body;
   const visitorDb = await db.getUserdb(visitor);
-  const targetDb = await db.getUserdb(target);
   const visitorBlockedto = visitorDb.blockedto;
 
   if (visitorBlockedto.includes(target)) {
@@ -87,8 +88,6 @@ export const block = async (req, res) => {
   await db.updatePopularity(target, -1);
   await pushActivity(target, visitor, 'block');
   db.puller(visitor, 'liketo', target);
-  if (visitorDb.likedby.includes(target)) db.puller(visitor, 'likedby', target);
-  if (targetDb.liketo.includes(visitor)) db.puller(visitor, 'liketo', target);
   db.puller(target, 'likedby', visitor);
   db.pusher(visitor, 'blockedto', target);
   db.pusher(target, 'blockedby', visitor);

@@ -17,6 +17,9 @@ const authControl = async (req, res, next) => {
     return res.send({ error: 'authControl', message: 'No user found' });
   }
   jwt.verify(token, config.secret, (err, decoded) => {
+    if (!decoded || !decoded.username || decoded.username !== username) {
+      return res.send({ error: 'authControl', message: 'Stop play with localStorage' });
+    }
     if (err) {
       return res.send({ error: 'authControl', message: err.message });
     }

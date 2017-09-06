@@ -13,6 +13,9 @@ export const initprofile = async (req, res) => {
 
 export const activation = async (req, res) => {
   const { activationkey, username } = req.body;
+  if (!activationkey || !username) {
+    return res.send({ error: 'activation', message: 'Fill the fields' });
+  }
   const userdb = await db.getUserdb(username);
   if (!userdb) {
     return res.send({ error: 'activation', message: 'This user does not exist' });
@@ -97,7 +100,7 @@ export const updateGateway = async (req, res) => {
   const { field } = req.params;
   if (field === 'generalinfo') {
     const message = await updateGeneral(username, req.body);
-    if (message) res.send({ error: 'updateGeneral', message });
+    if (message) return res.send({ error: 'updateGeneral', message });
     return res.send({ error: '' });
   } else if (field === 'password') {
     const verif = await controlPasswordChange(username, req.body);
@@ -159,9 +162,9 @@ export const getActivity = async (req, res) => {
 export const resetActivity = async (req, res) => {
   const { username } = req.params;
   const output = await db.getter(username, ['activity']);
-  const activity = output[0];
+  const { activity } = output[0];
   await db.setter(username, 'activity', []);
-  await db.oldActivityPusher(username, Object.values(activity));
+  await db.oldActivityPusher(username, activity);
   return res.send({ error: '' });
 };
 
@@ -181,5 +184,5 @@ export const logout = (req, res) => {
   const { username } = req.headers;
   const date = Date.now();
   db.setter(username, 'lastConnection', date);
-  res.send({ error: '' });
+  return res.send({ error: '' });
 };

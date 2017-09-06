@@ -4,6 +4,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import secureAxios from '../secureAxios.js';
 import ConversationCard from './Components/ConversationCard.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class Chat extends Component {
 
@@ -24,8 +25,11 @@ class Chat extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          this.setState({ mounted: true });
-          console.log(data.error);
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
         } else {
           const { conversations } = data;
           this.setState({ conversations, mounted: true });

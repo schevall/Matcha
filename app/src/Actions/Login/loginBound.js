@@ -33,6 +33,13 @@ export function handleNewFavPic(profilePicturePath, username) {
   };
 }
 
+export function logoutAuthError(title) {
+  return (dispatch) => {
+    dispatch(A.logout());
+    dispatch(Notifications.error({ title }));
+  };
+}
+
 export function logout(title) {
   return (dispatch) => {
     dispatch(A.logout());

@@ -12,6 +12,7 @@ import OneProfile from './OneProfile/OneProfile.js';
 import Activity from './Activity/Activity.js';
 import Chat from './Chat/Chat.js';
 import ChatRoom from './Chat/ChatRoom.js';
+import Footer from './Navbar/Footer.js';
 
 const App = props => (
   <div>
@@ -24,6 +25,7 @@ const App = props => (
       <PrivateRoute exact path="/chat/:target" component={ChatRoom} />
       <PrivateRoute exact path="/profile/:username" component={OneProfile} />
     </Switch>
+    <Footer />
   </div>
 );
 

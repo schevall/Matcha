@@ -18,7 +18,8 @@ export default class OneMatchInfo extends Component {
     const common = CountCommonTags(target.tags, visitor.tags);
     const score = GetMatchingScore(target, visitor);
     const match = isaMatch(target, visitor) ? 'Yes' : 'No';
-    const distance = `${Math.round(getDistance(target.geo, visitor.geo) / 1000)} kms`;
+    const distanceValue = getDistance(target.geo, visitor.geo);
+    const distance = distanceValue >= 1000 ? `${parseInt(distanceValue / 1000, 10)} Km` : `${distanceValue} meters`;
     return { compat, liked, common, score, match, distance };
   }
   render() {

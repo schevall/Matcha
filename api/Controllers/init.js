@@ -173,6 +173,7 @@ const init = async (req, res) => {
   await Mongo.db.collection('chat').deleteMany({});
   await deleteFolderRecursive('./uploads');
   fs.mkdirSync('./uploads');
+  fs.mkdirSync('./uploads/tmp');
   const array = [];
   const tags = [];
   for (const user of users) {

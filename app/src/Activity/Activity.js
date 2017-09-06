@@ -5,6 +5,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import secureAxios from '../secureAxios.js';
 import ActivityDisplay from './Components/ActivityDisplay.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class Activity extends Component {
 
@@ -21,7 +22,11 @@ class Activity extends Component {
     secureAxios(`/users/getActivity/${this.state.username}`, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          console.log(data.error);
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
         } else {
           const { activity } = data.activity;
           const { oldactivity } = data.oldactivity;

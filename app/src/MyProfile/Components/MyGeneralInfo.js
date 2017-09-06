@@ -17,7 +17,7 @@ export default class MyGeneralInfo extends Component {
     e.preventDefault();
     const field = e.target.id;
     const value = e.target.value;
-    this.setState({ errorLast: '', errorFirst: '' });
+    this.setState({ errorlastname: '', errorfirstname: '' });
     this.props.handleOnChange(field, value);
     if (value.length > 25) {
       const errorfield = `error${field}`;
@@ -27,6 +27,7 @@ export default class MyGeneralInfo extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.setState({ errorlastname: '', errorfirstname: '' });
     this.props.handleOnSubmit();
   }
 

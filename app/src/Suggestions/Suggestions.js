@@ -10,6 +10,7 @@ import Search from './Search.js';
 import { GetMatchingScore, TagMatch } from '../ToolBox/MatchingTool.js';
 import { calculateAge } from '../ToolBox/DateTools.js';
 import { getDistance, CountCommonTags, CalculatePopularity } from '../ToolBox/InteractionsTools.js';
+import { logoutAuthError } from '../Actions/Login/loginBound.js';
 
 class Suggestions extends Component {
 
@@ -45,7 +46,11 @@ class Suggestions extends Component {
     secureAxios(url, 'GET')
       .then(({ data }) => {
         if (data.error) {
-          console.log(data.error);
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
         } else {
           const { suggestions, visitor } = data;
           const sorted = this.sortWithMatchingScore(suggestions, visitor);
@@ -60,6 +65,10 @@ class Suggestions extends Component {
       const bPoints = GetMatchingScore(b, visitor);
       if (aPoints < bPoints) return 1;
       if (aPoints > bPoints) return -1;
+      const Apop = CalculatePopularity(a);
+      const Bpop = CalculatePopularity(b);
+      if (Apop < Bpop) return 1;
+      if (Apop > Bpop) return -1;
       return 0;
     });
     return sorted;
@@ -110,7 +119,7 @@ class Suggestions extends Component {
     const communTag = CountCommonTags(target.tags, visitor.tags);
     const popularity = CalculatePopularity(target);
     const matching = GetMatchingScore(target, visitor);
-    if ((age >= Age.min && age <= Age.max) || Age.max === 100) {
+    if (age >= Age.min && (age <= Age.max || Age.max === 100)) {
       if (distance >= Distance.min * 1000 && (distance <= Distance.max * 1000 || Distance.max === 100)) {
         if (communTag >= Tags.min && communTag <= Tags.max) {
           if (popularity >= Popularity.min && (popularity <= Popularity.max || Popularity.max === 20)) {
@@ -143,8 +152,13 @@ class Suggestions extends Component {
   search = (searchParams) => {
     secureAxios('/users/search', 'POST', { searchParams })
       .then(({ data }) => {
-        if (data.error) console.log(data.error);
-        else {
+        if (data.error) {
+          if (data.error === 'authControl') {
+            this.props.dispatch(logoutAuthError('No token provided, to connect, please sign in'));
+          } else {
+            console.log(data.error);
+          }
+        } else {
           const { search } = data;
           const sorted = this.sortWithMatchingScore(search, this.state.visitor);
           this.setState({ toShow: sorted, search: sorted, status: 'search' });
