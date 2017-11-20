@@ -1,37 +1,33 @@
-Matcha
+# Matcha
 
-Synopsis
+## Synopsis
 
 A dating website with Mongo DB, Express JS, React JS, Node JS. Project part of the web branch at 42 school.
 
-Motivation
+## Motivation
 
 Learn javascript eco-system, websockets, No-SQL.
 
-Which features are done
+## Which features are done
 
-Unlogged part
+* Unlogged part
+  * Signup
+  * Login
+  * Email confirmation
+  * Forgotten password
 
-Signup
-Login
-Email confirmation
-Forgotten password
-Logged part
+* Logged part
+  * Profile
+    * Pictures
+    * Interest tags
+    * Geolocation
+    * Popularity score
 
-Profile
-
-Pictures
-Interest tags
-Geolocation
-Popularity score
-User research
-
-User suggestions based on
-
-age
-distance
-interest tags in common
-popularity score
-Likes, Blocks and Reports
-
-Chat when match (mutual likes)
+  * User research
+  * User suggestions based on
+    * age
+    * distance
+    * interest tags in common
+    * popularity score
+  * Likes, Blocks and Reports
+  * Chat when match (mutual likes)
